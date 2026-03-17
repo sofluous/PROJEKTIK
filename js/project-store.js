@@ -1,6 +1,72 @@
 (function initProjektikStore() {
+  const CURRENT_SCHEMA_VERSION = 1;
   const STORAGE_INDEX_KEY = "projektik.projects.index.v1";
   const PROJECT_KEY_PREFIX = "projektik.project.v1.";
+  const DEFAULT_PROJECT_SETTINGS = {
+    projectorModel: "",
+    outputPreset: "1920x1080",
+    projectorNativeWidth: 1920,
+    projectorNativeHeight: 1080,
+    projectorDistance: "",
+    projectionWidth: "",
+    projectionHeight: "",
+    notes: "",
+    theme: "tech-grid"
+  };
+  const DEFAULT_UI_STATE = {
+    leftPanelTab: "workspace",
+    expandedLayerIds: [],
+    calibrationEditActive: false,
+    presentationEnabled: false,
+    calibrationLinkEnabled: true,
+    guidesEnabled: true,
+    playbackRunning: false,
+    showReferenceLayer: false,
+    focus: {
+      type: "calibration",
+      id: "calibration-parent"
+    },
+    assetLibraryId: ""
+  };
+  const DEFAULT_PROJECTION_VIEW = {
+    windowOpen: false,
+    preset: "live-output",
+    pinnedLayerId: null,
+    pinnedSurfaceKey: null,
+    showGuides: false,
+    showReference: false,
+    showCalibration: false
+  };
+  const DEFAULT_CALIBRATION = {
+    x: 0,
+    y: 0,
+    scaleX: 1,
+    scaleY: 1,
+    rotation: 0
+  };
+  const DEFAULT_CALIBRATION_TEMPLATE = {
+    gridType: "line",
+    gridSize: 48,
+    rows: 12,
+    columns: 16,
+    showFrame: true,
+    showMatrixLabels: false,
+    referenceAssetId: null,
+    referenceOpacity: 100
+  };
+  const DEFAULT_CALIBRATION_REFERENCE = {
+    assetId: null,
+    surfaceKey: null,
+    visible: false,
+    visibilityMode: "both",
+    fitMode: "surface",
+    opacity: 100,
+    locked: false
+  };
+  const DEFAULT_OUTPUT = {
+    width: 1920,
+    height: 1080
+  };
 
   function nowIso() {
     return new Date().toISOString();
@@ -13,6 +79,74 @@
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
+  }
+
+  function normalizeArray(value) {
+    return Array.isArray(value) ? clone(value) : [];
+  }
+
+  function normalizeFocus(value) {
+    if (!value || typeof value !== "object" || !value.type) {
+      return clone(DEFAULT_UI_STATE.focus);
+    }
+    return {
+      type: String(value.type),
+      id: value.id || ""
+    };
+  }
+
+  function normalizeProjectEnvelope(envelope, options = {}) {
+    const nextEnvelope = clone(envelope || {});
+    const timestamp = nowIso();
+    const project = nextEnvelope.project || {};
+    const imported = options.imported === true;
+
+    nextEnvelope.schemaVersion = Number(nextEnvelope.schemaVersion) || CURRENT_SCHEMA_VERSION;
+    nextEnvelope.project = {
+      id: imported ? createId("project") : project.id || createId("project"),
+      name: project.name || (imported ? "Imported Project" : "Untitled Project"),
+      createdAt: imported ? timestamp : project.createdAt || timestamp,
+      updatedAt: imported ? timestamp : project.updatedAt || timestamp,
+      thumbnailDataUrl: project.thumbnailDataUrl || "",
+      schemaVersion: nextEnvelope.schemaVersion,
+      settings: {
+        ...DEFAULT_PROJECT_SETTINGS,
+        ...(project.settings || {})
+      }
+    };
+
+    nextEnvelope.ui = {
+      ...DEFAULT_UI_STATE,
+      ...(nextEnvelope.ui || {}),
+      expandedLayerIds: Array.isArray(nextEnvelope.ui?.expandedLayerIds) ? nextEnvelope.ui.expandedLayerIds.slice() : [],
+      focus: normalizeFocus(nextEnvelope.ui?.focus),
+      assetLibraryId: nextEnvelope.ui?.assetLibraryId || ""
+    };
+
+    nextEnvelope.projectionView = {
+      ...DEFAULT_PROJECTION_VIEW,
+      ...(nextEnvelope.projectionView || {})
+    };
+    nextEnvelope.calibration = {
+      ...DEFAULT_CALIBRATION,
+      ...(nextEnvelope.calibration || {})
+    };
+    nextEnvelope.calibrationTemplate = {
+      ...DEFAULT_CALIBRATION_TEMPLATE,
+      ...(nextEnvelope.calibrationTemplate || {})
+    };
+    nextEnvelope.calibrationReference = {
+      ...DEFAULT_CALIBRATION_REFERENCE,
+      ...(nextEnvelope.calibrationReference || {})
+    };
+    nextEnvelope.output = {
+      ...DEFAULT_OUTPUT,
+      ...(nextEnvelope.output || {})
+    };
+    nextEnvelope.assets = normalizeArray(nextEnvelope.assets);
+    nextEnvelope.layers = normalizeArray(nextEnvelope.layers);
+    nextEnvelope.surfaces = normalizeArray(nextEnvelope.surfaces);
+    return nextEnvelope;
   }
 
   function getProjectKey(projectId) {
@@ -39,7 +173,8 @@
   }
 
   function summarizeEnvelope(envelope) {
-    const project = envelope?.project || {};
+    const normalized = normalizeProjectEnvelope(envelope);
+    const project = normalized.project || {};
     const settings = project.settings || {};
     return {
       id: project.id,
@@ -47,10 +182,10 @@
       createdAt: project.createdAt || nowIso(),
       updatedAt: project.updatedAt || nowIso(),
       thumbnailDataUrl: project.thumbnailDataUrl || "",
-      outputWidth: settings.outputWidth || envelope?.output?.width || 1920,
-      outputHeight: settings.outputHeight || envelope?.output?.height || 1080,
+      outputWidth: settings.outputWidth || normalized?.output?.width || 1920,
+      outputHeight: settings.outputHeight || normalized?.output?.height || 1080,
       projectorModel: settings.projectorModel || "",
-      schemaVersion: envelope?.schemaVersion || 1
+      schemaVersion: normalized?.schemaVersion || CURRENT_SCHEMA_VERSION
     };
   }
 
@@ -61,11 +196,10 @@
   }
 
   function saveProject(envelope) {
-    if (!envelope?.project?.id) {
+    const nextEnvelope = normalizeProjectEnvelope(envelope);
+    if (!nextEnvelope?.project?.id) {
       throw new Error("Project envelope requires a project id.");
     }
-
-    const nextEnvelope = clone(envelope);
     const summary = summarizeEnvelope(nextEnvelope);
     localStorage.setItem(getProjectKey(summary.id), JSON.stringify(nextEnvelope));
 
@@ -80,7 +214,7 @@
     if (!envelope) {
       return null;
     }
-    return clone(envelope);
+    return normalizeProjectEnvelope(envelope);
   }
 
   function deleteProject(projectId) {
@@ -105,24 +239,11 @@
     return nextEnvelope.project.id;
   }
 
-  function normalizeImportedEnvelope(envelope) {
-    const nextEnvelope = clone(envelope);
-    const timestamp = nowIso();
-    nextEnvelope.schemaVersion = Number(nextEnvelope.schemaVersion) || 1;
-    nextEnvelope.project = nextEnvelope.project || {};
-    nextEnvelope.project.id = createId("project");
-    nextEnvelope.project.name = nextEnvelope.project.name || "Imported Project";
-    nextEnvelope.project.createdAt = timestamp;
-    nextEnvelope.project.updatedAt = timestamp;
-    nextEnvelope.project.settings = nextEnvelope.project.settings || {};
-    return nextEnvelope;
-  }
-
   function importProjectEnvelope(envelope) {
     if (!envelope || typeof envelope !== "object") {
       throw new Error("Invalid project payload.");
     }
-    const normalized = normalizeImportedEnvelope(envelope);
+    const normalized = normalizeProjectEnvelope(envelope, { imported: true });
     saveProject(normalized);
     return normalized.project.id;
   }
@@ -155,6 +276,7 @@
   }
 
   window.ProjektikStore = {
+    CURRENT_SCHEMA_VERSION,
     STORAGE_INDEX_KEY,
     PROJECT_KEY_PREFIX,
     createId,
@@ -167,6 +289,7 @@
     downloadProject,
     importProjectEnvelope,
     importProjectFile,
-    summarizeEnvelope
+    summarizeEnvelope,
+    normalizeProjectEnvelope
   };
 }());

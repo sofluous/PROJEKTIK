@@ -8,6 +8,31 @@
   <style>
     :root {
       color-scheme: dark;
+      --pk-app-bg:
+        radial-gradient(circle at top, color-mix(in oklab, var(--ds-accent) 16%, transparent), transparent 24%),
+        radial-gradient(circle at 85% 12%, color-mix(in oklab, var(--ds-focus) 12%, transparent), transparent 18%),
+        linear-gradient(180deg, color-mix(in oklab, var(--ds-bg) 92%, black 8%), color-mix(in oklab, var(--ds-bg-elevated) 90%, black 10%));
+      --pk-shell-surface:
+        linear-gradient(180deg, color-mix(in oklab, white 3%, transparent), transparent),
+        var(--ds-card-bg);
+      --pk-shell-border: color-mix(in oklab, var(--ds-card-border, var(--ds-border)) 88%, var(--ds-border-strong) 12%);
+      --pk-shell-shadow: var(--ds-card-shadow);
+      --pk-shell-divider: color-mix(in oklab, var(--ds-border) 88%, transparent);
+      --pk-shell-chrome-bg: color-mix(in oklab, var(--ds-bg-raised) 84%, var(--ds-card-bg) 16%);
+      --pk-shell-tabbar-bg: color-mix(in oklab, var(--ds-bg-soft) 72%, var(--ds-card-bg) 28%);
+      --pk-shell-tabbar-border: color-mix(in oklab, var(--ds-border) 86%, transparent);
+      --pk-shell-banner-bg: color-mix(in oklab, var(--ds-bg-raised) 82%, var(--ds-card-bg) 18%);
+      --pk-stage-base-bg: #05070b;
+      --pk-stage-viewport-bg: #06080d;
+      --pk-overlay-panel-bg: color-mix(in oklab, rgba(7, 11, 17, 0.92) 90%, transparent);
+      --pk-overlay-panel-bg-soft: color-mix(in oklab, rgba(7, 11, 17, 0.88) 88%, transparent);
+      --pk-overlay-panel-bg-alt: color-mix(in oklab, rgba(7, 11, 17, 0.86) 88%, transparent);
+      --pk-overlay-panel-border: color-mix(in oklab, var(--ds-border) 78%, transparent);
+      --pk-overlay-divider: color-mix(in oklab, var(--ds-border) 72%, transparent);
+      --pk-overlay-blur-md: blur(12px);
+      --pk-overlay-blur-lg: blur(16px);
+      --pk-overlay-shadow-md: 0 18px 42px rgba(0, 0, 0, 0.34);
+      --pk-overlay-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.38);
       --pk-stage-grid: rgba(125, 190, 255, 0.18);
       --pk-stage-safe: rgba(255, 162, 82, 0.24);
       --pk-stage-surface-a: rgba(87, 214, 255, 0.18);
@@ -21,10 +46,7 @@
       margin: 0;
       min-height: 100dvh;
       overflow: hidden;
-      background:
-        radial-gradient(circle at top, rgba(91, 151, 255, 0.14), transparent 24%),
-        radial-gradient(circle at 85% 12%, rgba(255, 96, 182, 0.12), transparent 18%),
-        linear-gradient(180deg, rgba(6, 8, 13, 0.96), rgba(7, 11, 17, 1));
+      background: var(--pk-app-bg);
     }
 
     .pk-app {
@@ -242,12 +264,10 @@
     .pk-panel,
     .pk-stage-shell,
     .pk-mobile-sheet {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-        var(--ds-card-bg);
-      border: var(--ds-border-w) var(--ds-border-style) color-mix(in oklab, var(--ds-border) 80%, white 8%);
+      background: var(--pk-shell-surface);
+      border: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-border);
       border-radius: var(--ds-card-radius);
-      box-shadow: var(--ds-card-shadow);
+      box-shadow: var(--pk-shell-shadow);
       min-height: 0;
       overflow: hidden;
     }
@@ -281,13 +301,13 @@
     .pk-sheet-header,
     .pk-panel-section,
     .pk-panel-footer {
-      border-bottom: var(--ds-border-w) var(--ds-border-style) var(--ds-border);
+      border-bottom: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-divider);
     }
 
     .pk-panel-footer {
       border-bottom: 0;
-      border-top: var(--ds-border-w) var(--ds-border-style) var(--ds-border);
-      background: color-mix(in oklab, var(--ds-bg-raised) 72%, transparent);
+      border-top: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-divider);
+      background: var(--pk-shell-chrome-bg);
     }
 
     .pk-panel-header {
@@ -300,7 +320,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: color-mix(in oklab, var(--ds-bg-raised) 76%, transparent);
+      background: var(--pk-shell-chrome-bg);
     }
 
     .pk-panel-body,
@@ -317,8 +337,8 @@
       gap: 4px;
       padding: 4px;
       border-radius: 999px;
-      background: color-mix(in oklab, var(--ds-bg) 82%, transparent);
-      border: 1px solid color-mix(in oklab, var(--ds-border) 82%, transparent);
+      background: var(--pk-shell-tabbar-bg);
+      border: 1px solid var(--pk-shell-tabbar-border);
     }
 
     .pk-left-tab {
@@ -363,7 +383,7 @@
       padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid color-mix(in oklab, var(--ds-border) 70%, transparent);
-      background: color-mix(in oklab, var(--ds-bg-raised) 76%, transparent);
+      background: var(--pk-shell-banner-bg);
       color: var(--ds-text);
       font-size: 12px;
       letter-spacing: 0.06em;
@@ -379,6 +399,20 @@
       display: grid;
       gap: 8px;
       min-width: 0;
+    }
+
+    .pk-assets-top {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: grid;
+      gap: 8px;
+      padding-bottom: 8px;
+      background: linear-gradient(180deg, var(--pk-shell-surface) 82%, transparent);
+    }
+
+    .pk-assets-toolbar {
+      justify-content: space-between;
     }
 
     .pk-mode-strip:empty {
@@ -482,8 +516,8 @@
       z-index: 8;
       border: 0;
       border-radius: 16px;
-      background: color-mix(in oklab, rgba(7, 11, 17, 0.86) 88%, transparent);
-      backdrop-filter: blur(12px);
+      background: var(--pk-overlay-panel-bg-alt);
+      backdrop-filter: var(--pk-overlay-blur-md);
       padding: 8px 10px;
     }
 
@@ -502,7 +536,7 @@
       border-radius: 0;
       border: 0;
       box-shadow: none;
-      background: #05070b;
+      background: var(--pk-stage-base-bg);
     }
 
     .pk-app.is-overlay-ui .pk-stage-wrap {
@@ -526,7 +560,7 @@
       border-radius: 0;
       border: 0;
       box-shadow: none;
-      background: #05070b;
+      background: var(--pk-stage-base-bg);
     }
 
     .pk-app.is-ui-hidden .pk-stage-wrap {
@@ -541,23 +575,61 @@
 
     .pk-overlay-controls {
       position: absolute;
-      right: 12px;
-      bottom: 12px;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 9;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      flex-wrap: wrap;
       padding: 6px;
-      border-radius: 999px;
-      background: color-mix(in oklab, rgba(7, 11, 17, 0.88) 88%, transparent);
-      border: 1px solid color-mix(in oklab, var(--ds-border) 78%, transparent);
+      border-radius: 18px;
+      background: var(--pk-overlay-panel-bg-soft);
+      border: 1px solid var(--pk-overlay-panel-border);
       backdrop-filter: blur(10px);
+      max-width: calc(100% - 24px);
+    }
+
+    .pk-overlay-control-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pk-overlay-control-group-run {
+      padding-left: 8px;
+      border-left: 1px solid var(--pk-overlay-divider);
+    }
+
+    .pk-toolbar-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--ds-control-surface-border);
+      background: var(--ds-control-surface-bg-strong);
+      color: var(--ds-control-surface-text-muted);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .pk-toolbar-toggle:hover,
+    .pk-toolbar-toggle:focus-visible,
+    .pk-toolbar-toggle.is-active {
+      color: var(--ds-control-surface-text);
+      border-color: var(--ds-control-surface-active-border);
+      background: var(--ds-control-surface-active-bg);
+      outline: none;
     }
 
     .pk-toolbar-divider {
       width: 1px;
       height: 18px;
-      background: color-mix(in oklab, var(--ds-border) 72%, transparent);
+      background: var(--pk-overlay-divider);
       opacity: 0.8;
     }
 
@@ -606,10 +678,10 @@
       display: none;
       grid-template-rows: auto minmax(0, 1fr);
       border-radius: 18px;
-      border: 1px solid color-mix(in oklab, var(--ds-border) 78%, transparent);
-      background: color-mix(in oklab, rgba(7, 11, 17, 0.92) 90%, transparent);
-      backdrop-filter: blur(16px);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+      border: 1px solid var(--pk-overlay-panel-border);
+      background: var(--pk-overlay-panel-bg);
+      backdrop-filter: var(--pk-overlay-blur-lg);
+      box-shadow: var(--pk-overlay-shadow-lg);
       overflow: hidden;
     }
 
@@ -633,7 +705,7 @@
     }
 
     .pk-overlay-drawer-header {
-      border-bottom: 1px solid color-mix(in oklab, var(--ds-border) 72%, transparent);
+      border-bottom: 1px solid var(--pk-overlay-divider);
       display: grid;
       gap: 8px;
     }
@@ -671,10 +743,10 @@
       grid-auto-rows: min-content;
       padding: 6px;
       border-radius: 14px;
-      border: 1px solid color-mix(in oklab, var(--ds-border) 78%, transparent);
-      background: color-mix(in oklab, rgba(7, 11, 17, 0.94) 92%, transparent);
+      border: 1px solid var(--pk-overlay-panel-border);
+      background: var(--pk-overlay-panel-bg);
       backdrop-filter: blur(14px);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
+      box-shadow: var(--pk-overlay-shadow-md);
     }
 
     .pk-context-menu.is-open {
@@ -707,6 +779,12 @@
       cursor: default;
     }
 
+    .pk-context-menu-separator {
+      height: 1px;
+      margin: 5px 6px;
+      background: color-mix(in oklab, var(--pk-overlay-panel-border) 78%, transparent);
+    }
+
     .pk-stage-head-top,
     .pk-stage-head-bottom {
       display: flex;
@@ -726,8 +804,7 @@
     }
 
     .pk-projection-strip {
-      display: inline-grid;
-      grid-template-columns: 1fr;
+      display: inline-flex;
       flex-wrap: wrap;
       align-items: center;
       gap: var(--ds-control-surface-gap);
@@ -737,24 +814,12 @@
       background: var(--ds-control-surface-bg);
     }
 
-    .pk-projection-strip-main,
-    .pk-projection-strip-quick {
+    .pk-projection-strip-main {
       display: inline-flex;
       flex-wrap: wrap;
       align-items: center;
       gap: var(--ds-control-surface-gap);
       min-width: 0;
-    }
-
-    .pk-projection-strip-quick {
-      padding-top: 2px;
-      border-top: 1px solid color-mix(in oklab, var(--ds-control-surface-border) 68%, transparent);
-    }
-
-    .pk-projection-quick-btn {
-      min-height: 26px;
-      padding: 0 8px;
-      border-radius: 999px;
     }
 
     .pk-projection-select {
@@ -866,7 +931,7 @@
     .pk-stage-calibration {
       position: absolute;
       inset: 0;
-      z-index: 1;
+      z-index: 6;
       border: 1px solid color-mix(in oklab, var(--ds-focus) 62%, transparent);
       box-shadow: 0 0 0 1px color-mix(in oklab, var(--ds-focus) 18%, transparent) inset;
       pointer-events: none;
@@ -979,11 +1044,11 @@
 
     .pk-stage-asset-frame {
       position: absolute;
-      border: 1px dashed color-mix(in oklab, var(--ds-focus) 82%, white 8%);
+      border: 2px dashed color-mix(in oklab, var(--ds-focus) 82%, white 8%);
       box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.28),
-        0 0 0 3px color-mix(in oklab, var(--ds-focus) 16%, transparent);
-      background: color-mix(in oklab, var(--ds-focus) 8%, transparent);
+        0 0 0 1px rgba(0, 0, 0, 0.38),
+        0 0 0 4px color-mix(in oklab, var(--ds-focus) 18%, transparent);
+      background: color-mix(in oklab, var(--ds-focus) 10%, transparent);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--ds-dur-fast) var(--ds-ease-standard);
@@ -1056,9 +1121,9 @@
     .pk-stage-surface.is-hovered .pk-stage-surface-outline polygon,
     .pk-stage-surface.is-active .pk-stage-surface-outline polygon {
       stroke: var(--ds-focus);
-      stroke-width: 2;
+      stroke-width: 2.5;
       opacity: 1;
-      filter: drop-shadow(0 0 5px color-mix(in oklab, var(--ds-focus) 32%, transparent));
+      filter: drop-shadow(0 0 6px color-mix(in oklab, var(--ds-focus) 34%, transparent));
     }
 
     .pk-stage-surface.is-ancestor:not(.is-active) .pk-stage-surface-outline polygon {
@@ -1099,6 +1164,7 @@
     }
 
     .pk-stage-surface.is-crop-muted {
+      opacity: 0.2;
       pointer-events: none;
     }
 
@@ -1112,8 +1178,14 @@
       filter: none !important;
     }
 
+    .pk-stage-surface.is-passive-mode {
+      cursor: default;
+    }
+
     .pk-stage-surface.is-passive-mode .pk-stage-surface-outline polygon {
-      opacity: 0;
+      opacity: 0.2;
+      stroke: color-mix(in oklab, var(--ds-border) 74%, white 8%);
+      stroke-dasharray: 8 5;
     }
 
     .pk-stage-surface.is-passive-mode .pk-stage-handle,
@@ -1126,12 +1198,14 @@
     .pk-stage-handle {
       position: absolute;
       z-index: 6;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 999px;
-      border: 2px solid color-mix(in oklab, var(--ds-focus) 72%, white 12%);
-      background: color-mix(in oklab, var(--ds-bg-raised) 86%, white 6%);
-      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.22);
+      border: 2px solid color-mix(in oklab, var(--ds-border-strong) 74%, white 14%);
+      background: color-mix(in oklab, var(--ds-bg-raised) 92%, white 4%);
+      box-shadow:
+        0 0 0 2px rgba(0, 0, 0, 0.24),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
       opacity: 0;
       pointer-events: none;
       transition:
@@ -1139,12 +1213,27 @@
         background var(--ds-dur-fast) var(--ds-ease-standard),
         border-color var(--ds-dur-fast) var(--ds-ease-standard),
         transform var(--ds-dur-fast) var(--ds-ease-standard),
-        box-shadow var(--ds-dur-fast) var(--ds-ease-standard);
+        box-shadow var(--ds-dur-fast) var(--ds-ease-standard),
+        filter var(--ds-dur-fast) var(--ds-ease-standard);
+    }
+
+    .pk-stage-handle::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: inherit;
+      background: transparent;
+      transform: scale(0.62);
+      transition:
+        background var(--ds-dur-fast) var(--ds-ease-standard),
+        transform var(--ds-dur-fast) var(--ds-ease-standard),
+        opacity var(--ds-dur-fast) var(--ds-ease-standard);
+      opacity: 0;
     }
 
     .pk-stage-handle.is-edge {
       width: 22px;
-      height: 10px;
+      height: 12px;
       border-radius: 999px;
       background: color-mix(in oklab, var(--ds-focus) 16%, var(--ds-bg-raised));
     }
@@ -1156,8 +1245,8 @@
 
     .pk-stage-handle.is-edge[data-handle="e"],
     .pk-stage-handle.is-edge[data-handle="w"] {
-      width: 10px;
-      height: 18px;
+      width: 12px;
+      height: 22px;
       margin-top: -2px;
     }
 
@@ -1167,14 +1256,48 @@
       pointer-events: auto;
     }
 
+    .pk-stage-calibration.is-editable .pk-stage-handle {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pk-stage-handle.is-inactive {
+      opacity: 0.58;
+      border-color: color-mix(in oklab, var(--ds-border) 76%, white 10%);
+      background: color-mix(in oklab, var(--ds-bg-raised) 82%, transparent);
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.18);
+    }
+
     .pk-stage-handle.is-hovered,
     .pk-stage-surface.is-dragging .pk-stage-handle[data-handle] {
       border-color: var(--ds-focus);
       box-shadow:
-        0 0 0 2px rgba(0, 0, 0, 0.22),
-        0 0 0 4px color-mix(in oklab, var(--ds-focus) 24%, transparent);
-      background: color-mix(in oklab, var(--ds-focus) 24%, var(--ds-bg));
-      transform: scale(1.08);
+        0 0 0 2px rgba(0, 0, 0, 0.24),
+        0 0 0 6px color-mix(in oklab, var(--ds-focus) 36%, transparent);
+      background: color-mix(in oklab, var(--ds-focus) 44%, var(--ds-bg));
+      transform: scale(1.18);
+    }
+
+    .pk-stage-handle.is-hovered::after,
+    .pk-stage-surface.is-dragging .pk-stage-handle[data-handle]::after {
+      opacity: 1;
+      background: color-mix(in oklab, white 88%, var(--ds-focus));
+      transform: scale(0.74);
+    }
+
+    .pk-stage-handle.is-selected {
+      border-color: color-mix(in oklab, var(--ds-focus) 88%, white 12%);
+      background: color-mix(in oklab, var(--ds-focus) 64%, var(--ds-bg));
+      box-shadow:
+        0 0 0 2px rgba(0, 0, 0, 0.28),
+        0 0 0 8px color-mix(in oklab, var(--ds-focus) 42%, transparent);
+      transform: scale(1.22);
+    }
+
+    .pk-stage-handle.is-selected::after {
+      opacity: 1;
+      background: color-mix(in oklab, white 92%, var(--ds-focus));
+      transform: scale(0.82);
     }
 
     .pk-stage-surface.is-free-warp .pk-stage-handle.is-free-target,
@@ -1182,10 +1305,17 @@
       border-color: var(--ds-focus);
       box-shadow:
         0 0 0 2px rgba(0, 0, 0, 0.22),
-        0 0 0 4px color-mix(in oklab, var(--ds-focus) 24%, transparent);
-      background: color-mix(in oklab, var(--ds-focus) 18%, var(--ds-bg));
+        0 0 0 6px color-mix(in oklab, var(--ds-focus) 34%, transparent);
+      background: color-mix(in oklab, var(--ds-focus) 48%, var(--ds-bg));
       opacity: 1;
       pointer-events: auto;
+    }
+
+    .pk-stage-surface.is-free-warp .pk-stage-handle.is-free-target::after,
+    .pk-stage-surface.is-asset-crop .pk-stage-handle::after {
+      opacity: 1;
+      background: color-mix(in oklab, white 94%, var(--ds-focus));
+      transform: scale(0.78);
     }
 
     .pk-stage-surface.is-asset-crop .pk-stage-handle {
@@ -1193,12 +1323,20 @@
       background: color-mix(in oklab, var(--ds-focus) 28%, white 10%);
       box-shadow:
         0 0 0 2px rgba(0, 0, 0, 0.24),
-        0 0 0 4px color-mix(in oklab, var(--ds-focus) 28%, transparent);
+        0 0 0 5px color-mix(in oklab, var(--ds-focus) 30%, transparent);
     }
 
     .pk-stage-surface.is-asset-crop .pk-stage-handle.is-edge {
       border-radius: 999px;
       background: color-mix(in oklab, var(--ds-focus) 20%, white 8%);
+    }
+
+    .pk-stage-handle.is-disabled {
+      opacity: 0.18 !important;
+      filter: grayscale(1);
+      pointer-events: none !important;
+      box-shadow: none !important;
+      transform: none !important;
     }
 
     .pk-stage-handle[data-handle="nw"] {
@@ -1277,24 +1415,6 @@
       pointer-events: auto;
     }
 
-    .pk-stage-surface[data-surface="hero"] {
-      background:
-        linear-gradient(135deg, rgba(87, 214, 255, 0.22), rgba(87, 214, 255, 0.04)),
-        var(--pk-stage-surface-a);
-    }
-
-    .pk-stage-surface[data-surface="column"] {
-      background:
-        linear-gradient(180deg, rgba(255, 110, 196, 0.24), rgba(255, 110, 196, 0.04)),
-        var(--pk-stage-surface-b);
-    }
-
-    .pk-stage-surface[data-surface="floor"] {
-      background:
-        linear-gradient(90deg, rgba(125, 255, 198, 0.22), rgba(125, 255, 198, 0.04)),
-        var(--pk-stage-surface-c);
-    }
-
     .pk-stage-tag,
     .pk-status-badge,
     .pk-chip {
@@ -1358,6 +1478,10 @@
       opacity: 0.72;
     }
 
+    .pk-stage[data-stage-state="calibration"] .pk-stage-surface[data-entity-type="surface"] {
+      pointer-events: none;
+    }
+
     .pk-stage[data-stage-state="mapping"] .pk-stage-surface {
       opacity: 1;
     }
@@ -1375,14 +1499,26 @@
       opacity: 0;
     }
 
+    .pk-stage.is-presentation-preview .pk-stage-calibration,
+    .pk-stage.is-presentation-preview .pk-stage-surface-outline,
+    .pk-stage.is-presentation-preview .pk-stage-surface-grid,
+    .pk-stage.is-presentation-preview .pk-stage-handle,
+    .pk-stage.is-presentation-preview .pk-stage-edit-hud,
+    .pk-stage.is-presentation-preview .pk-stage-asset-frame {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      display: none !important;
+      filter: none !important;
+    }
+
     .pk-stage.is-guides-off::after,
     .pk-stage.is-guides-off .pk-stage-tag,
     .pk-stage.is-guides-off .pk-stage-legend {
       opacity: 0;
     }
 
-    .pk-stage.is-paused .pk-stage-reference,
-    .pk-stage.is-paused .pk-stage-surface {
+    .pk-stage.is-paused:not(.is-presentation-preview) .pk-stage-reference,
+    .pk-stage.is-paused:not(.is-presentation-preview) .pk-stage-surface {
       opacity: 0.58;
       filter: saturate(0.72) brightness(0.68);
     }
@@ -1557,11 +1693,11 @@
 
     .pk-item-tags {
       display: flex;
-      flex-wrap: nowrap;
-      gap: 4px;
+      flex-wrap: wrap;
+      gap: 6px;
       align-items: center;
       min-width: 0;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .pk-item-tags[hidden] {
@@ -1767,9 +1903,9 @@
 
     .pk-more-menu summary {
       list-style: none;
-      min-width: 26px;
-      min-height: 26px;
-      padding: 0 8px;
+      min-width: 32px;
+      min-height: 32px;
+      padding: 0 10px;
       border-radius: var(--ds-control-surface-radius);
       border: 1px solid var(--ds-menu-trigger-border);
       background: var(--ds-menu-trigger-bg);
@@ -1832,8 +1968,7 @@
       padding: 0 8px;
     }
 
-    .pk-stage-header.is-minimal .pk-stage-head-top,
-    .pk-stage-header.is-minimal #stageModeStats {
+    .pk-stage-header.is-minimal .pk-stage-head-top {
       display: none;
     }
 
@@ -1896,6 +2031,10 @@
       flex: 1 1 auto;
     }
 
+    .pk-titlebar-main .pk-chip {
+      margin-left: auto;
+    }
+
     .pk-titlebar-actions {
       flex: 0 0 auto;
       display: inline-flex;
@@ -1916,6 +2055,10 @@
 
     .pk-title-button.is-active {
       color: var(--ds-accent);
+    }
+
+    .pk-title-button.is-editing {
+      cursor: text;
     }
 
     .pk-section-head,
@@ -2124,6 +2267,12 @@
       <path d="M8 12h5"></path>
       <path d="M8 15h8"></path>
     </symbol>
+    <symbol id="pk-icon-file" viewBox="0 0 24 24">
+      <path d="M8 4h6l4 4v12H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+      <path d="M14 4v4h4"></path>
+      <path d="M9 12h6"></path>
+      <path d="M9 16h6"></path>
+    </symbol>
     <symbol id="pk-icon-arrow-up" viewBox="0 0 24 24">
       <path d="M12 5v14"></path>
       <path d="M8 9l4-4 4 4"></path>
@@ -2175,7 +2324,7 @@
       <aside class="pk-panel pk-panel-left">
         <div class="pk-panel-brandbar">
           <div class="pk-section-head">
-            <div class="pk-panel-title">PROJEKTIK</div>
+            <button class="pk-panel-title pk-title-button" id="homeDashboardBtn" type="button" title="Return to dashboard">PROJEKTIK</button>
           </div>
         </div>
         <div class="pk-panel-header">
@@ -2186,9 +2335,8 @@
             </div>
             <div class="pk-titlebar-actions">
               <details class="pk-more-menu">
-              <summary aria-label="Project actions">...</summary>
+              <summary aria-label="Project file actions"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-file"></use></svg></summary>
               <div class="pk-more-menu-list">
-                <button class="ds-btn" id="backToDashboardBtn" type="button">Dashboard</button>
                 <button class="ds-btn ds-btn-primary" id="saveProjectBtn" type="button">Save</button>
                 <button class="ds-btn" id="saveAsProjectBtn" type="button">Save Copy</button>
                 <button class="ds-btn" id="exportProjectBtn" type="button">Export</button>
@@ -2198,11 +2346,10 @@
           </div>
           <div class="pk-section-head">
             <div class="pk-left-tabbar" aria-label="Project navigation">
-              <button class="pk-left-tab is-active" id="workspaceTabBtn" type="button" data-left-tab="workspace">Workspace</button>
-              <button class="pk-left-tab" id="assetsTabBtn" type="button" data-left-tab="assets">Assets</button>
-              <button class="pk-left-tab" id="settingsTabBtn" type="button" data-left-tab="settings">Settings</button>
+              <button class="pk-left-tab is-active" id="workspaceTabBtn" type="button" data-left-tab="workspace" title="Organize calibration, layers, surfaces, and assigned content.">Workspace</button>
+              <button class="pk-left-tab" id="assetsTabBtn" type="button" data-left-tab="assets" title="Browse imported media, preview it, and drag it onto surfaces.">Assets</button>
+              <button class="pk-left-tab" id="settingsTabBtn" type="button" data-left-tab="settings" title="Theme and low-frequency interface options.">Settings</button>
             </div>
-            <button class="pk-info-btn" id="leftTabInfo" type="button" title="Workspace lets you organize calibration, layers, surfaces, and assigned content.">i</button>
           </div>
           <input id="assetFileInput" type="file" accept="image/*,video/*" multiple hidden>
           <input id="overlayFileInput" type="file" accept="image/*" hidden>
@@ -2217,28 +2364,21 @@
           </section>
 
           <section class="pk-list" id="assetsPanel" hidden>
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">Assets</div>
+            <div class="pk-assets-top">
+              <div class="pk-section-head pk-assets-toolbar">
               <span class="pk-chip" id="assetCountBadge">4 loaded</span>
-              <button class="pk-info-btn" type="button" title="Browse imported media, preview it, and assign it to surfaces.">i</button>
+              <button class="ds-btn ds-btn-primary" id="importAssetBtn" type="button">Import Asset</button>
+              </div>
+              <div id="selectedAssetPreview"></div>
             </div>
             <div class="pk-assets-library" id="assetsList"></div>
           </section>
 
           <section class="pk-list" id="settingsPanel" hidden>
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">Settings</div>
-              <button class="pk-info-btn" type="button" title="Theme and low-frequency interface options.">i</button>
-            </div>
             <div class="pk-inspector-card">
               <div class="pk-field">
                 <label for="themeSelect">Theme</label>
-                <select class="pk-utility-select" id="themeSelect" aria-label="Theme">
-                  <option value="holo-nocturne">Holo Nocturne</option>
-                  <option value="steel-night">Steel Night</option>
-                  <option value="tech-grid">Tech Grid</option>
-                  <option value="saturn-alloy">Saturn Alloy</option>
-                </select>
+                <select class="pk-utility-select" id="themeSelect" aria-label="Theme" data-ds-theme-select data-ds-theme-storage="projektik-theme" data-ds-theme-default="tech-grid"></select>
               </div>
             </div>
           </section>
@@ -2249,7 +2389,6 @@
             <button class="ds-btn" id="addSurfaceBtn" type="button">Draw Surface</button>
           </div>
           <div class="pk-context-actions" id="assetActions" hidden>
-            <button class="ds-btn ds-btn-primary" id="importAssetBtn" type="button">Import Asset</button>
             <button class="ds-btn" id="loadOverlayBtn" type="button">Import Reference</button>
           </div>
           <div class="pk-context-actions" id="settingsActions" hidden>
@@ -2264,12 +2403,11 @@
               <div class="pk-panel-title">Projection Canvas</div>
             </div>
           </div>
-          <div class="pk-stage-head-bottom">
-            <div class="pk-stack-inline" id="stageModeStats"></div>
-            <div class="pk-stage-head-controls">
-              <div class="pk-projection-status" id="projectionStatusChip">Projection Closed</div>
-              <div class="pk-projection-strip" aria-label="Projection controls">
-                <div class="pk-projection-strip-main">
+            <div class="pk-stage-head-bottom">
+              <div class="pk-stage-head-controls">
+                <div class="pk-projection-status" id="projectionStatusChip">Projection Closed</div>
+                <div class="pk-projection-strip" aria-label="Projection controls">
+                  <div class="pk-projection-strip-main">
                   <button class="ds-btn ds-btn-primary" id="openProjectionBtn" type="button">Open Projection</button>
                   <button class="ds-btn" id="projectionFullscreenBtn" type="button">Focus Window</button>
                   <select class="pk-projection-select" id="projectionPresetSelect" aria-label="Projection preset">
@@ -2282,21 +2420,14 @@
                   </select>
                   <button class="ds-btn" id="pinProjectionLayerBtn" type="button">Pin Layer</button>
                   <button class="ds-btn" id="pinProjectionSurfaceBtn" type="button">Pin Surface</button>
-                  <button class="ds-btn" id="clearProjectionPinBtn" type="button">Clear</button>
-                  <button class="pk-icon-btn" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
-                  <button class="pk-icon-btn" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
-                  <button class="pk-icon-btn" id="projectionCalibrationToggle" type="button" title="Toggle projection calibration" aria-label="Toggle projection calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
-                </div>
-                <div class="pk-projection-strip-quick" aria-label="Projection quick presets">
-                  <button class="ds-btn pk-projection-quick-btn" id="projectionQuickLiveBtn" type="button">Final</button>
-                  <button class="ds-btn pk-projection-quick-btn" id="projectionQuickRefBtn" type="button">Reference</button>
-                  <button class="ds-btn pk-projection-quick-btn" id="projectionQuickGridBtn" type="button">Grid</button>
-                  <button class="ds-btn pk-projection-quick-btn" id="projectionQuickMaskBtn" type="button">Paint</button>
-                  <button class="ds-btn pk-projection-quick-btn" id="projectionQuickSoloBtn" type="button">Solo Surface</button>
+                    <button class="ds-btn" id="clearProjectionPinBtn" type="button">Clear</button>
+                    <button class="pk-icon-btn" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+                    <button class="pk-icon-btn" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
+                    <button class="pk-icon-btn" id="projectionCalibrationToggle" type="button" title="Toggle projection calibration" aria-label="Toggle projection calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
         </div>
 
         <div class="pk-stage-wrap">
@@ -2326,16 +2457,28 @@
             </div>
           </div>
           <div class="pk-overlay-controls" id="overlayControls" aria-label="Overlay controls">
-            <button class="pk-icon-btn" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
-            <button class="pk-icon-btn" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
-            <button class="pk-icon-btn" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
-            <span class="pk-toolbar-divider" aria-hidden="true"></span>
-            <button class="pk-icon-btn" id="overlayLayersToggle" type="button" title="Toggle layers drawer" aria-label="Toggle layers drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-panel-left"></use></svg></button>
-            <button class="pk-icon-btn" id="overlayToolsToggle" type="button" title="Toggle inspector drawer" aria-label="Toggle inspector drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
-            <span class="pk-toolbar-divider" aria-hidden="true"></span>
-            <button class="pk-icon-btn" id="outputToggle" type="button" title="Enable preview" aria-label="Enable preview"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg></button>
-            <button class="pk-icon-btn" id="overlayFullscreenToggle" type="button" title="Toggle fullscreen" aria-label="Toggle fullscreen"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg></button>
-            <button class="pk-icon-btn" id="playbackToggle" type="button" title="Start live output" aria-label="Start live output"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-play"></use></svg></button>
+            <div class="pk-overlay-control-group" aria-label="Edit tools">
+              <button class="pk-icon-btn" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+              <button class="pk-icon-btn" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
+              <button class="pk-icon-btn" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
+              <span class="pk-toolbar-divider" aria-hidden="true"></span>
+              <button class="pk-icon-btn" id="overlayLayersToggle" type="button" title="Toggle layers drawer" aria-label="Toggle layers drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-panel-left"></use></svg></button>
+              <button class="pk-icon-btn" id="overlayToolsToggle" type="button" title="Toggle inspector drawer" aria-label="Toggle inspector drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
+            </div>
+            <div class="pk-overlay-control-group pk-overlay-control-group-run" aria-label="View and run controls">
+              <button class="pk-toolbar-toggle" id="outputToggle" type="button" title="Enable preview" aria-label="Enable preview">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
+                <span>Preview</span>
+              </button>
+              <button class="pk-toolbar-toggle" id="overlayFullscreenToggle" type="button" title="Toggle fullscreen" aria-label="Toggle fullscreen">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg>
+                <span>Fullscreen</span>
+              </button>
+              <button class="pk-toolbar-toggle" id="playbackToggle" type="button" title="Start live output" aria-label="Start live output">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-play"></use></svg>
+                <span>Live</span>
+              </button>
+            </div>
           </div>
           <button class="pk-stage-hotspot" id="presentationRestoreHotspot" type="button" title="Restore controls"></button>
           <aside class="pk-overlay-drawer is-left" id="overlayLayersDrawer" aria-label="Overlay layers drawer">
@@ -2475,6 +2618,14 @@
                 <span>Show Matrix Labels</span>
               </label>
             </div>
+            <div class="pk-field">
+              <label for="calibrationOutsideFill">Outside Fill</label>
+              <select class="ds-input" id="calibrationOutsideFill" aria-label="Projection fill outside calibration">
+                <option value="#000000">Black</option>
+                <option value="#ffffff">White</option>
+                <option value="transparent">Transparent</option>
+              </select>
+            </div>
           </section>
 
           <section class="pk-inspector-card" id="layerStateCard">
@@ -2516,8 +2667,8 @@
               <div class="pk-field">
                 <label for="referenceFitMode">Reference Fit</label>
                 <select class="ds-input" id="referenceFitMode" aria-label="Reference fit mode">
-                  <option value="surface">Scale To Surface</option>
-                  <option value="anchored">Anchored</option>
+                  <option value="surface">Scaled</option>
+                  <option value="anchored">Pinned</option>
                 </select>
               </div>
               <div class="pk-field">
@@ -2610,7 +2761,7 @@
             </div>
 
             <div class="pk-item-line">
-              <span class="pk-kicker">Overlay</span>
+              <span class="pk-kicker">Surface Overlay</span>
               <div class="pk-field" style="flex:1 1 auto;">
                 <input id="surfaceOpacity" type="range" min="0" max="100" value="42">
               </div>
@@ -2627,13 +2778,13 @@
               </div>
             </div>
             <div class="pk-stack-inline">
-              <button class="ds-btn" id="resetWarpBtn" type="button">Reset Warp</button>
-              <button class="ds-btn" id="surfaceFitBtn" type="button">Fit Output</button>
+              <button class="ds-btn" id="resetWarpBtn" type="button">Reset Shape</button>
+              <button class="ds-btn" id="surfaceFitBtn" type="button">Fit to Output</button>
               <button class="ds-btn" id="surfaceFillBtn" type="button">Fill Output</button>
-              <button class="ds-btn" id="surfaceSnapGridBtn" type="button">Snap To Grid</button>
-              <button class="ds-btn" id="surfaceSnapFrameBtn" type="button">Snap To Frame</button>
-              <button class="ds-btn" id="surfaceStraightenTopBtn" type="button">Straighten Top</button>
-              <button class="ds-btn" id="surfaceStraightenLeftBtn" type="button">Straighten Left</button>
+              <button class="ds-btn" id="surfaceSnapGridBtn" type="button">Align to Grid</button>
+              <button class="ds-btn" id="surfaceSnapFrameBtn" type="button">Align to Frame</button>
+              <button class="ds-btn" id="surfaceStraightenTopBtn" type="button">Straighten Top Edge</button>
+              <button class="ds-btn" id="surfaceStraightenLeftBtn" type="button">Straighten Left Edge</button>
             </div>
           </section>
 
@@ -2645,18 +2796,18 @@
             <div class="pk-inspector-grid">
               <div class="pk-field" style="grid-column: 1 / -1;">
                 <div class="pk-stack-inline">
-                  <button class="ds-btn ds-btn-primary" id="cropAssetBtn" type="button">Crop Asset</button>
-                  <button class="ds-btn" id="assetFitFrameBtn" type="button">Fit To Frame</button>
-                  <button class="ds-btn" id="assetWarpFrameBtn" type="button">Warp To Frame</button>
-                  <button class="ds-btn" id="assetResetBtn" type="button">Reset Asset</button>
+                  <button class="ds-btn ds-btn-primary" id="cropAssetBtn" type="button">Enter Crop</button>
+                  <button class="ds-btn" id="assetFitFrameBtn" type="button">Fit to Frame</button>
+                  <button class="ds-btn" id="assetWarpFrameBtn" type="button">Warp to Frame</button>
+                  <button class="ds-btn" id="assetResetBtn" type="button">Reset Placement</button>
                 </div>
               </div>
               <div class="pk-field">
-                <label for="assetFitMode">Fit Mode</label>
+                <label for="assetFitMode">Map Mode</label>
                 <select class="ds-input" id="assetFitMode" aria-label="Asset fit mode">
-                  <option value="crop">Crop</option>
-                  <option value="fit">Fit</option>
-                  <option value="warp">Warp</option>
+                  <option value="crop">Manual Crop</option>
+                  <option value="fit">Fit to Frame</option>
+                  <option value="warp">Warp to Frame</option>
                 </select>
               </div>
               <div class="pk-field">
@@ -2740,17 +2891,21 @@
     </nav>
   </div>
 
+  <script src="./js/theme-registry.js"></script>
+  <script src="./js/theme-selector.js"></script>
   <script src="./js/project-store.js"></script>
-  <script src="./js/projection-session.js"></script>
-  <script>
+    <script src="./js/projection-session.js"></script>
+    <script>
     (function () {
       const root = document.documentElement;
       const store = window.ProjektikStore;
+      const themeSelectorApi = window.DesignSystemThemeSelector;
+      const IMPORT_ASSET_OPTION_VALUE = "__import_asset__";
       const appShell = document.querySelector(".pk-app");
       const themeSelect = document.getElementById("themeSelect");
+      const homeDashboardBtn = document.getElementById("homeDashboardBtn");
       const projectTitle = document.getElementById("projectTitle");
       const projectStatusChip = document.getElementById("projectStatusChip");
-      const backToDashboardBtn = document.getElementById("backToDashboardBtn");
       const saveProjectBtn = document.getElementById("saveProjectBtn");
       const saveAsProjectBtn = document.getElementById("saveAsProjectBtn");
       const exportProjectBtn = document.getElementById("exportProjectBtn");
@@ -2760,7 +2915,6 @@
       const workspaceTabBtn = document.getElementById("workspaceTabBtn");
       const assetsTabBtn = document.getElementById("assetsTabBtn");
       const settingsTabBtn = document.getElementById("settingsTabBtn");
-      const leftTabInfo = document.getElementById("leftTabInfo");
       const workspacePanel = document.getElementById("workspacePanel");
       const assetsPanel = document.getElementById("assetsPanel");
       const settingsPanel = document.getElementById("settingsPanel");
@@ -2775,6 +2929,7 @@
       const overlayFileInput = document.getElementById("overlayFileInput");
       const workspaceModeTabs = document.getElementById("workspaceModeTabs");
       const workspaceTree = document.getElementById("workspaceTree");
+      const selectedAssetPreview = document.getElementById("selectedAssetPreview");
       const assetsList = document.getElementById("assetsList");
       const mobileModeTabs = document.getElementById("mobileModeTabs");
       const mobileWorkspaceTree = document.getElementById("mobileWorkspaceTree");
@@ -2808,11 +2963,6 @@
       const pinProjectionLayerBtn = document.getElementById("pinProjectionLayerBtn");
       const pinProjectionSurfaceBtn = document.getElementById("pinProjectionSurfaceBtn");
       const clearProjectionPinBtn = document.getElementById("clearProjectionPinBtn");
-      const projectionQuickLiveBtn = document.getElementById("projectionQuickLiveBtn");
-      const projectionQuickRefBtn = document.getElementById("projectionQuickRefBtn");
-      const projectionQuickGridBtn = document.getElementById("projectionQuickGridBtn");
-      const projectionQuickMaskBtn = document.getElementById("projectionQuickMaskBtn");
-      const projectionQuickSoloBtn = document.getElementById("projectionQuickSoloBtn");
       const projectionGuidesToggle = document.getElementById("projectionGuidesToggle");
       const projectionReferenceToggle = document.getElementById("projectionReferenceToggle");
       const projectionCalibrationToggle = document.getElementById("projectionCalibrationToggle");
@@ -2839,7 +2989,6 @@
       const stageCalibrationGrid = document.getElementById("stageCalibrationGrid");
       const stageCalibrationHud = document.getElementById("stageCalibrationHud");
       const stageReference = document.querySelector(".pk-stage-reference");
-      const stageModeStats = document.getElementById("stageModeStats");
       const contextMenu = document.getElementById("contextMenu");
       const inspectorLayerMeta = document.getElementById("inspectorLayerMeta");
       const projectSettingsCard = document.getElementById("projectSettingsCard");
@@ -2861,7 +3010,15 @@
       const calibrationColumns = document.getElementById("calibrationColumns");
       const calibrationShowFrame = document.getElementById("calibrationShowFrame");
       const calibrationShowMatrixLabels = document.getElementById("calibrationShowMatrixLabels");
+      const calibrationOutsideFill = document.getElementById("calibrationOutsideFill");
       const layerStateCard = document.getElementById("layerStateCard");
+      const themeController = themeSelectorApi && themeSelect
+        ? themeSelectorApi.initThemeSelector(themeSelect, {
+            root,
+            storageKey: "projektik-theme",
+            defaultTheme: root.getAttribute("data-theme") || "tech-grid"
+          })
+        : null;
       const referenceLayerCard = document.getElementById("referenceLayerCard");
       const surfaceTransformCard = document.getElementById("surfaceTransformCard");
       const layerVisibleBtn = document.getElementById("layerVisibleBtn");
@@ -2946,7 +3103,7 @@
       const defaultState = {
         project: {
           id: "",
-          name: "Venue Setup A",
+          name: "Untitled Project",
           createdAt: "",
           updatedAt: "",
           thumbnailDataUrl: "",
@@ -2966,7 +3123,7 @@
         },
         ui: {
           leftPanelTab: "workspace",
-          expandedLayerIds: ["layer-facade-loop", "layer-venue-overlay", "layer-floor-grid"],
+          expandedLayerIds: [],
           calibrationEditActive: false,
           presentationEnabled: false,
           controlsHidden: false,
@@ -2975,7 +3132,7 @@
           overlayToolsOpen: false,
           guidesEnabled: true,
           playbackRunning: false,
-          showReferenceLayer: true,
+          showReferenceLayer: false,
           surfaceCreateActive: false,
           surfaceCreateStart: null,
           surfaceCreateCurrent: null,
@@ -3009,10 +3166,10 @@
             contextTarget: ""
           },
           focus: {
-            type: "layer",
-            id: "layer-facade-loop"
+            type: "calibration",
+            id: "calibration-parent"
           },
-          assetLibraryId: "facade-loop-01"
+          assetLibraryId: ""
         },
         projectionView: {
           windowOpen: false,
@@ -3030,16 +3187,17 @@
           columns: 16,
           showFrame: true,
           showMatrixLabels: false,
-          referenceAssetId: "venue-snapshot",
-          referenceOpacity: 42
+          outsideFill: "#000000",
+          referenceAssetId: null,
+          referenceOpacity: 100
         },
         calibrationReference: {
           assetId: null,
           surfaceKey: null,
-          visible: true,
+          visible: false,
           visibilityMode: "both",
           fitMode: "surface",
-          opacity: 42,
+          opacity: 100,
           locked: false
         },
         history: {
@@ -3047,40 +3205,7 @@
           redoStack: [],
           limit: 50
         },
-        assets: [
-          {
-            id: "facade-loop-01",
-            icon: "V",
-            name: "Facade Loop 01",
-            kind: "Video",
-            tags: ["Loop", "RGBA", "1080p"],
-            actionLabels: ["V", "L", "S", "E"]
-          },
-          {
-            id: "venue-snapshot",
-            icon: "O",
-            name: "Venue Snapshot",
-            kind: "Overlay",
-            tags: ["Ref", "42%", "Photo"],
-            actionLabels: ["V", "L", "P", "E"]
-          },
-          {
-            id: "floor-grid",
-            icon: "G",
-            name: "Focus Grid",
-            kind: "Guide",
-            tags: ["Grid", "1m", "Focus"],
-            actionLabels: ["V", "L", "P", "E"]
-          },
-          {
-            id: "mask-template",
-            icon: "M",
-            name: "Mask Template",
-            kind: "Image",
-            tags: ["PNG", "Alpha", "Draft"],
-            actionLabels: ["V", "L", "D", "E"]
-          }
-        ],
+        assets: [],
         modes: [
           {
             id: "calibration",
@@ -3108,142 +3233,8 @@
           scaleY: 1,
           rotation: 0
         },
-        surfaces: [
-          {
-            key: "hero",
-            icon: "A",
-            listTitle: "Hero Facade",
-            name: "Hero Facade Surface",
-            shortName: "Hero Facade",
-            tags: ["Layer Facade Loop 01", "Mask 6 Pt", "Overlay 42%"],
-            itemTags: ["4 Pt", "Live", "Mask"],
-            x: 188,
-            y: 84,
-            w: 654,
-            h: 458,
-            quad: {
-              nw: { x: 221, y: 130 },
-              ne: { x: 842, y: 84 },
-              se: { x: 790, y: 505 },
-              sw: { x: 188, y: 542 }
-            },
-            opacity: 42,
-            gridEnabled: true,
-            gridDensity: 96,
-            outputMode: "asset",
-            fillColor: "#f2f5ff",
-            patternColor: "#7bd0ff",
-            patternScale: 48,
-            footerSelection: "Hero Facade"
-          },
-          {
-            key: "column",
-            icon: "B",
-            listTitle: "Column Accent",
-            name: "Column Accent Surface",
-            shortName: "Column Accent",
-            tags: ["Layer Facade Loop 01", "Guide On", "Overlay 18%"],
-            itemTags: ["4 Pt", "Guide"],
-            x: 1210,
-            y: 102,
-            w: 212,
-            h: 566,
-            quad: {
-              nw: { x: 1248, y: 102 },
-              ne: { x: 1422, y: 136 },
-              se: { x: 1388, y: 668 },
-              sw: { x: 1210, y: 623 }
-            },
-            opacity: 18,
-            gridEnabled: false,
-            gridDensity: 96,
-            outputMode: "asset",
-            fillColor: "#f2f5ff",
-            patternColor: "#ff6ec4",
-            patternScale: 48,
-            footerSelection: "Column Accent"
-          },
-          {
-            key: "floor",
-            icon: "C",
-            listTitle: "Floor Spill",
-            name: "Floor Spill Surface",
-            shortName: "Floor Spill",
-            tags: ["Layer Facade Loop 01", "Guide On", "Overlay 24%"],
-            itemTags: ["4 Pt", "Spill"],
-            x: 462,
-            y: 612,
-            w: 840,
-            h: 188,
-            quad: {
-              nw: { x: 462, y: 668 },
-              ne: { x: 1235, y: 612 },
-              se: { x: 1302, y: 800 },
-              sw: { x: 546, y: 800 }
-            },
-            opacity: 24,
-            gridEnabled: true,
-            gridDensity: 128,
-            outputMode: "pattern-grid",
-            fillColor: "#0b1018",
-            patternColor: "#83e9a9",
-            patternScale: 56,
-            footerSelection: "Floor Spill"
-          }
-        ],
-        layers: [
-          {
-            id: "layer-facade-loop",
-            name: "Facade Loop",
-            assetId: "facade-loop-01",
-            surfaceKey: "hero",
-            kind: "media",
-            visible: true,
-            locked: false,
-            solo: false,
-            opacity: 100,
-            x: 0,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-            loop: true,
-            playing: true
-          },
-          {
-            id: "layer-venue-overlay",
-            name: "Venue Snapshot",
-            assetId: "venue-snapshot",
-            surfaceKey: "column",
-            kind: "reference",
-            visible: true,
-            locked: false,
-            solo: false,
-            opacity: 42,
-            x: 0,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-            loop: false,
-            playing: false
-          },
-          {
-            id: "layer-floor-grid",
-            name: "Floor Spill Guide",
-            assetId: "floor-grid",
-            surfaceKey: "floor",
-            kind: "guide",
-            visible: true,
-            locked: true,
-            solo: false,
-            opacity: 24,
-            x: 0,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-            loop: false,
-            playing: false
-          }
-        ]
+        surfaces: [],
+        layers: []
       };
 
       const state = structuredClone(defaultState);
@@ -3285,15 +3276,66 @@
         "fill-height": "Fill Height",
         warp: "Warp"
       };
+      const KNOWN_ENVELOPE_KEYS = ["schemaVersion", "project", "ui", "projectionView", "calibration", "calibrationTemplate", "calibrationReference", "output", "assets", "layers", "surfaces"];
+      const KNOWN_PROJECT_KEYS = ["id", "name", "createdAt", "updatedAt", "thumbnailDataUrl", "schemaVersion", "dirty", "settings"];
+      const KNOWN_UI_KEYS = ["leftPanelTab", "expandedLayerIds", "calibrationEditActive", "presentationEnabled", "calibrationLinkEnabled", "guidesEnabled", "playbackRunning", "showReferenceLayer", "focus", "assetLibraryId"];
+      const KNOWN_PROJECTION_VIEW_KEYS = ["windowOpen", "preset", "pinnedLayerId", "pinnedSurfaceKey", "showGuides", "showReference", "showCalibration"];
+      const KNOWN_CALIBRATION_KEYS = ["x", "y", "scaleX", "scaleY", "rotation"];
+      const KNOWN_CALIBRATION_TEMPLATE_KEYS = ["gridType", "gridSize", "rows", "columns", "showFrame", "showMatrixLabels", "outsideFill", "referenceAssetId", "referenceOpacity"];
+      const KNOWN_CALIBRATION_REFERENCE_KEYS = ["assetId", "surfaceKey", "visible", "visibilityMode", "fitMode", "opacity", "locked"];
+      const KNOWN_OUTPUT_KEYS = ["width", "height"];
+      const KNOWN_PROJECT_SETTINGS_KEYS = ["projectorModel", "outputPreset", "projectorNativeWidth", "projectorNativeHeight", "projectorDistance", "projectionWidth", "projectionHeight", "notes", "theme", "outputWidth", "outputHeight"];
+      const LEGACY_DEMO_ASSET_IDS = ["facade-loop-01", "venue-snapshot", "floor-grid", "mask-template"];
+      const LEGACY_DEMO_SURFACE_KEYS = ["hero", "column", "floor"];
+      const LEGACY_DEMO_LAYER_IDS = ["layer-facade-loop", "layer-venue-overlay", "layer-floor-grid"];
       let projectionWindowRef = null;
       let lastProjectionSnapshotSignature = "";
       let projectionNotice = "";
+      let pendingImportedAssetTarget = null;
+      let persistedEnvelopeExtras = {
+        envelope: {},
+        project: {},
+        projectSettings: {},
+        ui: {},
+        projectionView: {},
+        calibration: {},
+        calibrationTemplate: {},
+        calibrationReference: {},
+        output: {}
+      };
 
       function replaceState(nextState) {
         Object.keys(state).forEach((key) => {
           delete state[key];
         });
         Object.assign(state, nextState);
+      }
+
+      function extractUnknownFields(source, knownKeys) {
+        if (!source || typeof source !== "object") {
+          return {};
+        }
+        const extras = {};
+        Object.entries(source).forEach(([key, value]) => {
+          if (!knownKeys.includes(key)) {
+            extras[key] = structuredClone(value);
+          }
+        });
+        return extras;
+      }
+
+      function capturePersistedEnvelopeExtras(envelope) {
+        persistedEnvelopeExtras = {
+          envelope: extractUnknownFields(envelope, KNOWN_ENVELOPE_KEYS),
+          project: extractUnknownFields(envelope?.project, KNOWN_PROJECT_KEYS),
+          projectSettings: extractUnknownFields(envelope?.project?.settings, KNOWN_PROJECT_SETTINGS_KEYS),
+          ui: extractUnknownFields(envelope?.ui, KNOWN_UI_KEYS),
+          projectionView: extractUnknownFields(envelope?.projectionView, KNOWN_PROJECTION_VIEW_KEYS),
+          calibration: extractUnknownFields(envelope?.calibration, KNOWN_CALIBRATION_KEYS),
+          calibrationTemplate: extractUnknownFields(envelope?.calibrationTemplate, KNOWN_CALIBRATION_TEMPLATE_KEYS),
+          calibrationReference: extractUnknownFields(envelope?.calibrationReference, KNOWN_CALIBRATION_REFERENCE_KEYS),
+          output: extractUnknownFields(envelope?.output, KNOWN_OUTPUT_KEYS)
+        };
       }
 
       function getLegacyReferenceMigrationState() {
@@ -3307,6 +3349,42 @@
           legacyReferenceSurfaceKey,
           legacyReferenceSurface
         };
+      }
+
+      function hasExactLegacyDemoBundle(snapshot) {
+        const assetIds = (snapshot.assets || []).map((asset) => asset.id).sort();
+        const surfaceKeys = (snapshot.surfaces || []).map((surface) => surface.key).sort();
+        const layerIds = (snapshot.layers || []).map((layer) => layer.id).sort();
+        return assetIds.length === LEGACY_DEMO_ASSET_IDS.length
+          && surfaceKeys.length === LEGACY_DEMO_SURFACE_KEYS.length
+          && layerIds.length === LEGACY_DEMO_LAYER_IDS.length
+          && assetIds.every((id, index) => id === LEGACY_DEMO_ASSET_IDS.slice().sort()[index])
+          && surfaceKeys.every((key, index) => key === LEGACY_DEMO_SURFACE_KEYS.slice().sort()[index])
+          && layerIds.every((id, index) => id === LEGACY_DEMO_LAYER_IDS.slice().sort()[index]);
+      }
+
+      function stripLegacyDemoSeed(snapshot) {
+        if (!hasExactLegacyDemoBundle(snapshot)) {
+          return snapshot;
+        }
+        snapshot.assets = [];
+        snapshot.surfaces = [];
+        snapshot.layers = [];
+        snapshot.ui = {
+          ...snapshot.ui,
+          expandedLayerIds: [],
+          focus: { type: "calibration", id: "calibration-parent" },
+          assetLibraryId: "",
+          showReferenceLayer: false
+        };
+        snapshot.calibrationReference = {
+          ...structuredClone(defaultState.calibrationReference),
+          ...(snapshot.calibrationReference || {})
+        };
+        if (!snapshot.calibrationReference.assetId && !snapshot.calibrationReference.surfaceKey) {
+          snapshot.calibrationReference.visible = false;
+        }
+        return snapshot;
       }
 
       function buildMigratedLayerAssetState(layer, surfaceKey) {
@@ -3439,9 +3517,9 @@
         };
       }
 
-      function buildProjectionViewSnapshot() {
+      function buildProjectionViewSnapshot(view = state.projectionView) {
         return {
-          ...state.projectionView,
+          ...view,
           windowOpen: false
         };
       }
@@ -3584,86 +3662,246 @@
         return nextAsset;
       }
 
-      function captureProjectThumbnail() {
+      function buildThumbnailProjectionView() {
+        return {
+          ...state.projectionView,
+          preset: "live-output",
+          ...getProjectionPresetDefaults("live-output"),
+          pinnedLayerId: null,
+          pinnedSurfaceKey: null,
+          windowOpen: false
+        };
+      }
+
+      function traceSurfacePath(ctx, surface, sx, sy) {
+        if (!surface?.clipPath) {
+          return;
+        }
+        const quad = [
+          { x: surface.x, y: surface.y },
+          { x: surface.x + surface.w, y: surface.y },
+          { x: surface.x + surface.w, y: surface.y + surface.h },
+          { x: surface.x, y: surface.y + surface.h }
+        ];
+        if (surface.polygonPoints) {
+          const points = surface.polygonPoints.split(/\s+/).map((point) => point.split(",").map(Number));
+          if (points.length === 4 && points.every((point) => point.length === 2 && point.every(Number.isFinite))) {
+            quad[0] = { x: surface.x + ((points[0][0] / 100) * surface.w), y: surface.y + ((points[0][1] / 100) * surface.h) };
+            quad[1] = { x: surface.x + ((points[1][0] / 100) * surface.w), y: surface.y + ((points[1][1] / 100) * surface.h) };
+            quad[2] = { x: surface.x + ((points[2][0] / 100) * surface.w), y: surface.y + ((points[2][1] / 100) * surface.h) };
+            quad[3] = { x: surface.x + ((points[3][0] / 100) * surface.w), y: surface.y + ((points[3][1] / 100) * surface.h) };
+          }
+        }
+        ctx.beginPath();
+        ctx.moveTo(quad[0].x * sx, quad[0].y * sy);
+        ctx.lineTo(quad[1].x * sx, quad[1].y * sy);
+        ctx.lineTo(quad[2].x * sx, quad[2].y * sy);
+        ctx.lineTo(quad[3].x * sx, quad[3].y * sy);
+        ctx.closePath();
+      }
+
+      function loadThumbnailImage(sourceUrl, cache) {
+        if (!sourceUrl) {
+          return Promise.resolve(null);
+        }
+        if (cache.has(sourceUrl)) {
+          return cache.get(sourceUrl);
+        }
+        const request = new Promise((resolve) => {
+          const image = new Image();
+          image.decoding = "async";
+          image.onload = () => resolve(image);
+          image.onerror = () => resolve(null);
+          image.src = sourceUrl;
+        });
+        cache.set(sourceUrl, request);
+        return request;
+      }
+
+      function drawThumbnailPatternGrid(ctx, surface, sx, sy) {
+        const step = Math.max(8, Number(surface.patternScale) || 48);
+        const width = Math.max(1, surface.w * sx);
+        const height = Math.max(1, surface.h * sy);
+        const left = surface.x * sx;
+        const top = surface.y * sy;
+        ctx.fillStyle = surface.fillColor || "#ffffff";
+        ctx.fillRect(left, top, width, height);
+        ctx.strokeStyle = surface.patternColor || "#ffffff";
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= width; x += step * sx) {
+          ctx.beginPath();
+          ctx.moveTo(left + x, top);
+          ctx.lineTo(left + x, top + height);
+          ctx.stroke();
+        }
+        for (let y = 0; y <= height; y += step * sy) {
+          ctx.beginPath();
+          ctx.moveTo(left, top + y);
+          ctx.lineTo(left + width, top + y);
+          ctx.stroke();
+        }
+      }
+
+      function drawThumbnailPatternHatch(ctx, surface, sx, sy) {
+        const step = Math.max(8, Number(surface.patternScale) || 48) * Math.max(sx, sy);
+        const width = Math.max(1, surface.w * sx);
+        const height = Math.max(1, surface.h * sy);
+        const left = surface.x * sx;
+        const top = surface.y * sy;
+        ctx.fillStyle = surface.fillColor || "#ffffff";
+        ctx.fillRect(left, top, width, height);
+        ctx.strokeStyle = surface.patternColor || "#ffffff";
+        ctx.lineWidth = 2;
+        for (let offset = -height; offset <= width + height; offset += step) {
+          ctx.beginPath();
+          ctx.moveTo(left + offset, top + height);
+          ctx.lineTo(left + offset + height, top);
+          ctx.stroke();
+        }
+      }
+
+      async function drawThumbnailSurface(ctx, surface, sx, sy, imageCache) {
+        if (!surface?.visible) {
+          return;
+        }
+        const outputMode = surface.outputMode || (surface.asset?.sourceUrl ? "asset" : "transparent");
+        ctx.save();
+        traceSurfacePath(ctx, surface, sx, sy);
+        ctx.clip();
+        ctx.globalAlpha = Math.max(0, Math.min(1, Number(surface.opacity) || 1));
+
+        if (outputMode === "asset" && surface.asset?.sourceUrl) {
+          const image = await loadThumbnailImage(surface.asset.sourceUrl, imageCache);
+          if (image) {
+            const fitMode = normalizeAssetFitMode(surface.assetTransform?.fitMode);
+            if (fitMode === "warp") {
+              ctx.drawImage(
+                image,
+                surface.x * sx,
+                surface.y * sy,
+                Math.max(1, surface.w * sx),
+                Math.max(1, surface.h * sy)
+              );
+            } else {
+              const assetBox = getSurfaceAssetDisplayBox(surface, surface.asset, surface.assetTransform);
+              const drawX = (surface.x + assetBox.x) * sx;
+              const drawY = (surface.y + assetBox.y) * sy;
+              const drawW = Math.max(1, assetBox.w * sx);
+              const drawH = Math.max(1, assetBox.h * sy);
+              const cx = drawX + (drawW / 2);
+              const cy = drawY + (drawH / 2);
+              ctx.save();
+              ctx.translate(cx, cy);
+              ctx.rotate(((surface.assetTransform?.rotation || 0) * Math.PI) / 180);
+              ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
+              ctx.restore();
+            }
+          }
+        } else if (outputMode === "fill" || outputMode === "mask") {
+          ctx.fillStyle = surface.fillColor || "#ffffff";
+          ctx.fillRect(surface.x * sx, surface.y * sy, Math.max(1, surface.w * sx), Math.max(1, surface.h * sy));
+        } else if (outputMode === "pattern-grid") {
+          drawThumbnailPatternGrid(ctx, surface, sx, sy);
+        } else if (outputMode === "pattern-hatch") {
+          drawThumbnailPatternHatch(ctx, surface, sx, sy);
+        }
+
+        ctx.restore();
+      }
+
+      async function captureProjectThumbnail() {
+        const snapshot = buildProjectionSnapshot(buildThumbnailProjectionView());
         const width = 480;
         const height = Math.max(270, Math.round(width / Math.max(1, getProjectionAspectRatio())));
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#06080d";
-        ctx.fillRect(0, 0, width, height);
-        ctx.strokeStyle = "rgba(255,255,255,0.08)";
-        ctx.lineWidth = 1;
-        for (let x = 0; x <= width; x += Math.round(width / 12)) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, height);
-          ctx.stroke();
-        }
-        for (let y = 0; y <= height; y += Math.round(height / 8)) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(width, y);
-          ctx.stroke();
-        }
-
-        const fills = {
-          media: "rgba(87,214,255,0.22)",
-          reference: "rgba(255,110,196,0.18)",
-          guide: "rgba(125,255,198,0.14)",
-          grid: "rgba(255,184,108,0.14)"
+        const sx = width / Math.max(1, snapshot.output.width);
+        const sy = height / Math.max(1, snapshot.output.height);
+        const imageCache = new Map();
+        const workingArea = snapshot.workingArea || {
+          x: 0,
+          y: 0,
+          w: snapshot.output.width,
+          h: snapshot.output.height,
+          outsideFill: "#000000"
         };
 
-        getEffectiveVisibleLayers().forEach((layer) => {
-          const sourceSurface = getLayerSurface(layer);
-          if (!sourceSurface) {
-            return;
-          }
-          const surface = getEffectiveSurfaceGeometry(sourceSurface);
-          const quad = surface.quad;
-          const role = getLayerRole(layer);
-          const sx = width / state.output.width;
-          const sy = height / state.output.height;
-          ctx.beginPath();
-          ctx.moveTo(quad.nw.x * sx, quad.nw.y * sy);
-          ctx.lineTo(quad.ne.x * sx, quad.ne.y * sy);
-          ctx.lineTo(quad.se.x * sx, quad.se.y * sy);
-          ctx.lineTo(quad.sw.x * sx, quad.sw.y * sy);
-          ctx.closePath();
-          ctx.fillStyle = fills[role] || "rgba(255,255,255,0.12)";
-          ctx.fill();
-          ctx.strokeStyle = "rgba(239,244,255,0.72)";
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-        });
+        ctx.clearRect(0, 0, width, height);
+        if (workingArea.outsideFill && workingArea.outsideFill !== "transparent") {
+          ctx.fillStyle = workingArea.outsideFill;
+          ctx.fillRect(0, 0, width, height);
+        }
 
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(workingArea.x * sx, workingArea.y * sy, Math.max(1, workingArea.w * sx), Math.max(1, workingArea.h * sy));
+        ctx.clip();
+
+        const surfaces = Array.isArray(snapshot.surfaces)
+          ? [...snapshot.surfaces].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0))
+          : [];
+        for (const surface of surfaces) {
+          await drawThumbnailSurface(ctx, surface, sx, sy, imageCache);
+        }
+
+        ctx.restore();
         return canvas.toDataURL("image/png");
       }
 
       function buildProjectEnvelope(options = {}) {
         const project = {
+          ...structuredClone(persistedEnvelopeExtras.project),
           ...state.project,
           schemaVersion: PROJECT_SCHEMA_VERSION,
           updatedAt: options.updatedAt || state.project.updatedAt || new Date().toISOString(),
           settings: buildProjectSettingsSnapshot()
         };
-        if (options.includeThumbnail !== false) {
-          project.thumbnailDataUrl = captureProjectThumbnail();
-        }
+        project.settings = {
+          ...structuredClone(persistedEnvelopeExtras.projectSettings),
+          ...project.settings
+        };
         return {
+          ...structuredClone(persistedEnvelopeExtras.envelope),
           schemaVersion: PROJECT_SCHEMA_VERSION,
           project,
-          ui: buildSerializableUiState(),
-          projectionView: buildProjectionViewSnapshot(),
-          calibration: structuredClone(state.calibration),
-          calibrationTemplate: buildCalibrationTemplateSnapshot(),
-          calibrationReference: buildCalibrationReferenceSnapshot(),
-          output: structuredClone(state.output),
+          ui: {
+            ...structuredClone(persistedEnvelopeExtras.ui),
+            ...buildSerializableUiState()
+          },
+          projectionView: {
+            ...structuredClone(persistedEnvelopeExtras.projectionView),
+            ...buildProjectionViewSnapshot()
+          },
+          calibration: {
+            ...structuredClone(persistedEnvelopeExtras.calibration),
+            ...structuredClone(state.calibration)
+          },
+          calibrationTemplate: {
+            ...structuredClone(persistedEnvelopeExtras.calibrationTemplate),
+            ...buildCalibrationTemplateSnapshot()
+          },
+          calibrationReference: {
+            ...structuredClone(persistedEnvelopeExtras.calibrationReference),
+            ...buildCalibrationReferenceSnapshot()
+          },
+          output: {
+            ...structuredClone(persistedEnvelopeExtras.output),
+            ...structuredClone(state.output)
+          },
           assets: state.assets.map(serializeAsset),
           layers: structuredClone(state.layers),
           surfaces: structuredClone(state.surfaces)
         };
+      }
+
+      async function buildProjectEnvelopeAsync(options = {}) {
+        const envelope = buildProjectEnvelope({ ...options, includeThumbnail: false });
+        if (options.includeThumbnail !== false) {
+          envelope.project.thumbnailDataUrl = await captureProjectThumbnail();
+        }
+        return envelope;
       }
 
       function computeProjectSignature() {
@@ -3677,7 +3915,11 @@
       }
 
       function updateProjectChrome() {
-        projectTitle.textContent = state.project.name;
+        const isEditingProjectTitle = state.ui.editingTitle?.type === "project" && state.ui.editingTitle?.id === state.project.id;
+        projectTitle.classList.toggle("is-editing", isEditingProjectTitle);
+        projectTitle.innerHTML = isEditingProjectTitle
+          ? `<input class="pk-item-title-input" type="text" value="${state.project.name.replace(/"/g, "&quot;")}" data-title-input="project" data-title-id="${state.project.id}" aria-label="Rename project" autofocus>`
+          : state.project.name;
         projectTitle.classList.toggle("is-active", state.ui.focus?.type === "project");
         projectTitle.title = "Select project settings";
         projectStatusChip.textContent = state.project.dirty ? "Unsaved" : "Saved";
@@ -3700,6 +3942,8 @@
       }
 
       function applyProjectEnvelope(envelope) {
+        envelope = stripLegacyDemoSeed(structuredClone(envelope));
+        capturePersistedEnvelopeExtras(envelope);
         const nextState = structuredClone(defaultState);
         nextState.project = {
           ...nextState.project,
@@ -3778,8 +4022,10 @@
         replaceState(nextState);
         normalizeLayerSurfaceModel();
         normalizeFocusState();
-        setTheme(state.project.settings.theme || "tech-grid");
-        themeSelect.value = state.project.settings.theme || "tech-grid";
+        const appliedTheme = setTheme(state.project.settings.theme || "tech-grid");
+        if (themeSelect) {
+          themeSelect.value = appliedTheme;
+        }
         syncProjectSettingsInputs();
         lastSavedSignature = computeProjectSignature();
         state.project.dirty = false;
@@ -3788,6 +4034,7 @@
       function createBlankProjectEnvelope() {
         const timestamp = new Date().toISOString();
         const projectId = store.createId("project");
+        capturePersistedEnvelopeExtras({});
         const envelope = buildProjectEnvelope({ includeThumbnail: false });
         envelope.project.id = projectId;
         envelope.project.name = "Untitled Project";
@@ -3820,14 +4067,14 @@
         history.replaceState({}, "", `./editor.html?project=${encodeURIComponent(projectId)}`);
       }
 
-      function saveCurrentProject(options = {}) {
+      async function saveCurrentProject(options = {}) {
         const timestamp = new Date().toISOString();
         if (options.copy) {
           state.project.id = store.createId("project");
           state.project.name = `${state.project.name} Copy`;
           state.project.createdAt = timestamp;
         }
-        const envelope = buildProjectEnvelope({ includeThumbnail: true, updatedAt: timestamp });
+        const envelope = await buildProjectEnvelopeAsync({ includeThumbnail: true, updatedAt: timestamp });
         envelope.project.id = state.project.id || store.createId("project");
         envelope.project.createdAt = state.project.createdAt || timestamp;
         envelope.project.updatedAt = timestamp;
@@ -3839,8 +4086,8 @@
         return envelope.project.id;
       }
 
-      function exportCurrentProject() {
-        const envelope = buildProjectEnvelope({ includeThumbnail: true });
+      async function exportCurrentProject() {
+        const envelope = await buildProjectEnvelopeAsync({ includeThumbnail: true });
         const blob = new Blob([JSON.stringify(envelope, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
@@ -3861,7 +4108,17 @@
 
       // Entity selectors.
       function setTheme(themeName) {
+        if (themeController) {
+          return themeController.applyTheme(themeName);
+        }
+        if (themeSelectorApi) {
+          return themeSelectorApi.applyTheme(themeName, {
+            root,
+            storageKey: "projektik-theme"
+          });
+        }
         root.setAttribute("data-theme", themeName);
+        return themeName;
       }
 
       function isCalibrationEditing() {
@@ -4026,6 +4283,61 @@
           w: Math.max(24, baseBox.w * Math.max(0.05, assetTransform?.scaleX ?? 1)),
           h: Math.max(24, baseBox.h * Math.max(0.05, assetTransform?.scaleY ?? 1))
         };
+      }
+
+      function clampAssetScaleValue(value) {
+        return Math.max(0.05, Math.min(64, Number(value) || 1));
+      }
+
+      function buildSurfaceAssetTransformPatch(surface, patch = {}, options = {}) {
+        const current = getSurfaceAssetTransform(surface);
+        const nextFitMode = normalizeAssetFitMode(patch.fitMode ?? current.fitMode);
+        const nextAspectLocked = patch.aspectLocked ?? current.aspectLocked;
+        const resetPlacement = Boolean(options.resetPlacement);
+        const patchHasScaleX = Object.prototype.hasOwnProperty.call(patch, "scaleX");
+        const patchHasScaleY = Object.prototype.hasOwnProperty.call(patch, "scaleY");
+
+        let nextScaleX = clampAssetScaleValue(patchHasScaleX ? patch.scaleX : current.scaleX);
+        let nextScaleY = clampAssetScaleValue(patchHasScaleY ? patch.scaleY : current.scaleY);
+
+        if (nextAspectLocked) {
+          if (patchHasScaleX && !patchHasScaleY) {
+            nextScaleY = nextScaleX;
+          } else if (patchHasScaleY && !patchHasScaleX) {
+            nextScaleX = nextScaleY;
+          }
+        }
+
+        let nextOffsetX = Number(Object.prototype.hasOwnProperty.call(patch, "offsetX") ? patch.offsetX : current.offsetX) || 0;
+        let nextOffsetY = Number(Object.prototype.hasOwnProperty.call(patch, "offsetY") ? patch.offsetY : current.offsetY) || 0;
+        let nextRotation = Number(Object.prototype.hasOwnProperty.call(patch, "rotation") ? patch.rotation : current.rotation) || 0;
+
+        if (resetPlacement || nextFitMode !== "crop") {
+          nextOffsetX = 0;
+          nextOffsetY = 0;
+          nextScaleX = 1;
+          nextScaleY = 1;
+        }
+        if (nextFitMode !== "crop") {
+          nextRotation = 0;
+        }
+
+        return {
+          assetFitMode: nextFitMode,
+          assetAspectLocked: nextAspectLocked,
+          assetOffsetX: nextOffsetX,
+          assetOffsetY: nextOffsetY,
+          assetScaleX: nextScaleX,
+          assetScaleY: nextScaleY,
+          assetRotation: nextRotation
+        };
+      }
+
+      function updateSurfaceAssetTransform(surfaceKey, patch = {}, options = {}) {
+        updateSurfaceRecord(surfaceKey, (surface) => ({
+          ...surface,
+          ...buildSurfaceAssetTransformPatch(surface, patch, options)
+        }));
       }
 
       function getAssetBoxFromHandle(box, handle, pointer, modifiers = {}, aspectLocked = true) {
@@ -4268,6 +4580,12 @@
 
       function getFocusedEntity() {
         const focus = state.ui.focus;
+        if (focus.type === "stage") {
+          return {
+            id: "stage",
+            name: "No Selection"
+          };
+        }
         if (focus.type === "project") {
           return {
             id: state.project.id,
@@ -4317,7 +4635,7 @@
 
       function getFocusTrail() {
         const focus = state.ui.focus;
-        if (focus.type === "project") {
+        if (focus.type === "project" || focus.type === "stage") {
           return { layer: null, surface: null, content: null };
         }
         let layer = getMappedLayers()[0] || state.layers[0];
@@ -4438,10 +4756,6 @@
         const focus = state.ui.focus;
         const preferredLayerId = focus?.type === "layer" ? focus.id : null;
         return findSurfaceOwnerLayer(surfaceKey, preferredLayerId);
-      }
-
-      function getLayerAssetTransform(layer) {
-        return getSurfaceAssetTransform(getLayerSurface(layer));
       }
 
       function getCalibrationReference() {
@@ -5350,8 +5664,8 @@
         return true;
       }
 
-      function buildProjectionSnapshot() {
-        const renderState = getProjectionRenderState();
+      function buildProjectionSnapshot(view = state.projectionView) {
+        const renderState = getProjectionRenderState(view);
         const projectionSurfaces = [];
         state.layers.forEach((layer, layerIndex) => {
           const role = getLayerRole(layer);
@@ -5416,10 +5730,17 @@
           theme: root.getAttribute("data-theme") || state.project.settings.theme || "tech-grid",
           output: structuredClone(state.output),
           projectionView: {
-            ...buildProjectionViewSnapshot(),
-            windowOpen: syncProjectionWindowState(),
+            ...buildProjectionViewSnapshot(view),
+            windowOpen: view === state.projectionView ? syncProjectionWindowState() : false,
             pinnedLabel: renderState.pinnedLabel,
             presetLabel: renderState.presetMeta.label
+          },
+          workingArea: {
+            x: calibrationRect.x,
+            y: calibrationRect.y,
+            w: calibrationRect.w,
+            h: calibrationRect.h,
+            outsideFill: state.calibrationTemplate.outsideFill || "#000000"
           },
           calibration: {
             visible: renderState.showCalibration,
@@ -5473,7 +5794,6 @@
 
       function renderProjectionControls() {
         const windowOpen = syncProjectionWindowState();
-        const presetMeta = getProjectionPresetMeta(state.projectionView.preset);
         const selectedLayer = getSelectedLayer();
         const selectedSurface = getSelectedSurface();
         const pinnedActive = Boolean(state.projectionView.pinnedLayerId || state.projectionView.pinnedSurfaceKey);
@@ -5496,13 +5816,6 @@
         projectionGuidesToggle.title = state.projectionView.showGuides ? "Hide projection guides" : "Show projection guides";
         projectionReferenceToggle.title = state.projectionView.showReference ? "Hide projection reference" : "Show projection reference";
         projectionCalibrationToggle.title = state.projectionView.showCalibration ? "Hide projection calibration" : "Show projection calibration";
-        projectionQuickLiveBtn.classList.toggle("ds-btn-primary", state.projectionView.preset === "live-output");
-        projectionQuickRefBtn.classList.toggle("ds-btn-primary", state.projectionView.preset === "reference-only");
-        projectionQuickGridBtn.classList.toggle("ds-btn-primary", state.projectionView.preset === "grid-only");
-        projectionQuickMaskBtn.classList.toggle("ds-btn-primary", state.projectionView.preset === "mask-paint");
-        projectionQuickSoloBtn.classList.toggle("ds-btn-primary", state.projectionView.preset === "surface-isolation");
-        projectionQuickSoloBtn.disabled = !selectedSurface;
-        projectionQuickSoloBtn.title = selectedSurface ? `Pin and solo ${selectedSurface.listTitle || selectedSurface.name}` : "Select a surface to solo on projection";
         projectionStatusChip.classList.toggle("is-active", windowOpen);
         projectionStatusChip.textContent = windowOpen
           ? `${windowOpen ? "Linked" : "Closed"} · ${projectionNotice || summaryLabel}`
@@ -5551,6 +5864,11 @@
       // Selection sync helpers.
       function setFocus(type, id) {
         state.ui.focus = { type, id };
+      }
+
+      function deselectCurrentFocus() {
+        clearStageEditTarget();
+        setFocus("stage", "stage");
       }
 
       function selectLayer(layerId) {
@@ -5722,6 +6040,8 @@
             shortName: nextValue,
             footerSelection: nextValue
           }));
+        } else if (type === "project") {
+          state.project.name = nextValue;
         }
         endTitleEdit();
       }
@@ -6032,11 +6352,15 @@
             nextRect.h = nextH;
           }
         }
+        const clampedWidth = Math.max(48, Math.min(stageViewport.width, nextRect.w));
+        const clampedHeight = Math.max(48, Math.min(stageViewport.height, nextRect.h));
+        const clampedX = Math.max(0, Math.min(stageViewport.width - clampedWidth, nextRect.x));
+        const clampedY = Math.max(0, Math.min(stageViewport.height - clampedHeight, nextRect.y));
 
-        state.calibration.x = nextRect.x;
-        state.calibration.y = nextRect.y;
-        state.calibration.scaleX = nextRect.w / stageViewport.width;
-        state.calibration.scaleY = nextRect.h / stageViewport.height;
+        state.calibration.x = clampedX;
+        state.calibration.y = clampedY;
+        state.calibration.scaleX = clampedWidth / stageViewport.width;
+        state.calibration.scaleY = clampedHeight / stageViewport.height;
       }
 
       function endCalibrationDrag() {
@@ -6379,46 +6703,29 @@
             : `Crop ${state.ui.dragHandle.toUpperCase()} Corner`;
         }
 
-        updateSurfaceRecord(sourceSurface.key, (surfaceRecord) => ({
-          ...surfaceRecord,
-          assetFitMode: fitMode,
-          assetOffsetX: nextBox.x - baseBox.x,
-          assetOffsetY: nextBox.y - baseBox.y,
-          assetScaleX: Math.max(0.05, nextBox.w / Math.max(1, baseBox.w)),
-          assetScaleY: startTransform.aspectLocked
-            ? Math.max(0.05, nextBox.w / Math.max(1, baseBox.w))
-            : Math.max(0.05, nextBox.h / Math.max(1, baseBox.h))
-        }));
+        updateSurfaceAssetTransform(sourceSurface.key, {
+          fitMode,
+          offsetX: nextBox.x - baseBox.x,
+          offsetY: nextBox.y - baseBox.y,
+          scaleX: nextBox.w / Math.max(1, baseBox.w),
+          scaleY: startTransform.aspectLocked
+            ? nextBox.w / Math.max(1, baseBox.w)
+            : nextBox.h / Math.max(1, baseBox.h)
+        });
       }
 
       function applyAssetFitModeToSurface(surfaceKey, fitMode, resetTransform = true) {
         if (!surfaceKey) {
           return;
         }
-        const nextFitMode = normalizeAssetFitMode(fitMode);
-        updateSurfaceRecord(surfaceKey, (surface) => ({
-          ...surface,
-          assetFitMode: nextFitMode,
-          assetOffsetX: resetTransform ? 0 : surface.assetOffsetX,
-          assetOffsetY: resetTransform ? 0 : surface.assetOffsetY,
-          assetScaleX: resetTransform ? 1 : surface.assetScaleX,
-          assetScaleY: resetTransform ? 1 : surface.assetScaleY,
-          assetRotation: resetTransform && nextFitMode !== "crop" ? 0 : surface.assetRotation
-        }));
+        updateSurfaceAssetTransform(surfaceKey, { fitMode }, { resetPlacement: resetTransform });
       }
 
       function resetAssetTransformForSurface(surfaceKey) {
         if (!surfaceKey) {
           return;
         }
-        updateSurfaceRecord(surfaceKey, (surface) => ({
-          ...surface,
-          assetOffsetX: 0,
-          assetOffsetY: 0,
-          assetScaleX: 1,
-          assetScaleY: 1,
-          assetRotation: 0
-        }));
+        updateSurfaceAssetTransform(surfaceKey, {}, { resetPlacement: true });
       }
 
       function focusAssetEditorForSurface(surfaceKey, options = {}) {
@@ -6854,7 +7161,8 @@
       async function importAssetFiles(fileList, options = {}) {
         const files = Array.from(fileList || []);
         if (!files.length) {
-          return;
+          pendingImportedAssetTarget = null;
+          return [];
         }
 
         const importedAssets = [];
@@ -6868,7 +7176,7 @@
         }
 
         if (!importedAssets.length) {
-          return;
+          return [];
         }
 
         state.assets = [...importedAssets, ...state.assets];
@@ -6879,9 +7187,14 @@
         if (options.reference) {
           ensureCalibrationReference(firstAsset.id);
           setCalibrationEditActive(true);
+        } else if (pendingImportedAssetTarget) {
+          assignImportedAssetToTarget(firstAsset.id, pendingImportedAssetTarget);
         }
 
+        pendingImportedAssetTarget = null;
+
         render();
+        return importedAssets;
       }
 
       function resolveTargetLayerForAssignment() {
@@ -6938,6 +7251,32 @@
           assetId: assetId || null,
           outputMode: asset ? "asset" : currentSurface.outputMode
         }));
+      }
+
+      function assignImportedAssetToTarget(assetId, target = pendingImportedAssetTarget) {
+        if (!assetId || !target) {
+          return;
+        }
+        if (target.kind === "surface" && target.surfaceKey) {
+          assignAssetToSurface(target.surfaceKey, assetId);
+          selectSurface(target.surfaceKey);
+          return;
+        }
+        if (target.kind === "reference") {
+          setCalibrationReferenceAsset(assetId);
+          state.calibrationReference.visible = true;
+          state.ui.showReferenceLayer = true;
+          setCalibrationEditActive(true);
+          return;
+        }
+        if (target.kind === "focus") {
+          assignAssetToFocus(assetId);
+        }
+      }
+
+      function openAssetImportPicker(target = null) {
+        pendingImportedAssetTarget = target;
+        assetFileInput.click();
       }
 
       function assignAssetToLayer(layerId, assetId) {
@@ -7328,14 +7667,19 @@
         contextMenu.innerHTML = "";
       }
 
+      function contextMenuSeparator() {
+        return { separator: true };
+      }
+
       function getContextMenuItems() {
         const menu = state.ui.contextMenu;
         if (menu.contextTarget === "workspace-empty" || menu.contextTarget === "stage-empty") {
           return [
-            { label: "Add Mapping Layer", icon: "layers", action: () => selectLayer(createLayer("media")), disabled: !canMutateStructure() },
             { label: "Draw Surface", icon: "surface", action: () => {
               setSurfaceCreateMode(true);
             }, disabled: !canMutateStructure() },
+            { label: "Add Mapping Layer", icon: "layers", action: () => selectLayer(createLayer("media")), disabled: !canMutateStructure() },
+            contextMenuSeparator(),
             { label: isCalibrationEditing() ? "Finish Calibration Edit" : "Edit Calibration", icon: "grid", action: () => setCalibrationEditActive(!isCalibrationEditing()) },
             { label: state.ui.guidesEnabled ? "Hide Guides" : "Show Guides", icon: "grid", action: () => { state.ui.guidesEnabled = !state.ui.guidesEnabled; } }
           ];
@@ -7343,7 +7687,7 @@
         if (menu.entityType === "calibration") {
           return [
             { label: isCalibrationEditing() ? "Finish Calibration Edit" : "Edit Calibration", icon: "grid", action: () => setCalibrationEditActive(!isCalibrationEditing()) },
-            { label: state.calibrationReference.visible ? "Hide Reference" : "Show Reference", icon: "reference", action: () => { state.calibrationReference.visible = !state.calibrationReference.visible; state.ui.showReferenceLayer = state.calibrationReference.visible; } },
+            contextMenuSeparator(),
             { label: state.ui.guidesEnabled ? "Hide Guides" : "Show Guides", icon: "grid", action: () => { state.ui.guidesEnabled = !state.ui.guidesEnabled; } }
           ];
         }
@@ -7353,6 +7697,7 @@
             { label: "Fit To Calibration", icon: "focus", action: () => fitCalibrationReferenceToCalibration(), disabled: !isCalibrationReferenceEditable() },
             { label: "Reset Reference Fit", icon: "surface", action: () => resetCalibrationReferenceFit(), disabled: !isCalibrationReferenceEditable() },
             { label: getCalibrationReference().locked ? "Unlock Reference" : "Lock Reference", icon: "lock", action: () => { state.calibrationReference.locked = !state.calibrationReference.locked; }, disabled: !isCalibrationEditing() },
+            contextMenuSeparator(),
             { label: state.calibrationReference.visible ? "Hide Reference" : "Show Reference", icon: "reference", action: () => { state.calibrationReference.visible = !state.calibrationReference.visible; state.ui.showReferenceLayer = state.calibrationReference.visible; } }
           ];
         }
@@ -7363,14 +7708,16 @@
           }
           const layerSurfaces = getLayerSurfaces(layer);
           return [
-            { label: "Focus Layer", icon: "focus", action: () => selectLayer(layer.id) },
             { label: "Draw Surface In Layer", icon: "surface", action: () => {
               const nextSurfaceKey = createSurface(layer.id);
               selectSurface(nextSurfaceKey);
             }, disabled: !canMutateStructure() },
-            { label: layer.visible ? "Hide Layer" : "Show Layer", icon: "eye", action: () => toggleLayerFlag(layer.id, "visible") },
+            { label: "Focus Layer", icon: "focus", action: () => selectLayer(layer.id) },
+            contextMenuSeparator(),
             { label: layer.locked ? "Unlock Layer" : "Lock Layer", icon: "lock", action: () => toggleLayerFlag(layer.id, "locked") },
-            { label: "Delete Layer", icon: "trash", action: () => deleteLayer(layer.id), disabled: !canMutateStructure() || layerSurfaces.length > 0 }
+            { label: "Delete Layer", icon: "trash", action: () => deleteLayer(layer.id), disabled: !canMutateStructure() || layerSurfaces.length > 0 },
+            contextMenuSeparator(),
+            { label: layer.visible ? "Hide Layer" : "Show Layer", icon: "eye", action: () => toggleLayerFlag(layer.id, "visible") }
           ];
         }
         if (menu.entityType === "surface") {
@@ -7378,22 +7725,29 @@
           return [
             { label: "Focus Surface", icon: "focus", action: () => selectSurface(menu.entityId) },
             { label: "Assign Selected Asset", icon: "link", action: () => { selectSurface(menu.entityId); assignAssetToFocus(state.ui.assetLibraryId); }, disabled: !state.ui.assetLibraryId },
+            { label: "Import and Assign Asset", icon: "upload", action: () => openAssetImportPicker({ kind: "surface", surfaceKey: menu.entityId }) },
             { label: "Detach From Layer", icon: "unlink", action: () => detachSurfaceFromLayer(ownerLayer.id, menu.entityId), disabled: !ownerLayer || !canMutateStructure() },
+            contextMenuSeparator(),
             { label: "Fit Within Output", icon: "focus", action: () => fitSurfaceWithinOutput(menu.entityId) },
             { label: "Fit To Output", icon: "expand", action: () => fitSurfaceToOutput(menu.entityId) },
-            { label: "Snap To Grid", icon: "grid", action: () => snapSurfaceToGrid(menu.entityId) },
-            { label: "Snap To Frame", icon: "screen", action: () => snapSurfaceToFrame(menu.entityId) },
-            { label: "Straighten Top", icon: "arrow-right", action: () => straightenSurfaceEdge(menu.entityId, "top") },
-            { label: "Straighten Left", icon: "arrow-down", action: () => straightenSurfaceEdge(menu.entityId, "left") },
+            { label: "Align to Grid", icon: "grid", action: () => snapSurfaceToGrid(menu.entityId) },
+            { label: "Align to Frame", icon: "screen", action: () => snapSurfaceToFrame(menu.entityId) },
+            { label: "Straighten Top Edge", icon: "arrow-right", action: () => straightenSurfaceEdge(menu.entityId, "top") },
+            { label: "Straighten Left Edge", icon: "arrow-down", action: () => straightenSurfaceEdge(menu.entityId, "left") },
             { label: "Reset Warp", icon: "surface", action: () => resetSurfaceWarp(menu.entityId) },
-            { label: state.ui.guidesEnabled ? "Hide Guides" : "Show Guides", icon: "grid", action: () => { state.ui.guidesEnabled = !state.ui.guidesEnabled; } },
-            { label: "Delete Surface", icon: "trash", action: () => deleteSurface(menu.entityId), disabled: !canMutateStructure() }
+            contextMenuSeparator(),
+            { label: "Delete Surface", icon: "trash", action: () => deleteSurface(menu.entityId), disabled: !canMutateStructure() },
+            contextMenuSeparator(),
+            { label: state.ui.guidesEnabled ? "Hide Guides" : "Show Guides", icon: "grid", action: () => { state.ui.guidesEnabled = !state.ui.guidesEnabled; } }
           ];
         }
         if (menu.entityType === "content") {
+          const surfaceKey = menu.entityId.replace(/^content-/, "");
           return [
             { label: "Focus Content", icon: "focus", action: () => selectContent(menu.entityId) },
-            { label: "Toggle Reference", icon: "reference", action: () => { state.ui.showReferenceLayer = !state.ui.showReferenceLayer; } },
+            { label: "Assign Selected Asset", icon: "link", action: () => { selectContent(menu.entityId); assignAssetToFocus(state.ui.assetLibraryId); }, disabled: !state.ui.assetLibraryId },
+            { label: "Import and Assign Asset", icon: "upload", action: () => openAssetImportPicker({ kind: "surface", surfaceKey }) },
+            contextMenuSeparator(),
             { label: "Remove Content", icon: "trash", action: () => deleteContent(menu.entityId) }
           ];
         }
@@ -7401,6 +7755,8 @@
           return [
             { label: "Select Asset", icon: "focus", action: () => selectAsset(menu.entityId) },
             { label: "Assign To Focus", icon: "link", action: () => assignAssetToFocus(menu.entityId) },
+            { label: "Import Asset", icon: "upload", action: () => openAssetImportPicker() },
+            contextMenuSeparator(),
             { label: "Delete Asset", icon: "trash", action: () => deleteAsset(menu.entityId) }
           ];
         }
@@ -7415,7 +7771,9 @@
         }
 
         const items = getContextMenuItems();
-        contextMenu.innerHTML = items.map((item, index) => `
+        contextMenu.innerHTML = items.map((item, index) => item.separator
+          ? `<div class="pk-context-menu-separator" role="separator"></div>`
+          : `
           <button class="pk-context-menu-btn" type="button" data-context-index="${index}" ${item.disabled ? "disabled" : ""}>
             ${iconMarkup(item.icon, item.label)}
             <span>${item.label}</span>
@@ -7423,7 +7781,8 @@
         `).join("");
         contextMenu.classList.add("is-open");
         const x = Math.min(window.innerWidth - 220, Math.max(8, state.ui.contextMenu.x));
-        const y = Math.min(window.innerHeight - (items.length * 34 + 20), Math.max(8, state.ui.contextMenu.y));
+        const estimatedHeight = items.reduce((total, item) => total + (item.separator ? 12 : 34), 20);
+        const y = Math.min(window.innerHeight - estimatedHeight, Math.max(8, state.ui.contextMenu.y));
         contextMenu.style.left = `${x}px`;
         contextMenu.style.top = `${y}px`;
       }
@@ -7434,111 +7793,6 @@
           return `<input class="pk-item-title-input" type="text" value="${value.replace(/"/g, "&quot;")}" data-title-input="${type}" data-title-id="${id}" aria-label="Rename ${type}" autofocus>`;
         }
         return `<div class="pk-item-title" data-title-display="${type}" data-title-id="${id}">${value}</div>`;
-      }
-
-      function renderOverlayTools() {
-        const selectedLayer = getSelectedLayer();
-        if (!selectedLayer && !["calibration", "asset-library", "surface"].includes(state.ui.focus.type)) {
-          return "";
-        }
-        const rawSelectedSurface = getSelectedSurface();
-        const selectedSurface = rawSelectedSurface ? getEffectiveSurfaceGeometry(rawSelectedSurface) : null;
-        const layerType = getLayerTypeInfo(selectedLayer);
-        const surfaceType = { icon: "surface", label: getSurfaceTypeInfo().label };
-        const assetTransform = getLayerAssetTransform(selectedLayer);
-        const selectedAsset = getLayerAsset(selectedLayer);
-        const selectedRole = getLayerRole(selectedLayer);
-
-        if (state.ui.focus.type === "asset-library") {
-          const focusedAsset = getFocusedEntity();
-          return `
-            <section class="pk-inspector-card">
-              <div class="pk-section-head">
-                <div class="pk-eyebrow">Asset Library</div>
-                <button class="pk-info-btn" type="button" title="Selected library asset ready for assignment.">i</button>
-              </div>
-              <div class="pk-item-line">
-                <div class="pk-item-icon">${iconMarkup(getAssetLibraryIcon(focusedAsset), focusedAsset.kind)}</div>
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
-                    <div class="pk-item-title">${focusedAsset.name}</div>
-                  </div>
-                  <div class="pk-item-meta">${focusedAsset.kind}</div>
-                </div>
-              </div>
-            </section>
-          `;
-        }
-
-        if (state.ui.focus.type === "surface") {
-          if (!selectedSurface) {
-            return "";
-          }
-          return `
-            <section class="pk-inspector-card" data-context-target="overlay-tools" data-entity-type="surface" data-entity-id="${selectedSurface.key}">
-              <div class="pk-section-head">
-                <div class="pk-eyebrow">${surfaceType.label}</div>
-                <button class="pk-info-btn" type="button" title="Surface controls define assignment, bounds, and warp for child assets.">i</button>
-              </div>
-              <div class="pk-item-line">
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
-                    <div class="pk-item-icon">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
-                    <div class="pk-item-title">${selectedSurface.listTitle}</div>
-                  </div>
-                  <div class="pk-item-meta">Grid ${selectedSurface.gridEnabled ? `${selectedSurface.gridDensity}px` : "Off"} · Asset ${selectedAsset?.name || "Unassigned"}</div>
-                </div>
-              </div>
-              <div class="pk-stack-inline">
-                <button class="ds-btn" type="button" data-surface-tool="fit">Fit</button>
-                <button class="ds-btn" type="button" data-surface-tool="fill">Fill</button>
-                <button class="ds-btn" type="button" data-surface-tool="grid">${selectedSurface.gridEnabled ? "Hide Grid" : "Show Grid"}</button>
-              </div>
-            </section>
-          `;
-        }
-
-        if (state.ui.focus.type === "layer") {
-          return `
-            <section class="pk-inspector-card" data-context-target="overlay-tools" data-entity-type="layer" data-entity-id="${selectedLayer.id}">
-              <div class="pk-section-head">
-                <div class="pk-eyebrow">${layerType.label}</div>
-                <button class="pk-info-btn" type="button" title="Layer selection only exposes container state. Surface and asset controls stay scoped to their own selections.">i</button>
-              </div>
-              <div class="pk-item-line">
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
-                    <div class="pk-item-icon">${iconMarkup("layers", layerType.label)}</div>
-                    <div class="pk-item-title">${selectedLayer.name}</div>
-                  </div>
-                  <div class="pk-item-meta">${selectedSurface ? `Surface ${selectedSurface.shortName}` : ""}</div>
-                </div>
-              </div>
-            </section>
-          `;
-        }
-
-        return `
-          <section class="pk-inspector-card">
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">${selectedRole === "reference" ? "Reference" : "Asset"}</div>
-              <button class="pk-info-btn" type="button" title="${selectedRole === "reference" ? "Reference imagery follows its assigned surface and can be tuned for photo-assisted alignment." : "Selected asset fits, crops, or warps inside its selected surface mask."}">i</button>
-            </div>
-            <div class="pk-item-line">
-              <div class="pk-item-main">
-                <div class="pk-item-line">
-                  <div class="pk-item-icon">${iconMarkup(selectedAsset ? getAssetLibraryIcon(selectedAsset) : "image", selectedAsset?.kind || "Unassigned")}</div>
-                  <div class="pk-item-title">${selectedAsset?.name || "Unassigned Asset"}</div>
-                </div>
-                <div class="pk-item-meta">${selectedRole === "reference" ? (assetTransform.fitMode === "anchored" ? "Anchored to reference surface" : "Scaling with reference surface") : `${ASSET_FIT_MODE_LABELS[normalizeAssetFitMode(assetTransform.fitMode)] || "Warp"} placement`}</div>
-              </div>
-            </div>
-            <div class="pk-item-line">
-              <span class="pk-kicker">Mode ${ASSET_FIT_MODE_LABELS[normalizeAssetFitMode(assetTransform.fitMode)] || "Warp"}</span>
-              <span class="pk-kicker">Scale ${formatInspectorNumber(assetTransform.scaleX)} / ${formatInspectorNumber(assetTransform.scaleY)}</span>
-            </div>
-          </section>
-        `;
       }
 
       // Render helpers.
@@ -7567,38 +7821,36 @@
       }
 
       function renderAssetItems() {
-        const canAssignToFocus = Boolean(getSelectedSurface() && ["surface", "content"].includes(state.ui.focus.type));
-        return state.assets.map((asset) => {
+        const assetItems = state.assets.map((asset) => {
           const isActive = state.ui.assetLibraryId === asset.id && isLibrarySelection();
           const usageCount = getAssetUsageCount(asset.id);
           return `
             <article class="pk-item${isActive ? " is-active" : ""}" data-asset-id="${asset.id}" data-context-target="asset-library" data-entity-type="asset" data-entity-id="${asset.id}" draggable="true">
               <div class="pk-item-icon">${iconMarkup(getAssetLibraryIcon(asset), asset.kind)}</div>
               <div class="pk-item-main">
-                <div class="pk-item-line">
+                <div class="pk-item-title-row">
                   <div class="pk-item-title">${asset.name}</div>
-                  <div class="pk-item-tags">
-                    <span class="pk-item-tag">${asset.kind}</span>
-                    <span class="pk-item-tag">${usageCount} mapped</span>
-                    <span class="pk-item-tag">${asset.tags[0]}</span>
-                    ${asset.missing ? `<span class="pk-item-tag">Missing</span>` : ""}
-                  </div>
                 </div>
-              </div>
-              <div class="pk-item-actions is-rail">
-                <button class="pk-mini-btn${isActive ? " is-active" : ""}" type="button" title="Select asset" aria-label="Select asset" data-asset-action="select">${iconMarkup("focus", "Select")}</button>
-                <button class="pk-mini-btn" type="button" title="${canAssignToFocus ? "Assign asset to selected surface" : "Select a surface to assign"}" aria-label="${canAssignToFocus ? "Assign asset to selected surface" : "Select a surface to assign"}" data-asset-action="assign" ${canAssignToFocus ? "" : "disabled"}>${iconMarkup("link", "Assign")}</button>
+                <div class="pk-item-tags">
+                  <span class="pk-item-tag">${asset.kind}</span>
+                  <span class="pk-item-tag">${usageCount} mapped</span>
+                  ${asset.tags?.[0] ? `<span class="pk-item-tag">${asset.tags[0]}</span>` : ""}
+                  ${asset.missing ? `<span class="pk-item-tag">Missing</span>` : ""}
+                </div>
               </div>
             </article>
           `;
         }).join("");
+        return assetItems;
       }
 
       function renderAssetsTab() {
         assetCountBadge.textContent = `${state.assets.length} loaded`;
-        const html = `${renderSelectedAssetPreview()}${renderAssetItems()}`;
-        assetsList.innerHTML = html;
-        mobileAssetsList.innerHTML = html;
+        const assetPreviewHtml = renderSelectedAssetPreview();
+        const assetItemsHtml = renderAssetItems();
+        selectedAssetPreview.innerHTML = assetPreviewHtml;
+        assetsList.innerHTML = assetItemsHtml;
+        mobileAssetsList.innerHTML = `${assetPreviewHtml}${assetItemsHtml}`;
       }
 
       function renderWorkspaceTab() {
@@ -7854,12 +8106,18 @@
           const handlePosition = isAssetCrop && assetQuad
             ? getHandlePositionWithinSurface(assetQuad, handleId, surface)
             : getHandlePosition(surface, handleId);
+          const isSelectedHandle = Boolean(isDragging && state.ui.dragHandle === handleId);
+          const isDisabledHandle = !editingEnabled || isCropMuted;
+          const isInactiveHandle = !isSelectedHandle && !isHovered;
           handleNode.style.left = `calc(${handlePosition.left}% - 7px)`;
           handleNode.style.top = `calc(${handlePosition.top}% - 7px)`;
           handleNode.classList.toggle("is-hovered", isHovered && state.ui.hoverHandle === handleId);
           handleNode.classList.toggle("is-snapped", isDragging && state.ui.activeSnapTarget && state.ui.dragHandle === handleId);
           handleNode.classList.toggle("is-free-target", isFreeWarpHandle(surface.key, handleId));
           handleNode.classList.toggle("is-crop-handle", isAssetCrop);
+          handleNode.classList.toggle("is-selected", isSelectedHandle);
+          handleNode.classList.toggle("is-disabled", isDisabledHandle);
+          handleNode.classList.toggle("is-inactive", !isDisabledHandle && isActive && isInactiveHandle);
           handleNode.hidden = !editingEnabled
             || (!isActive && !isDragging)
             || isCropMuted;
@@ -7955,7 +8213,7 @@
       function renderCalibrationOverlay() {
         const rect = getCalibrationFrameRect();
         const canEditOverlay = canEditCalibration();
-        const showOverlay = !isPresentationPreviewActive() && state.ui.guidesEnabled;
+        const showOverlay = !isPresentationPreviewActive() && (state.ui.guidesEnabled || canEditOverlay || state.ui.focus.type === "calibration");
         stageCalibration.hidden = !showOverlay;
         if (!showOverlay) {
           return;
@@ -7983,6 +8241,9 @@
           const position = handlePositions[handleNode.dataset.calibrationHandle];
           handleNode.style.left = `calc(${position.left}% - 7px)`;
           handleNode.style.top = `calc(${position.top}% - 7px)`;
+          handleNode.classList.toggle("is-selected", Boolean(calibrationDragState && calibrationDragState.handle === handleNode.dataset.calibrationHandle));
+          handleNode.classList.toggle("is-disabled", !canEditOverlay);
+          handleNode.classList.toggle("is-inactive", canEditOverlay && !calibrationDragState);
           handleNode.hidden = !canEditOverlay;
         });
       }
@@ -8059,7 +8320,6 @@
         stageHudNote.textContent = showHud ? runStatusLabel : "";
         stageTag.hidden = !showSummary;
         stageHud.hidden = !showHud;
-        stageModeStats.hidden = !showSummary;
         const stageStatusItems = meta.stats ? [...meta.stats] : [meta.badge];
         if (isCalibrationEditing() && !runState.previewActive && !runState.liveActive) {
           stageStatusItems.push("Mapped Content Frozen");
@@ -8070,10 +8330,6 @@
         if (runState.liveLocked) {
           stageStatusItems.push("Live Output");
         }
-        stageModeStats.innerHTML = showSummary ? stageStatusItems
-          .slice(0, 2)
-          .map((value) => `<span class="pk-status-badge">${value}</span>`)
-          .join("") : "";
         const stageLegendItems = isCalibrationEditing()
           ? [
             `${state.calibrationTemplate.gridType === "dot" ? "Dot" : "Line"} Grid`,
@@ -8103,10 +8359,15 @@
         referenceToggle.classList.toggle("is-active", isReferenceVisible());
         linkToggle.classList.toggle("is-active", state.ui.calibrationLinkEnabled);
         outputToggle.classList.toggle("is-active", runState.previewActive);
+        overlayFullscreenToggle.classList.toggle("is-active", Boolean(document.fullscreenElement));
         playbackToggle.classList.toggle("is-active", runState.liveActive);
         outputToggle.setAttribute("aria-label", runState.previewActive ? "Disable preview" : "Enable preview");
-        outputToggle.title = runState.previewActive ? "Disable preview" : "Enable preview";
-        playbackToggle.innerHTML = iconMarkup(runState.liveActive ? "pause" : "play", runState.liveActive ? "Stop live output" : "Start live output");
+        outputToggle.title = runState.previewActive ? "Disable clean output preview" : "Enable clean output preview";
+        outputToggle.innerHTML = `${iconMarkup("screen", "Preview")}<span>${runState.previewActive ? "Preview On" : "Preview"}</span>`;
+        overlayFullscreenToggle.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
+        overlayFullscreenToggle.title = document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen";
+        overlayFullscreenToggle.innerHTML = `${iconMarkup("expand", "Fullscreen")}<span>${document.fullscreenElement ? "Fullscreen On" : "Fullscreen"}</span>`;
+        playbackToggle.innerHTML = `${iconMarkup(runState.liveActive ? "pause" : "play", runState.liveActive ? "Stop live output" : "Start live output")}<span>${runState.liveActive ? "Live On" : "Live"}</span>`;
         playbackToggle.setAttribute("aria-label", runState.liveActive ? "Stop live output" : "Start live output");
         playbackToggle.title = runState.liveActive ? "Stop live output" : "Start live output";
         guideToggle.hidden = !showLiveToggles;
@@ -8142,8 +8403,9 @@
         const referenceTransform = getCalibrationReferenceTransform();
         const focusType = state.ui.focus.type;
         const calibrationReferenceSelected = focusType === "reference";
-        const showCalibrationControls = isCalibrationEditing() || focusType === "calibration" || calibrationReferenceSelected;
+        const showCalibrationControls = focusType === "calibration" || (!selectedLayer && !["asset-library", "surface", "reference", "content", "project", "layer"].includes(focusType));
         const showProjectControls = focusType === "project";
+        const showStageControls = focusType === "stage";
 
         if (showProjectControls) {
           inspectorTitle.textContent = state.project.name;
@@ -8165,6 +8427,22 @@
           return;
         }
 
+        if (showStageControls) {
+          inspectorTitle.textContent = "No Selection";
+          inspectorActions.hidden = true;
+          cropAssetBtn.hidden = true;
+          resetWarpBtn.hidden = true;
+          projectSettingsCard.hidden = true;
+          calibrationTemplateCard.hidden = true;
+          layerStateCard.hidden = true;
+          referenceLayerCard.hidden = true;
+          surfaceTransformCard.hidden = true;
+          assetTransformCard.hidden = true;
+          inspectorTags.hidden = true;
+          inspectorTags.innerHTML = "";
+          return;
+        }
+
         if (!selectedLayer && !["calibration", "asset-library", "surface", "reference"].includes(focusType)) {
           inspectorTitle.textContent = "Calibration";
           inspectorActions.hidden = true;
@@ -8173,7 +8451,7 @@
           projectSettingsCard.hidden = true;
           calibrationTemplateCard.hidden = false;
           layerStateCard.hidden = true;
-          referenceLayerCard.hidden = false;
+          referenceLayerCard.hidden = true;
           surfaceTransformCard.hidden = true;
           assetTransformCard.hidden = true;
           inspectorTags.hidden = false;
@@ -8184,6 +8462,7 @@
           calibrationColumns.value = String(state.calibrationTemplate.columns);
           calibrationShowFrame.checked = Boolean(state.calibrationTemplate.showFrame);
           calibrationShowMatrixLabels.checked = Boolean(state.calibrationTemplate.showMatrixLabels);
+          calibrationOutsideFill.value = state.calibrationTemplate.outsideFill || "#000000";
           syncProjectSettingsInputs();
           setInspectorInputsDisabled([
             calibrationGridType,
@@ -8192,13 +8471,7 @@
             calibrationColumns,
             calibrationShowFrame,
             calibrationShowMatrixLabels,
-            referenceAssetSelect,
-            referenceFitMode,
-            referenceVisibilityMode,
-            referenceOpacity,
-            referenceFitToCalibrationBtn,
-            referenceResetFitBtn,
-            referenceLockBtn
+            calibrationOutsideFill
           ], calibrationEditingDisabled);
           return;
         }
@@ -8215,7 +8488,7 @@
         const showSurfaceControls = focusType === "surface";
         const showSurfaceGeometryControls = showSurfaceControls && !assetCropActive;
         const showAssetControls = focusType === "content" || (showSurfaceControls && assetCropActive);
-        const showReferenceControls = showCalibrationControls;
+        const showReferenceControls = calibrationReferenceSelected;
         if (state.ui.focus.type === "content") {
           inspectorTitle.textContent = focused.name;
         } else if (state.ui.focus.type === "asset-library") {
@@ -8241,40 +8514,13 @@
         referenceLayerCard.hidden = !showReferenceControls;
         surfaceTransformCard.hidden = !showSurfaceGeometryControls;
         inspectorTags.hidden = false;
-        if (focusType === "surface") {
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">${assetCropActive ? "Asset Crop" : interactionState?.freeAnchor ? "Free Anchor" : interactionState?.freeEdge ? "Free Edge" : "Bounds Edit"}</span>
-            <span class="pk-item-tag">${SURFACE_OUTPUT_MODE_LABELS[surfaceOutputModeValue]}</span>
-            ${assetCropActive ? "" : `<span class="pk-item-tag">${selectedLayer?.name || "Unassigned Layer"}</span>`}
-          `;
-        } else if (focusType === "content") {
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">${selectedRole === "reference" ? "Reference Content" : "Asset Child"}</span>
-            <span class="pk-item-tag">${selectedSurface?.shortName || "No Surface"}</span>
-          `;
-        } else if (focusType === "asset-library") {
+        if (focusType === "asset-library") {
           inspectorTags.innerHTML = `
             <span class="pk-item-tag">Library Asset</span>
           `;
-        } else if (focusType === "reference") {
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">Calibration Reference</span>
-            <span class="pk-item-tag">${calibrationReference.fitMode === "anchored" ? "Anchored" : "Scale To Surface"}</span>
-          `;
-        } else if (focusType === "calibration") {
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">Calibration</span>
-            <span class="pk-item-tag">${state.calibrationTemplate.gridType === "dot" ? "Dot Grid" : "Line Grid"}</span>
-          `;
-        } else if (focusType === "layer") {
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">Layer Container</span>
-            <span class="pk-item-tag">${selectedSurface?.shortName || "No Surface"}</span>
-          `;
         } else {
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">${selectedSurface?.shortName || "No Surface"}</span>
-          `;
+          inspectorTags.hidden = true;
+          inspectorTags.innerHTML = "";
         }
         inspectorLayerMeta.hidden = true;
         inspectorLayerMeta.innerHTML = "";
@@ -8295,6 +8541,7 @@
         }
         surfaceAssetSelect.innerHTML = [
           `<option value="" ${!rawSelectedSurface?.assetId ? "selected" : ""}>No Asset</option>`,
+          `<option value="${IMPORT_ASSET_OPTION_VALUE}">Import Asset...</option>`,
           ...assignableAssets.map((asset) => `
             <option value="${asset.id}" ${asset.id === rawSelectedSurface?.assetId ? "selected" : ""}>${asset.name}</option>
           `)
@@ -8302,6 +8549,7 @@
         surfaceAssetSelect.disabled = !rawSelectedSurface;
         referenceAssetSelect.innerHTML = [
           `<option value="" ${!calibrationReference.assetId ? "selected" : ""}>No Reference Source</option>`,
+          `<option value="${IMPORT_ASSET_OPTION_VALUE}">Import Asset...</option>`,
           ...referenceAssets.map((asset) => `
             <option value="${asset.id}" ${asset.id === calibrationReference.assetId ? "selected" : ""}>${asset.name}</option>
           `)
@@ -8335,12 +8583,12 @@
           surfaceOpacity.value = String(Math.round(selectedSurface.opacity));
         }
         cropAssetBtn.classList.toggle("ds-btn-primary", assetCropActive);
-        cropAssetBtn.textContent = assetCropActive ? "Editing Crop" : "Crop Asset";
-        cropAssetBtn.title = assetCropActive ? "Manual crop is active for this asset" : "Switch asset placement to manual crop";
+        cropAssetBtn.textContent = assetCropActive ? "Exit Crop" : "Enter Crop";
+        cropAssetBtn.title = assetCropActive ? "Leave manual crop and keep the current placement" : "Edit the asset directly inside the surface frame";
         assetFitFrameBtn.classList.toggle("ds-btn-primary", assetTransform.fitMode === "fit");
         assetWarpFrameBtn.classList.toggle("ds-btn-primary", assetTransform.fitMode === "warp");
-        assetFitFrameBtn.title = "Fit the asset inside the parent surface frame";
-        assetWarpFrameBtn.title = "Match the asset to the parent surface shape";
+        assetFitFrameBtn.title = "Scale the asset to fit fully inside the parent frame";
+        assetWarpFrameBtn.title = "Stretch and warp the asset to match the parent frame shape";
         assetResetBtn.title = "Reset asset offset, scale, and rotation";
         calibrationGridType.value = state.calibrationTemplate.gridType;
         calibrationGridSize.value = String(state.calibrationTemplate.gridSize);
@@ -8348,6 +8596,7 @@
         calibrationColumns.value = String(state.calibrationTemplate.columns);
         calibrationShowFrame.checked = Boolean(state.calibrationTemplate.showFrame);
         calibrationShowMatrixLabels.checked = Boolean(state.calibrationTemplate.showMatrixLabels);
+        calibrationOutsideFill.value = state.calibrationTemplate.outsideFill || "#000000";
         syncProjectSettingsInputs();
         setInspectorInputsDisabled([
           layerVisibleBtn,
@@ -8393,6 +8642,7 @@
           calibrationColumns,
           calibrationShowFrame,
           calibrationShowMatrixLabels,
+          calibrationOutsideFill,
           referenceAssetSelect,
           referenceFitMode,
           referenceVisibilityMode,
@@ -8448,17 +8698,12 @@
         assetsPanel.hidden = !isAssets;
         settingsPanel.hidden = !isSettings;
         workspaceActions.hidden = !isWorkspace || !isConsoleUI();
-        assetActions.hidden = !isAssets;
+        assetActions.hidden = true;
         settingsActions.hidden = true;
         addLayerBtn.disabled = structureLocked;
         addSurfaceBtn.disabled = structureLocked;
         addSurfaceBtn.classList.toggle("ds-btn-primary", state.ui.surfaceCreateActive && !structureLocked);
         addSurfaceBtn.setAttribute("aria-pressed", String(state.ui.surfaceCreateActive && !structureLocked));
-        leftTabInfo.title = isWorkspace
-          ? "Workspace lets you organize calibration, layers, surfaces, and assigned content."
-          : isAssets
-            ? "Assets is the reusable library for import, preview, and assignment."
-            : "Settings contains low-frequency interface options.";
       }
 
       function render() {
@@ -8499,10 +8744,22 @@
 
       // Interaction handlers.
       function closeProjectMenu() {
-        const menu = document.querySelector(".pk-more-menu[open]");
-        if (menu) {
+        document.querySelectorAll(".pk-more-menu[open]").forEach((menu) => {
           menu.removeAttribute("open");
+        });
+      }
+
+      async function returnToDashboard(options = {}) {
+        closeProjectMenu();
+        if (state.project.dirty) {
+          const shouldSave = window.confirm("Save changes before returning to the dashboard?");
+          if (shouldSave) {
+            await saveCurrentProject();
+          } else if (!options.allowDiscard || !window.confirm("Leave without saving?")) {
+            return;
+          }
         }
+        window.location.href = "./index.html";
       }
 
       themeSelect.addEventListener("change", (event) => {
@@ -8511,32 +8768,69 @@
         render();
       });
 
+      homeDashboardBtn.addEventListener("click", async () => {
+        await returnToDashboard({ allowDiscard: true });
+      });
+
       projectTitle.addEventListener("click", () => {
+        if (projectTitle.querySelector("[data-title-input='project']")) {
+          return;
+        }
         selectProject();
         render();
       });
 
-      backToDashboardBtn.addEventListener("click", () => {
-        closeProjectMenu();
-        if (!confirmDiscardIfDirty()) {
+      projectTitle.addEventListener("dblclick", (event) => {
+        if (!canMutateStructure()) {
           return;
         }
-        window.location.href = "./index.html";
+        event.preventDefault();
+        beginTitleEdit("project", state.project.id);
+        render();
       });
 
-      saveProjectBtn.addEventListener("click", () => {
-        closeProjectMenu();
-        saveCurrentProject();
+      projectTitle.addEventListener("keydown", (event) => {
+        const titleInput = event.target.closest("[data-title-input='project']");
+        if (!titleInput) {
+          return;
+        }
+        if (event.key === "Enter") {
+          event.preventDefault();
+          runWithHistory("Rename project", () => {
+            renameEntity("project", state.project.id, titleInput.value);
+          });
+          render();
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          endTitleEdit();
+          render();
+        }
       });
 
-      saveAsProjectBtn.addEventListener("click", () => {
-        closeProjectMenu();
-        saveCurrentProject({ copy: true });
+      projectTitle.addEventListener("focusout", (event) => {
+        const titleInput = event.target.closest("[data-title-input='project']");
+        if (!titleInput) {
+          return;
+        }
+        runWithHistory("Rename project", () => {
+          renameEntity("project", state.project.id, titleInput.value);
+        });
+        render();
       });
 
-      exportProjectBtn.addEventListener("click", () => {
+      saveProjectBtn.addEventListener("click", async () => {
         closeProjectMenu();
-        exportCurrentProject();
+        await saveCurrentProject();
+      });
+
+      saveAsProjectBtn.addEventListener("click", async () => {
+        closeProjectMenu();
+        await saveCurrentProject({ copy: true });
+      });
+
+      exportProjectBtn.addEventListener("click", async () => {
+        closeProjectMenu();
+        await exportCurrentProject();
       });
 
       projectNameInput.addEventListener("change", (event) => {
@@ -8671,8 +8965,15 @@
         render();
       });
 
+      calibrationOutsideFill.addEventListener("change", (event) => {
+        runWithHistory("Update calibration outside fill", () => {
+          state.calibrationTemplate.outsideFill = event.target.value || "#000000";
+        });
+        render();
+      });
+
       importAssetBtn.addEventListener("click", () => {
-        assetFileInput.click();
+        openAssetImportPicker();
       });
 
       addLayerBtn.addEventListener("click", () => {
@@ -8729,36 +9030,6 @@
 
       projectionPresetSelect.addEventListener("change", (event) => {
         applyProjectionPreset(event.target.value);
-        render();
-      });
-
-      projectionQuickLiveBtn.addEventListener("click", () => {
-        applyProjectionPreset("live-output");
-        render();
-      });
-
-      projectionQuickRefBtn.addEventListener("click", () => {
-        applyProjectionPreset("reference-only");
-        render();
-      });
-
-      projectionQuickGridBtn.addEventListener("click", () => {
-        applyProjectionPreset("grid-only");
-        render();
-      });
-
-      projectionQuickMaskBtn.addEventListener("click", () => {
-        applyProjectionPreset("mask-paint");
-        render();
-      });
-
-      projectionQuickSoloBtn.addEventListener("click", () => {
-        const selectedSurface = getSelectedSurface();
-        if (!selectedSurface) {
-          return;
-        }
-        pinProjectionTarget("surface", selectedSurface.key);
-        applyProjectionPreset("surface-isolation");
         render();
       });
 
@@ -8856,22 +9127,6 @@
       });
 
       [assetsList, mobileAssetsList].forEach((listNode) => listNode.addEventListener("click", (event) => {
-        const assetAction = event.target.closest("[data-asset-action]");
-        if (assetAction) {
-          const assetId = assetAction.closest("[data-asset-id]")?.dataset.assetId;
-          if (!assetId) {
-            return;
-          }
-          if (assetAction.dataset.assetAction === "select") {
-            selectAsset(assetId);
-          }
-          if (assetAction.dataset.assetAction === "assign") {
-            assignAssetToFocus(assetId);
-          }
-          render();
-          return;
-        }
-
         const assetItem = event.target.closest("[data-asset-id]");
         if (!assetItem) {
           return;
@@ -8919,6 +9174,9 @@
       });
 
       document.addEventListener("click", (event) => {
+        if (!event.target.closest(".pk-more-menu")) {
+          closeProjectMenu();
+        }
         if (!state.ui.contextMenu.open) {
           return;
         }
@@ -9021,7 +9279,11 @@
           }
           selectContent(contentItem.dataset.contentId);
           render();
+          return;
         }
+
+        deselectCurrentFocus();
+        render();
       }));
 
       [workspaceTree, mobileWorkspaceTree, overlayWorkspaceTree].forEach((treeNode) => {
@@ -9496,6 +9758,11 @@
         if (!selectedSurface) {
           return;
         }
+        if (event.target.value === IMPORT_ASSET_OPTION_VALUE) {
+          openAssetImportPicker({ kind: "surface", surfaceKey: selectedSurface.key });
+          render();
+          return;
+        }
         runWithHistory("Assign asset", () => {
           assignAssetToSurface(selectedSurface.key, event.target.value || null);
         });
@@ -9562,6 +9829,11 @@
       });
 
       referenceAssetSelect.addEventListener("change", (event) => {
+        if (event.target.value === IMPORT_ASSET_OPTION_VALUE) {
+          openAssetImportPicker({ kind: "reference" });
+          render();
+          return;
+        }
         runWithHistory("Assign reference", () => {
           setCalibrationReferenceAsset(event.target.value || null);
           if (event.target.value) {
@@ -9661,11 +9933,24 @@
         }
         const assetTransform = getSurfaceAssetTransform(selectedSurface);
         runWithHistory("Toggle asset aspect lock", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            assetAspectLocked: !assetTransform.aspectLocked
-          }));
+          updateSurfaceAssetTransform(selectedSurface.key, {
+            aspectLocked: !assetTransform.aspectLocked
+          });
         });
+        render();
+      });
+
+      stageCanvas.addEventListener("click", (event) => {
+        if (state.ui.dragSurfaceKey || state.ui.surfaceCreateActive) {
+          return;
+        }
+        if (event.target.closest(".pk-stage-surface[data-surface-key]")) {
+          return;
+        }
+        if (event.target.closest("#stageCalibration") || event.target.closest(".pk-stage-reference")) {
+          return;
+        }
+        deselectCurrentFocus();
         render();
       });
 
@@ -9676,12 +9961,11 @@
             return;
           }
           runWithHistory("Update asset transform", () => {
-            updateSurfaceRecord(selectedSurface.key, (surface) => ({
-              ...surface,
-              assetOffsetX: Number(assetOffsetX.value),
-              assetOffsetY: Number(assetOffsetY.value),
-              assetRotation: Number(assetRotation.value)
-            }));
+            updateSurfaceAssetTransform(selectedSurface.key, {
+              offsetX: Number(assetOffsetX.value),
+              offsetY: Number(assetOffsetY.value),
+              rotation: Number(assetRotation.value)
+            });
           });
           render();
         });
@@ -9692,14 +9976,12 @@
         if (!selectedSurface) {
           return;
         }
-        const assetTransform = getSurfaceAssetTransform(selectedSurface);
         const nextScaleX = Number(assetScaleX.value);
         runWithHistory("Update asset scale", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            assetScaleX: nextScaleX,
-            assetScaleY: assetTransform.aspectLocked ? nextScaleX : Number(assetScaleY.value)
-          }));
+          updateSurfaceAssetTransform(selectedSurface.key, {
+            scaleX: nextScaleX,
+            scaleY: Number(assetScaleY.value)
+          });
         });
         render();
       });
@@ -9709,14 +9991,12 @@
         if (!selectedSurface) {
           return;
         }
-        const assetTransform = getSurfaceAssetTransform(selectedSurface);
         const nextScaleY = Number(assetScaleY.value);
         runWithHistory("Update asset scale", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            assetScaleY: nextScaleY,
-            assetScaleX: assetTransform.aspectLocked ? nextScaleY : Number(assetScaleX.value)
-          }));
+          updateSurfaceAssetTransform(selectedSurface.key, {
+            scaleX: Number(assetScaleX.value),
+            scaleY: nextScaleY
+          });
         });
         render();
       });
@@ -9872,6 +10152,12 @@
           return;
         }
 
+        if (key === "escape" && document.querySelector(".pk-more-menu[open]")) {
+          event.preventDefault();
+          closeProjectMenu();
+          return;
+        }
+
         if (key === "escape" && (state.ui.overlayLayersOpen || state.ui.overlayToolsOpen)) {
           event.preventDefault();
           state.ui.overlayLayersOpen = false;
@@ -9941,7 +10227,9 @@
 
         if ((event.ctrlKey || event.metaKey) && key === "s") {
           event.preventDefault();
-          saveCurrentProject();
+          saveCurrentProject().catch((error) => {
+            console.error("Project save failed", error);
+          });
         }
       });
 
@@ -9991,7 +10279,12 @@
         navigateToProject(state.project.id);
       }());
 
-      setTheme(state.project.settings.theme || themeSelect.value);
+      {
+        const appliedTheme = setTheme(state.project.settings.theme || themeSelect?.value || root.getAttribute("data-theme") || "tech-grid");
+        if (themeSelect) {
+          themeSelect.value = appliedTheme;
+        }
+      }
       setMobileMode("workspace");
       render();
     }());

@@ -8,6 +8,21 @@
   <style>
     :root {
       color-scheme: dark;
+      --pk-dashboard-bg:
+        radial-gradient(circle at top, color-mix(in oklab, var(--ds-accent) 16%, transparent), transparent 24%),
+        radial-gradient(circle at 85% 12%, color-mix(in oklab, var(--ds-focus) 12%, transparent), transparent 18%),
+        linear-gradient(180deg, color-mix(in oklab, var(--ds-bg) 92%, black 8%), color-mix(in oklab, var(--ds-bg-elevated) 90%, black 10%));
+      --pk-panel-border: color-mix(in oklab, var(--ds-card-border, var(--ds-border)) 88%, var(--ds-border-strong) 12%);
+      --pk-panel-surface:
+        linear-gradient(180deg, color-mix(in oklab, white 3%, transparent), transparent),
+        var(--ds-card-bg);
+      --pk-card-shadow-strong: 0 18px 42px rgba(0, 0, 0, 0.28);
+      --pk-card-thumb-gradient:
+        linear-gradient(135deg, rgba(87, 214, 255, 0.16), rgba(255, 110, 196, 0.16)),
+        color-mix(in oklab, var(--ds-bg-soft) 84%, var(--ds-card-bg) 16%);
+      --pk-card-open-overlay:
+        linear-gradient(180deg, color-mix(in oklab, var(--ds-bg) 18%, transparent), color-mix(in oklab, var(--ds-bg) 60%, transparent));
+      --pk-card-brand-mark: rgba(255, 255, 255, 0.62);
     }
 
     * {
@@ -19,10 +34,7 @@
       min-height: 100dvh;
       font-family: var(--ds-font-sans);
       color: var(--ds-text);
-      background:
-        radial-gradient(circle at top, rgba(91, 151, 255, 0.14), transparent 24%),
-        radial-gradient(circle at 85% 12%, rgba(255, 96, 182, 0.12), transparent 18%),
-        linear-gradient(180deg, rgba(6, 8, 13, 0.96), rgba(7, 11, 17, 1));
+      background: var(--pk-dashboard-bg);
     }
 
     .pk-dashboard {
@@ -36,9 +48,9 @@
     .pk-topbar,
     .pk-card,
     .pk-empty-card {
-      border: 1px solid color-mix(in oklab, var(--ds-border) 78%, transparent);
+      border: 1px solid var(--pk-panel-border);
       border-radius: var(--ds-radius-3);
-      background: color-mix(in oklab, var(--ds-bg-elevated) 88%, transparent);
+      background: var(--pk-panel-surface);
       box-shadow: var(--ds-card-shadow);
     }
 
@@ -131,16 +143,14 @@
 
     .pk-card.is-selected {
       transform: translateY(-1px);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+      box-shadow: var(--pk-card-shadow-strong);
     }
 
     .pk-card-thumb {
       aspect-ratio: 16 / 9;
       border-radius: var(--ds-radius-2);
       border: 1px solid color-mix(in oklab, var(--ds-border) 72%, transparent);
-      background:
-        linear-gradient(135deg, rgba(87, 214, 255, 0.16), rgba(255, 110, 196, 0.16)),
-        color-mix(in oklab, var(--ds-bg) 88%, transparent);
+      background: var(--pk-card-thumb-gradient);
       overflow: hidden;
       position: relative;
     }
@@ -153,7 +163,7 @@
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      background: linear-gradient(180deg, rgba(5, 7, 11, 0.08), rgba(5, 7, 11, 0.42));
+      background: var(--pk-card-open-overlay);
       transition: opacity var(--ds-dur-fast, 160ms) ease;
       z-index: 1;
       border-radius: inherit;
@@ -242,7 +252,7 @@
       font-size: 10px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.62);
+      color: var(--pk-card-brand-mark);
     }
 
     .pk-card-body,
@@ -328,9 +338,19 @@
     </main>
   </div>
 
+  <script src="./js/theme-registry.js"></script>
+  <script src="./js/theme-selector.js"></script>
   <script src="./js/project-store.js"></script>
   <script>
     (function initDashboard() {
+      const root = document.documentElement;
+      const themeSelectorApi = window.DesignSystemThemeSelector;
+      if (themeSelectorApi) {
+        themeSelectorApi.applyTheme(root.getAttribute("data-theme") || "tech-grid", {
+          root,
+          storageKey: "projektik-theme"
+        });
+      }
       const gallery = document.getElementById("projectGallery");
       const projectCountLabel = document.getElementById("projectCountLabel");
       const createProjectBtn = document.getElementById("createProjectBtn");
@@ -418,6 +438,12 @@
           `;
         }).join("");
       }
+
+      window.addEventListener("storage", (event) => {
+        if (!event.key || event.key.startsWith("projektik:")) {
+          renderProjects();
+        }
+      });
 
       createProjectBtn.addEventListener("click", createProject);
 

@@ -187,6 +187,48 @@
     var(--ds-border) 38%
   );
   --ds-btn-tertiary-text: var(--ds-accent-alt);
+  --ds-control-surface-gap: var(--ds-space-2);
+  --ds-control-surface-pad: 0 var(--ds-space-3);
+  --ds-control-surface-pad-lg: var(--ds-space-3);
+  --ds-control-surface-radius: var(--ds-radius-2);
+  --ds-control-surface-border: var(--ds-border);
+  --ds-control-surface-border-strong: var(--ds-border-strong);
+  --ds-control-surface-bg: color-mix(
+    in oklab,
+    var(--ds-bg-elevated) 88%,
+    transparent
+  );
+  --ds-control-surface-bg-strong: var(--ds-bg-raised);
+  --ds-control-surface-text: var(--ds-text);
+  --ds-control-surface-text-muted: var(--ds-text-muted);
+  --ds-control-surface-active-bg: color-mix(
+    in oklab,
+    var(--ds-accent) 12%,
+    var(--ds-bg-raised)
+  );
+  --ds-control-surface-active-border: color-mix(
+    in oklab,
+    var(--ds-accent) 54%,
+    var(--ds-border)
+  );
+  --ds-control-surface-danger-bg: color-mix(
+    in oklab,
+    var(--ds-danger) 12%,
+    var(--ds-bg-raised)
+  );
+  --ds-control-surface-danger-border: color-mix(
+    in oklab,
+    var(--ds-danger) 52%,
+    var(--ds-border)
+  );
+  --ds-control-surface-danger-text: var(--ds-danger);
+  --ds-control-icon-size: var(--ds-size-control-icon);
+  --ds-control-icon-radius: var(--ds-radius-2);
+  --ds-control-glyph-size: 16px;
+  --ds-control-select-min-w: 170px;
+  --ds-control-select-h: var(--ds-control-h);
+  --ds-control-select-pad-x: var(--ds-space-3);
+  --ds-control-select-pad-end: calc(var(--ds-space-3) + 18px);
   --ds-btn-text-quiet: var(--ds-text-muted);
   --ds-btn-text-quiet-hover: var(--ds-text);
   --ds-btn-text-quiet-active: var(--ds-accent);
@@ -216,6 +258,23 @@
   --ds-card-border: var(--ds-border);
   --ds-card-radius: var(--ds-radius-3);
   --ds-card-shadow: var(--ds-shadow-sm);
+  --ds-tag-h: var(--ds-control-h-sm);
+  --ds-tag-pad-x: var(--ds-space-2);
+  --ds-tag-radius: var(--ds-radius-pill);
+  --ds-tag-font-size: var(--ds-fs-1);
+  --ds-tag-letter-spacing: var(--ds-label-spacing);
+  --ds-tag-bg: color-mix(in oklab, var(--ds-bg-raised), transparent 10%);
+  --ds-tag-border: var(--ds-border);
+  --ds-tag-text: var(--ds-text-muted);
+  --ds-menu-trigger-size: var(--ds-control-h-sm);
+  --ds-menu-trigger-pad-x: var(--ds-space-2);
+  --ds-menu-trigger-bg: var(--ds-btn-bg);
+  --ds-menu-trigger-border: var(--ds-btn-border);
+  --ds-menu-trigger-open-bg: var(--ds-btn-bg-hover);
+  --ds-menu-trigger-open-border: var(--ds-accent);
+  --ds-menu-surface-bg: var(--ds-card-bg);
+  --ds-menu-surface-border: var(--ds-card-border);
+  --ds-menu-surface-shadow: var(--ds-shadow-md);
 
   --ds-input-bg: var(--ds-bg-raised);
   --ds-input-border: var(--ds-border);
@@ -260,84 +319,6 @@
   --ds-chip-bg: color-mix(in oklab, var(--ds-bg-raised), transparent 12%);
   --ds-chip-border: var(--ds-border);
   --ds-chip-text: var(--ds-text);
-  --ds-control-surface-radius: var(--ds-radius-pill);
-  --ds-control-surface-gap: 6px;
-  --ds-control-surface-pad: 4px;
-  --ds-control-surface-pad-lg: 6px 8px;
-  --ds-control-surface-bg: color-mix(
-    in oklab,
-    var(--ds-bg-raised) 76%,
-    transparent
-  );
-  --ds-control-surface-bg-strong: color-mix(
-    in oklab,
-    var(--ds-bg) 72%,
-    transparent
-  );
-  --ds-control-surface-border: color-mix(
-    in oklab,
-    var(--ds-border) 76%,
-    transparent
-  );
-  --ds-control-surface-border-strong: color-mix(
-    in oklab,
-    var(--ds-border) 78%,
-    transparent
-  );
-  --ds-control-surface-text: var(--ds-text);
-  --ds-control-surface-text-muted: var(--ds-text-muted);
-  --ds-control-surface-active-bg: color-mix(
-    in oklab,
-    var(--ds-accent) 12%,
-    var(--ds-bg)
-  );
-  --ds-control-surface-active-border: var(--ds-accent);
-  --ds-control-surface-danger-bg: color-mix(
-    in oklab,
-    var(--ds-danger) 16%,
-    var(--ds-bg)
-  );
-  --ds-control-surface-danger-border: color-mix(
-    in oklab,
-    var(--ds-danger) 56%,
-    var(--ds-border)
-  );
-  --ds-control-surface-danger-text: var(--ds-danger);
-  --ds-control-select-min-w: 126px;
-  --ds-control-select-h: 28px;
-  --ds-control-select-pad-x: 10px;
-  --ds-control-select-pad-end: 28px;
-  --ds-control-icon-size: 28px;
-  --ds-control-icon-radius: var(--ds-radius-pill);
-  --ds-control-glyph-size: 15px;
-  --ds-menu-trigger-size: 32px;
-  --ds-menu-trigger-pad-x: 10px;
-  --ds-menu-trigger-bg: color-mix(
-    in oklab,
-    var(--ds-bg) 82%,
-    rgba(4, 6, 10, 0.72)
-  );
-  --ds-menu-trigger-border: var(--ds-control-surface-border-strong);
-  --ds-menu-trigger-open-bg: var(--ds-control-surface-active-bg);
-  --ds-menu-trigger-open-border: var(--ds-control-surface-active-border);
-  --ds-menu-surface-bg: color-mix(
-    in oklab,
-    var(--ds-bg-elevated) 94%,
-    transparent
-  );
-  --ds-menu-surface-border: var(--ds-control-surface-border-strong);
-  --ds-menu-surface-shadow: var(--ds-card-shadow);
-  --ds-status-pill-h: 28px;
-  --ds-status-pill-pad-x: 10px;
-  --ds-status-pill-spacing: 0.06em;
-  --ds-tag-h: 18px;
-  --ds-tag-pad-x: 6px;
-  --ds-tag-radius: var(--ds-radius-pill);
-  --ds-tag-bg: color-mix(in oklab, var(--ds-bg) 72%, transparent);
-  --ds-tag-border: color-mix(in oklab, var(--ds-border) 60%, transparent);
-  --ds-tag-text: var(--ds-text-muted);
-  --ds-tag-font-size: 10px;
-  --ds-tag-letter-spacing: 0.06em;
   --ds-toast-inset-x: var(--ds-space-3);
   --ds-toast-inset-y: var(--ds-space-3);
   --ds-toast-gap: var(--ds-space-2);
