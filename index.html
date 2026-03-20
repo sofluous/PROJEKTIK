@@ -1,391 +1,451 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="tech-grid">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PROJEKTIK Dashboard</title>
-  <link rel="stylesheet" href="./theme.css">
-  <style>
-    :root {
-      color-scheme: dark;
-      --pk-dashboard-bg:
-        radial-gradient(circle at top, color-mix(in oklab, var(--ds-accent) 16%, transparent), transparent 24%),
-        radial-gradient(circle at 85% 12%, color-mix(in oklab, var(--ds-focus) 12%, transparent), transparent 18%),
-        linear-gradient(180deg, color-mix(in oklab, var(--ds-bg) 92%, black 8%), color-mix(in oklab, var(--ds-bg-elevated) 90%, black 10%));
-      --pk-panel-border: color-mix(in oklab, var(--ds-card-border, var(--ds-border)) 88%, var(--ds-border-strong) 12%);
-      --pk-panel-surface:
-        linear-gradient(180deg, color-mix(in oklab, white 3%, transparent), transparent),
-        var(--ds-card-bg);
-      --pk-card-shadow-strong: 0 18px 42px rgba(0, 0, 0, 0.28);
-      --pk-card-thumb-gradient:
-        linear-gradient(135deg, rgba(87, 214, 255, 0.16), rgba(255, 110, 196, 0.16)),
-        color-mix(in oklab, var(--ds-bg-soft) 84%, var(--ds-card-bg) 16%);
-      --pk-card-open-overlay:
-        linear-gradient(180deg, color-mix(in oklab, var(--ds-bg) 18%, transparent), color-mix(in oklab, var(--ds-bg) 60%, transparent));
-      --pk-card-brand-mark: rgba(255, 255, 255, 0.62);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="app-version" content="0.5" />
+    <title>PROJEKTIK Dashboard</title>
+    <link rel="stylesheet" href="./theme.css" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --pk-dashboard-bg:
+          radial-gradient(
+            circle at top,
+            color-mix(in oklab, var(--ds-accent) 16%, transparent),
+            transparent 24%
+          ),
+          radial-gradient(
+            circle at 85% 12%,
+            color-mix(in oklab, var(--ds-focus) 12%, transparent),
+            transparent 18%
+          ),
+          linear-gradient(
+            180deg,
+            color-mix(in oklab, var(--ds-bg) 92%, black 8%),
+            color-mix(in oklab, var(--ds-bg-elevated) 90%, black 10%)
+          );
+        --pk-panel-border: color-mix(
+          in oklab,
+          var(--ds-card-border, var(--ds-border)) 88%,
+          var(--ds-border-strong) 12%
+        );
+        --pk-panel-surface:
+          linear-gradient(
+            180deg,
+            color-mix(in oklab, white 3%, transparent),
+            transparent
+          ),
+          var(--ds-card-bg);
+        --pk-card-shadow-strong: 0 18px 42px rgba(0, 0, 0, 0.28);
+        --pk-card-thumb-gradient:
+          linear-gradient(
+            135deg,
+            rgba(87, 214, 255, 0.16),
+            rgba(255, 110, 196, 0.16)
+          ),
+          color-mix(in oklab, var(--ds-bg-soft) 84%, var(--ds-card-bg) 16%);
+        --pk-card-open-overlay: linear-gradient(
+          180deg,
+          color-mix(in oklab, var(--ds-bg) 18%, transparent),
+          color-mix(in oklab, var(--ds-bg) 60%, transparent)
+        );
+        --pk-card-brand-mark: rgba(255, 255, 255, 0.62);
+      }
 
-    * {
-      box-sizing: border-box;
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    body {
-      margin: 0;
-      min-height: 100dvh;
-      font-family: var(--ds-font-sans);
-      color: var(--ds-text);
-      background: var(--pk-dashboard-bg);
-    }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        font-family: var(--ds-font-sans);
+        color: var(--ds-text);
+        background: var(--pk-dashboard-bg);
+      }
 
-    .pk-dashboard {
-      min-height: 100dvh;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: var(--ds-space-4);
-      padding: clamp(16px, 3vw, 28px);
-    }
+      .pk-dashboard {
+        min-height: 100dvh;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: var(--ds-space-4);
+        padding: clamp(16px, 3vw, 28px);
+      }
 
-    .pk-topbar,
-    .pk-card,
-    .pk-empty-card {
-      border: 1px solid var(--pk-panel-border);
-      border-radius: var(--ds-radius-3);
-      background: var(--pk-panel-surface);
-      box-shadow: var(--ds-card-shadow);
-    }
+      .pk-topbar,
+      .pk-card,
+      .pk-empty-card {
+        border: 1px solid var(--pk-panel-border);
+        border-radius: var(--ds-radius-3);
+        background: var(--pk-panel-surface);
+        box-shadow: var(--ds-card-shadow);
+      }
 
-    .pk-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--ds-space-3);
-      padding: var(--ds-space-3);
-      flex-wrap: wrap;
-    }
+      .pk-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--ds-space-3);
+        padding: var(--ds-space-3);
+        flex-wrap: wrap;
+      }
 
-    .pk-brand {
-      display: grid;
-      gap: 4px;
-    }
+      .pk-brand {
+        display: grid;
+        gap: 4px;
+      }
 
-    .pk-eyebrow,
-    .pk-meta,
-    .pk-card-meta,
-    .pk-card-kicker {
-      font-size: var(--ds-fs-1);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ds-text-muted);
-    }
+      .pk-eyebrow,
+      .pk-meta,
+      .pk-card-meta,
+      .pk-card-kicker {
+        font-size: var(--ds-fs-1);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ds-text-muted);
+      }
 
-    .pk-brand h1,
-    .pk-section-title,
-    .pk-card-title {
-      margin: 0;
-    }
+      .pk-brand h1,
+      .pk-section-title,
+      .pk-card-title {
+        margin: 0;
+      }
 
-    .pk-brand h1 {
-      font-size: clamp(1.35rem, 2.8vw, 2.4rem);
-      letter-spacing: 0.04em;
-    }
+      .pk-brand h1 {
+        font-size: clamp(1.35rem, 2.8vw, 2.4rem);
+        letter-spacing: 0.04em;
+      }
 
-    .pk-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
+      .pk-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
 
-    .pk-main {
-      display: grid;
-      gap: var(--ds-space-4);
-      grid-template-rows: auto 1fr;
-      min-height: 0;
-    }
+      .pk-main {
+        display: grid;
+        gap: var(--ds-space-4);
+        grid-template-rows: auto 1fr;
+        min-height: 0;
+      }
 
-    .pk-section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--ds-space-3);
-      flex-wrap: wrap;
-    }
+      .pk-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--ds-space-3);
+        flex-wrap: wrap;
+      }
 
-    .pk-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: var(--ds-space-3);
-      align-content: start;
-    }
-
-    .pk-card,
-    .pk-empty-card {
-      padding: var(--ds-space-3);
-      display: grid;
-      gap: var(--ds-space-3);
-      min-height: 0;
-      position: relative;
-    }
-
-    .pk-card {
-      cursor: pointer;
-      transition:
-        border-color var(--ds-dur-fast, 160ms) ease,
-        background var(--ds-dur-fast, 160ms) ease,
-        transform var(--ds-dur-fast, 160ms) ease;
-    }
-
-    .pk-card:hover,
-    .pk-card.is-selected {
-      border-color: color-mix(in oklab, var(--ds-accent) 58%, var(--ds-border));
-      background: color-mix(in oklab, var(--ds-accent) 7%, var(--ds-bg-elevated));
-    }
-
-    .pk-card.is-selected {
-      transform: translateY(-1px);
-      box-shadow: var(--pk-card-shadow-strong);
-    }
-
-    .pk-card-thumb {
-      aspect-ratio: 16 / 9;
-      border-radius: var(--ds-radius-2);
-      border: 1px solid color-mix(in oklab, var(--ds-border) 72%, transparent);
-      background: var(--pk-card-thumb-gradient);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .pk-card-open {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      background: var(--pk-card-open-overlay);
-      transition: opacity var(--ds-dur-fast, 160ms) ease;
-      z-index: 1;
-      border-radius: inherit;
-      padding: 0;
-      text-align: center;
-    }
-
-    .pk-card-open .ds-btn {
-      margin: 0 auto;
-    }
-
-    .pk-card:hover .pk-card-open,
-    .pk-card:focus-within .pk-card-open,
-    .pk-card.is-selected .pk-card-open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .pk-card-menu {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 3;
-    }
-
-    .pk-card-menu summary,
-    .pk-more-menu summary {
-      list-style: none;
-      min-width: var(--ds-menu-trigger-size);
-      min-height: var(--ds-menu-trigger-size);
-      padding: 0 var(--ds-menu-trigger-pad-x);
-      border-radius: var(--ds-control-surface-radius);
-      border: 1px solid var(--ds-menu-trigger-border);
-      background: var(--ds-menu-trigger-bg);
-      color: var(--ds-control-surface-text);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    .pk-card-menu summary::-webkit-details-marker,
-    .pk-more-menu summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .pk-card-menu[open] summary,
-    .pk-more-menu[open] summary {
-      border-color: var(--ds-menu-trigger-open-border);
-      background: var(--ds-menu-trigger-open-bg);
-    }
-
-    .pk-card-menu-list,
-    .pk-more-menu-list {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      min-width: 160px;
-      padding: 8px;
-      border-radius: var(--ds-radius-2);
-      border: 1px solid var(--ds-menu-surface-border);
-      background: var(--ds-menu-surface-bg);
-      box-shadow: var(--ds-menu-surface-shadow);
-      display: grid;
-      gap: 6px;
-      z-index: 4;
-    }
-
-    .pk-card-menu-list .ds-btn,
-    .pk-more-menu-list .ds-btn {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .pk-card-thumb.has-image {
-      background-size: cover;
-      background-position: center;
-    }
-
-    .pk-card-thumb::after {
-      content: "PROJEKTIK";
-      position: absolute;
-      inset: auto 10px 8px auto;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--pk-card-brand-mark);
-    }
-
-    .pk-card-body,
-    .pk-card-metadata {
-      display: grid;
-      gap: 8px;
-    }
-
-    .pk-card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .pk-tag {
-      display: inline-flex;
-      align-items: center;
-      min-height: var(--ds-tag-h);
-      padding: 0 var(--ds-tag-pad-x);
-      border-radius: var(--ds-tag-radius);
-      border: 1px solid var(--ds-tag-border);
-      background: var(--ds-tag-bg);
-      color: var(--ds-tag-text);
-      font-size: var(--ds-tag-font-size);
-      letter-spacing: var(--ds-tag-letter-spacing);
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .pk-empty-card {
-      place-items: center;
-      text-align: center;
-      min-height: 320px;
-      padding: clamp(24px, 5vw, 40px);
-    }
-
-    .pk-empty-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-    }
-
-    .pk-hidden-input {
-      display: none !important;
-    }
-
-    @media (max-width: 720px) {
       .pk-gallery {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: var(--ds-space-3);
+        align-content: start;
       }
-      .pk-card-menu summary {
+
+      .pk-card,
+      .pk-empty-card {
+        padding: var(--ds-space-3);
+        display: grid;
+        gap: var(--ds-space-3);
+        min-height: 0;
+        position: relative;
+      }
+
+      .pk-card {
+        cursor: pointer;
+        transition:
+          border-color var(--ds-dur-fast, 160ms) ease,
+          background var(--ds-dur-fast, 160ms) ease,
+          transform var(--ds-dur-fast, 160ms) ease;
+      }
+
+      .pk-card:hover,
+      .pk-card.is-selected {
+        border-color: color-mix(
+          in oklab,
+          var(--ds-accent) 58%,
+          var(--ds-border)
+        );
+        background: color-mix(
+          in oklab,
+          var(--ds-accent) 7%,
+          var(--ds-bg-elevated)
+        );
+      }
+
+      .pk-card.is-selected {
+        transform: translateY(-1px);
+        box-shadow: var(--pk-card-shadow-strong);
+      }
+
+      .pk-card-thumb {
+        aspect-ratio: 16 / 9;
+        border-radius: var(--ds-radius-2);
+        border: 1px solid color-mix(in oklab, var(--ds-border) 72%, transparent);
+        background: var(--pk-card-thumb-gradient);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .pk-card-open {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        background: var(--pk-card-open-overlay);
+        transition: opacity var(--ds-dur-fast, 160ms) ease;
+        z-index: 1;
+        border-radius: inherit;
+        padding: 0;
+        text-align: center;
+      }
+
+      .pk-card-open .ds-btn {
+        margin: 0 auto;
+      }
+
+      .pk-card:hover .pk-card-open,
+      .pk-card:focus-within .pk-card-open,
+      .pk-card.is-selected .pk-card-open {
         opacity: 1;
+        pointer-events: auto;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="pk-dashboard">
-    <header class="pk-topbar">
-      <div class="pk-brand">
-        <div class="pk-eyebrow">Projection Mapping Projects</div>
-        <h1>PROJEKTIK</h1>
-        <div class="pk-meta">Local gallery for creating, opening, duplicating, importing, and exporting mapping projects.</div>
-      </div>
-      <div class="pk-actions">
-        <button class="ds-btn ds-btn-primary" id="createProjectBtn" type="button">New Project</button>
-        <button class="ds-btn" id="importProjectBtn" type="button">Import Project</button>
-        <input class="pk-hidden-input" id="importProjectInput" type="file" accept="application/json,.json">
-      </div>
-    </header>
 
-    <main class="pk-main">
-      <div class="pk-section-head">
-        <div>
-          <div class="pk-eyebrow">Dashboard</div>
-          <h2 class="pk-section-title">Recent Projects</h2>
+      .pk-card-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 3;
+      }
+
+      .pk-card-menu summary,
+      .pk-more-menu summary {
+        list-style: none;
+        min-width: var(--ds-menu-trigger-size);
+        min-height: var(--ds-menu-trigger-size);
+        padding: 0 var(--ds-menu-trigger-pad-x);
+        border-radius: var(--ds-control-surface-radius);
+        border: 1px solid var(--ds-menu-trigger-border);
+        background: var(--ds-menu-trigger-bg);
+        color: var(--ds-control-surface-text);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .pk-card-menu summary::-webkit-details-marker,
+      .pk-more-menu summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .pk-card-menu[open] summary,
+      .pk-more-menu[open] summary {
+        border-color: var(--ds-menu-trigger-open-border);
+        background: var(--ds-menu-trigger-open-bg);
+      }
+
+      .pk-card-menu-list,
+      .pk-more-menu-list {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        min-width: 160px;
+        padding: 8px;
+        border-radius: var(--ds-radius-2);
+        border: 1px solid var(--ds-menu-surface-border);
+        background: var(--ds-menu-surface-bg);
+        box-shadow: var(--ds-menu-surface-shadow);
+        display: grid;
+        gap: 6px;
+        z-index: 4;
+      }
+
+      .pk-card-menu-list .ds-btn,
+      .pk-more-menu-list .ds-btn {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .pk-card-thumb.has-image {
+        background-size: cover;
+        background-position: center;
+      }
+
+      .pk-card-thumb::after {
+        content: "PROJEKTIK";
+        position: absolute;
+        inset: auto 10px 8px auto;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--pk-card-brand-mark);
+      }
+
+      .pk-card-body,
+      .pk-card-metadata {
+        display: grid;
+        gap: 8px;
+      }
+
+      .pk-card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .pk-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: var(--ds-tag-h);
+        padding: 0 var(--ds-tag-pad-x);
+        border-radius: var(--ds-tag-radius);
+        border: 1px solid var(--ds-tag-border);
+        background: var(--ds-tag-bg);
+        color: var(--ds-tag-text);
+        font-size: var(--ds-tag-font-size);
+        letter-spacing: var(--ds-tag-letter-spacing);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .pk-empty-card {
+        place-items: center;
+        text-align: center;
+        min-height: 320px;
+        padding: clamp(24px, 5vw, 40px);
+      }
+
+      .pk-empty-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .pk-hidden-input {
+        display: none !important;
+      }
+
+      @media (max-width: 720px) {
+        .pk-gallery {
+          grid-template-columns: 1fr;
+        }
+        .pk-card-menu summary {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pk-dashboard">
+      <header class="pk-topbar">
+        <div class="pk-brand">
+          <div class="pk-eyebrow">Projection Mapping Projects</div>
+          <h1>PROJEKTIK</h1>
+          <div class="pk-meta">
+            Local gallery for creating, opening, duplicating, importing, and
+            exporting mapping projects.
+          </div>
         </div>
-        <div class="pk-meta" id="projectCountLabel">0 projects</div>
-      </div>
+        <div class="pk-actions">
+          <button
+            class="ds-btn ds-btn-primary"
+            id="createProjectBtn"
+            type="button"
+          >
+            New Project
+          </button>
+          <button class="ds-btn" id="importProjectBtn" type="button">
+            Import Project
+          </button>
+          <input
+            class="pk-hidden-input"
+            id="importProjectInput"
+            type="file"
+            accept="application/json,.json"
+          />
+        </div>
+      </header>
 
-      <section class="pk-gallery" id="projectGallery" aria-live="polite"></section>
-    </main>
-  </div>
+      <main class="pk-main">
+        <div class="pk-section-head">
+          <div>
+            <div class="pk-eyebrow">Dashboard</div>
+            <h2 class="pk-section-title">Recent Projects</h2>
+          </div>
+          <div class="pk-meta" id="projectCountLabel">0 projects</div>
+        </div>
 
-  <script src="./js/theme-registry.js"></script>
-  <script src="./js/theme-selector.js"></script>
-  <script src="./js/project-store.js"></script>
-  <script>
-    (function initDashboard() {
-      const root = document.documentElement;
-      const themeSelectorApi = window.DesignSystemThemeSelector;
-      if (themeSelectorApi) {
-        themeSelectorApi.applyTheme(root.getAttribute("data-theme") || "tech-grid", {
-          root,
-          storageKey: "projektik-theme"
-        });
-      }
-      const gallery = document.getElementById("projectGallery");
-      const projectCountLabel = document.getElementById("projectCountLabel");
-      const createProjectBtn = document.getElementById("createProjectBtn");
-      const importProjectBtn = document.getElementById("importProjectBtn");
-      const importProjectInput = document.getElementById("importProjectInput");
-      const store = window.ProjektikStore;
-      let selectedProjectId = "";
+        <section
+          class="pk-gallery"
+          id="projectGallery"
+          aria-live="polite"
+        ></section>
+      </main>
+    </div>
 
-      function formatDate(value) {
-        if (!value) {
-          return "Unknown";
+    <script src="./js/theme-registry.js"></script>
+    <script src="./js/theme-selector.js"></script>
+    <script src="./js/project-store.js"></script>
+    <script>
+      (function initDashboard() {
+        const root = document.documentElement;
+        const themeSelectorApi = window.DesignSystemThemeSelector;
+        if (themeSelectorApi) {
+          themeSelectorApi.applyTheme(
+            root.getAttribute("data-theme") || "tech-grid",
+            {
+              root,
+              storageKey: "projektik-theme",
+            },
+          );
         }
-        try {
-          return new Intl.DateTimeFormat(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
-          }).format(new Date(value));
-        } catch (error) {
-          return value;
+        const gallery = document.getElementById("projectGallery");
+        const projectCountLabel = document.getElementById("projectCountLabel");
+        const createProjectBtn = document.getElementById("createProjectBtn");
+        const importProjectBtn = document.getElementById("importProjectBtn");
+        const importProjectInput =
+          document.getElementById("importProjectInput");
+        const store = window.ProjektikStore;
+        let selectedProjectId = "";
+
+        function formatDate(value) {
+          if (!value) {
+            return "Unknown";
+          }
+          try {
+            return new Intl.DateTimeFormat(undefined, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            }).format(new Date(value));
+          } catch (error) {
+            return value;
+          }
         }
-      }
 
-      function openProject(projectId) {
-        window.location.href = `./editor.html?project=${encodeURIComponent(projectId)}`;
-      }
+        function openProject(projectId) {
+          window.location.href = `./editor.html?project=${encodeURIComponent(projectId)}`;
+        }
 
-      function createProject() {
-        window.location.href = "./editor.html?new=1";
-      }
+        function createProject() {
+          window.location.href = "./editor.html?new=1";
+        }
 
-      function renderEmptyState() {
-        gallery.innerHTML = `
+        function renderEmptyState() {
+          gallery.innerHTML = `
           <article class="pk-empty-card">
             <div class="pk-eyebrow">No saved projects yet</div>
             <h3 class="pk-card-title">Create your first mapping project</h3>
@@ -396,22 +456,23 @@
             </div>
           </article>
         `;
-      }
-
-      function renderProjects() {
-        const projects = store.listProjects();
-        projectCountLabel.textContent = `${projects.length} ${projects.length === 1 ? "project" : "projects"}`;
-
-        if (!projects.length) {
-          renderEmptyState();
-          return;
         }
 
-        gallery.innerHTML = projects.map((project) => {
-          const thumbnailStyle = project.thumbnailDataUrl
-            ? ` style="background-image:url('${project.thumbnailDataUrl.replace(/'/g, "%27")}');"`
-            : "";
-          return `
+        function renderProjects() {
+          const projects = store.listProjects();
+          projectCountLabel.textContent = `${projects.length} ${projects.length === 1 ? "project" : "projects"}`;
+
+          if (!projects.length) {
+            renderEmptyState();
+            return;
+          }
+
+          gallery.innerHTML = projects
+            .map((project) => {
+              const thumbnailStyle = project.thumbnailDataUrl
+                ? ` style="background-image:url('${project.thumbnailDataUrl.replace(/'/g, "%27")}');"`
+                : "";
+              return `
             <article class="pk-card${selectedProjectId === project.id ? " is-selected" : ""}" data-project-id="${project.id}" tabindex="0" role="button" aria-pressed="${selectedProjectId === project.id ? "true" : "false"}">
               <details class="pk-card-menu">
                   <summary aria-label="Project options">...</summary>
@@ -436,125 +497,133 @@
               </div>
             </article>
           `;
-        }).join("");
-      }
-
-      window.addEventListener("storage", (event) => {
-        if (!event.key || event.key.startsWith("projektik:")) {
-          renderProjects();
+            })
+            .join("");
         }
-      });
 
-      createProjectBtn.addEventListener("click", createProject);
-
-      importProjectBtn.addEventListener("click", () => {
-        importProjectInput.click();
-      });
-
-      importProjectInput.addEventListener("change", async (event) => {
-        const [file] = Array.from(event.target.files || []);
-        event.target.value = "";
-        if (!file) {
-          return;
-        }
-        try {
-          const projectId = await store.importProjectFile(file);
-          renderProjects();
-          openProject(projectId);
-        } catch (error) {
-          alert("Project import failed. Please check the JSON file and try again.");
-        }
-      });
-
-      gallery.addEventListener("click", (event) => {
-        const emptyAction = event.target.closest("[data-empty-action]");
-        if (emptyAction) {
-          if (emptyAction.dataset.emptyAction === "new") {
-            createProject();
-          } else {
-            importProjectInput.click();
+        window.addEventListener("storage", (event) => {
+          if (!event.key || event.key.startsWith("projektik:")) {
+            renderProjects();
           }
-          return;
-        }
+        });
 
-        const card = event.target.closest("[data-project-id]");
-        const action = event.target.closest("[data-card-action]");
-        if (!card) {
-          return;
-        }
+        createProjectBtn.addEventListener("click", createProject);
 
-        if (event.target.closest(".pk-card-menu summary")) {
-          return;
-        }
+        importProjectBtn.addEventListener("click", () => {
+          importProjectInput.click();
+        });
 
-        const projectId = card.dataset.projectId;
-
-        if (!action) {
-          selectedProjectId = projectId;
-          renderProjects();
-          return;
-        }
-
-        const menu = action.closest("details");
-        if (menu) {
-          menu.removeAttribute("open");
-        }
-
-        selectedProjectId = projectId;
-        if (action.dataset.cardAction === "open") {
-          openProject(projectId);
-          return;
-        }
-
-        if (action.dataset.cardAction === "duplicate") {
-          store.duplicateProject(projectId);
-          renderProjects();
-          return;
-        }
-
-        if (action.dataset.cardAction === "export") {
-          store.downloadProject(projectId, `${projectId}.json`);
-          return;
-        }
-
-        if (action.dataset.cardAction === "delete") {
-          if (!window.confirm("Delete this project from the local dashboard?")) {
+        importProjectInput.addEventListener("change", async (event) => {
+          const [file] = Array.from(event.target.files || []);
+          event.target.value = "";
+          if (!file) {
             return;
           }
-          store.deleteProject(projectId);
-          renderProjects();
-        }
-      });
+          try {
+            const projectId = await store.importProjectFile(file);
+            renderProjects();
+            openProject(projectId);
+          } catch (error) {
+            alert(
+              "Project import failed. Please check the JSON file and try again.",
+            );
+          }
+        });
 
-      gallery.addEventListener("keydown", (event) => {
-        const card = event.target.closest("[data-project-id]");
-        if (!card) {
-          return;
-        }
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
+        gallery.addEventListener("click", (event) => {
+          const emptyAction = event.target.closest("[data-empty-action]");
+          if (emptyAction) {
+            if (emptyAction.dataset.emptyAction === "new") {
+              createProject();
+            } else {
+              importProjectInput.click();
+            }
+            return;
+          }
+
+          const card = event.target.closest("[data-project-id]");
+          const action = event.target.closest("[data-card-action]");
+          if (!card) {
+            return;
+          }
+
+          if (event.target.closest(".pk-card-menu summary")) {
+            return;
+          }
+
           const projectId = card.dataset.projectId;
-          if (selectedProjectId === projectId) {
+
+          if (!action) {
+            selectedProjectId = projectId;
+            renderProjects();
+            return;
+          }
+
+          const menu = action.closest("details");
+          if (menu) {
+            menu.removeAttribute("open");
+          }
+
+          selectedProjectId = projectId;
+          if (action.dataset.cardAction === "open") {
             openProject(projectId);
             return;
           }
-          selectedProjectId = projectId;
-          renderProjects();
-        }
-      });
 
-      document.addEventListener("click", (event) => {
-        if (event.target.closest("[data-project-id]") || event.target.closest("[data-empty-action]")) {
-          return;
-        }
-        if (selectedProjectId) {
-          selectedProjectId = "";
-          renderProjects();
-        }
-      });
+          if (action.dataset.cardAction === "duplicate") {
+            store.duplicateProject(projectId);
+            renderProjects();
+            return;
+          }
 
-      renderProjects();
-    }());
-  </script>
-</body>
+          if (action.dataset.cardAction === "export") {
+            store.downloadProject(projectId, `${projectId}.json`);
+            return;
+          }
+
+          if (action.dataset.cardAction === "delete") {
+            if (
+              !window.confirm("Delete this project from the local dashboard?")
+            ) {
+              return;
+            }
+            store.deleteProject(projectId);
+            renderProjects();
+          }
+        });
+
+        gallery.addEventListener("keydown", (event) => {
+          const card = event.target.closest("[data-project-id]");
+          if (!card) {
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            const projectId = card.dataset.projectId;
+            if (selectedProjectId === projectId) {
+              openProject(projectId);
+              return;
+            }
+            selectedProjectId = projectId;
+            renderProjects();
+          }
+        });
+
+        document.addEventListener("click", (event) => {
+          if (
+            event.target.closest("[data-project-id]") ||
+            event.target.closest("[data-empty-action]")
+          ) {
+            return;
+          }
+          if (selectedProjectId) {
+            selectedProjectId = "";
+            renderProjects();
+          }
+        });
+
+        renderProjects();
+      })();
+    </script>
+  </body>
 </html>
