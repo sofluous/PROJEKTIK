@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="app-version" content="0.5" />
     <title>PROJEKTIK Dashboard</title>
-    <link rel="stylesheet" href="./theme.css" />
+    <script src="./js/app-bootstrap.js"></script>
     <style>
       :root {
         color-scheme: dark;
@@ -83,12 +83,9 @@
       }
 
       .pk-topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: var(--ds-space-3);
         padding: var(--ds-space-3);
-        flex-wrap: wrap;
       }
 
       .pk-brand {
@@ -122,6 +119,15 @@
         flex-wrap: wrap;
         gap: 8px;
         align-items: center;
+        justify-self: end;
+      }
+
+      .pk-theme-field {
+        min-width: min(220px, 100%);
+      }
+
+      .pk-theme-field .ds-label {
+        margin-bottom: 4px;
       }
 
       .pk-main {
@@ -223,24 +229,20 @@
         top: 10px;
         right: 10px;
         z-index: 3;
+        --ds-popover-gap: 8px;
       }
 
       .pk-card-menu summary,
       .pk-more-menu summary {
-        list-style: none;
         min-width: var(--ds-menu-trigger-size);
         min-height: var(--ds-menu-trigger-size);
         padding: 0 var(--ds-menu-trigger-pad-x);
-        border-radius: var(--ds-control-surface-radius);
-        border: 1px solid var(--ds-menu-trigger-border);
-        background: var(--ds-menu-trigger-bg);
-        color: var(--ds-control-surface-text);
-        cursor: pointer;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-size: 18px;
         line-height: 1;
+        list-style: none;
       }
 
       .pk-card-menu summary::-webkit-details-marker,
@@ -261,13 +263,25 @@
         right: 0;
         min-width: 160px;
         padding: 8px;
-        border-radius: var(--ds-radius-2);
-        border: 1px solid var(--ds-menu-surface-border);
-        background: var(--ds-menu-surface-bg);
-        box-shadow: var(--ds-menu-surface-shadow);
         display: grid;
         gap: 6px;
         z-index: 4;
+      }
+
+      .pk-card-menu:not([open]) .pk-card-menu-list,
+      .pk-more-menu:not([open]) .pk-more-menu-list {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(4px);
+      }
+
+      .pk-card-menu[open] .pk-card-menu-list,
+      .pk-more-menu[open] .pk-more-menu-list {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
       }
 
       .pk-card-menu-list .ds-btn,
@@ -306,14 +320,6 @@
       .pk-tag {
         display: inline-flex;
         align-items: center;
-        min-height: var(--ds-tag-h);
-        padding: 0 var(--ds-tag-pad-x);
-        border-radius: var(--ds-tag-radius);
-        border: 1px solid var(--ds-tag-border);
-        background: var(--ds-tag-bg);
-        color: var(--ds-tag-text);
-        font-size: var(--ds-tag-font-size);
-        letter-spacing: var(--ds-tag-letter-spacing);
         text-transform: uppercase;
         white-space: nowrap;
       }
@@ -348,7 +354,7 @@
   </head>
   <body>
     <div class="pk-dashboard">
-      <header class="pk-topbar">
+      <header class="pk-topbar ds-production-toolbar">
         <div class="pk-brand">
           <div class="pk-eyebrow">Projection Mapping Projects</div>
           <h1>PROJEKTIK</h1>
@@ -358,6 +364,16 @@
           </div>
         </div>
         <div class="pk-actions">
+          <div class="ds-field pk-theme-field">
+            <label class="ds-label" for="themeSelect">Theme</label>
+            <select
+              id="themeSelect"
+              class="ds-select"
+              data-ds-theme-select
+              data-ds-theme-storage="projektik-theme"
+              data-ds-theme-default="tech-grid"
+            ></select>
+          </div>
           <button
             class="ds-btn ds-btn-primary"
             id="createProjectBtn"
@@ -394,236 +410,9 @@
       </main>
     </div>
 
-    <script src="./js/theme-registry.js"></script>
-    <script src="./js/theme-selector.js"></script>
-    <script src="./js/project-store.js"></script>
+    <script src="./js/views/dashboard.js"></script>
     <script>
-      (function initDashboard() {
-        const root = document.documentElement;
-        const themeSelectorApi = window.DesignSystemThemeSelector;
-        if (themeSelectorApi) {
-          themeSelectorApi.applyTheme(
-            root.getAttribute("data-theme") || "tech-grid",
-            {
-              root,
-              storageKey: "projektik-theme",
-            },
-          );
-        }
-        const gallery = document.getElementById("projectGallery");
-        const projectCountLabel = document.getElementById("projectCountLabel");
-        const createProjectBtn = document.getElementById("createProjectBtn");
-        const importProjectBtn = document.getElementById("importProjectBtn");
-        const importProjectInput =
-          document.getElementById("importProjectInput");
-        const store = window.ProjektikStore;
-        let selectedProjectId = "";
-
-        function formatDate(value) {
-          if (!value) {
-            return "Unknown";
-          }
-          try {
-            return new Intl.DateTimeFormat(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            }).format(new Date(value));
-          } catch (error) {
-            return value;
-          }
-        }
-
-        function openProject(projectId) {
-          window.location.href = `./editor.html?project=${encodeURIComponent(projectId)}`;
-        }
-
-        function createProject() {
-          window.location.href = "./editor.html?new=1";
-        }
-
-        function renderEmptyState() {
-          gallery.innerHTML = `
-          <article class="pk-empty-card">
-            <div class="pk-eyebrow">No saved projects yet</div>
-            <h3 class="pk-card-title">Create your first mapping project</h3>
-            <div class="pk-meta">Start a new project or import an existing JSON file to populate the dashboard.</div>
-            <div class="pk-empty-actions">
-              <button class="ds-btn ds-btn-primary" type="button" data-empty-action="new">New Project</button>
-              <button class="ds-btn" type="button" data-empty-action="import">Import Project</button>
-            </div>
-          </article>
-        `;
-        }
-
-        function renderProjects() {
-          const projects = store.listProjects();
-          projectCountLabel.textContent = `${projects.length} ${projects.length === 1 ? "project" : "projects"}`;
-
-          if (!projects.length) {
-            renderEmptyState();
-            return;
-          }
-
-          gallery.innerHTML = projects
-            .map((project) => {
-              const thumbnailStyle = project.thumbnailDataUrl
-                ? ` style="background-image:url('${project.thumbnailDataUrl.replace(/'/g, "%27")}');"`
-                : "";
-              return `
-            <article class="pk-card${selectedProjectId === project.id ? " is-selected" : ""}" data-project-id="${project.id}" tabindex="0" role="button" aria-pressed="${selectedProjectId === project.id ? "true" : "false"}">
-              <details class="pk-card-menu">
-                  <summary aria-label="Project options">...</summary>
-                  <div class="pk-card-menu-list">
-                    <button class="ds-btn" type="button" data-card-action="duplicate">Duplicate</button>
-                    <button class="ds-btn" type="button" data-card-action="export">Export</button>
-                    <button class="ds-btn" type="button" data-card-action="delete">Delete</button>
-                  </div>
-                </details>
-              <div class="pk-card-open">
-                <button class="ds-btn ds-btn-primary" type="button" data-card-action="open">Open Project</button>
-              </div>
-              <div class="pk-card-thumb${project.thumbnailDataUrl ? " has-image" : ""}"${thumbnailStyle}>
-              </div>
-              <div class="pk-card-body">
-                <div class="pk-card-kicker">Updated ${formatDate(project.updatedAt)}</div>
-                <h3 class="pk-card-title">${project.name}</h3>
-                <div class="pk-card-meta">
-                  <span class="pk-tag">${project.outputWidth}x${project.outputHeight}</span>
-                  ${project.projectorModel ? `<span class="pk-tag">${project.projectorModel}</span>` : ""}
-                </div>
-              </div>
-            </article>
-          `;
-            })
-            .join("");
-        }
-
-        window.addEventListener("storage", (event) => {
-          if (!event.key || event.key.startsWith("projektik:")) {
-            renderProjects();
-          }
-        });
-
-        createProjectBtn.addEventListener("click", createProject);
-
-        importProjectBtn.addEventListener("click", () => {
-          importProjectInput.click();
-        });
-
-        importProjectInput.addEventListener("change", async (event) => {
-          const [file] = Array.from(event.target.files || []);
-          event.target.value = "";
-          if (!file) {
-            return;
-          }
-          try {
-            const projectId = await store.importProjectFile(file);
-            renderProjects();
-            openProject(projectId);
-          } catch (error) {
-            alert(
-              "Project import failed. Please check the JSON file and try again.",
-            );
-          }
-        });
-
-        gallery.addEventListener("click", (event) => {
-          const emptyAction = event.target.closest("[data-empty-action]");
-          if (emptyAction) {
-            if (emptyAction.dataset.emptyAction === "new") {
-              createProject();
-            } else {
-              importProjectInput.click();
-            }
-            return;
-          }
-
-          const card = event.target.closest("[data-project-id]");
-          const action = event.target.closest("[data-card-action]");
-          if (!card) {
-            return;
-          }
-
-          if (event.target.closest(".pk-card-menu summary")) {
-            return;
-          }
-
-          const projectId = card.dataset.projectId;
-
-          if (!action) {
-            selectedProjectId = projectId;
-            renderProjects();
-            return;
-          }
-
-          const menu = action.closest("details");
-          if (menu) {
-            menu.removeAttribute("open");
-          }
-
-          selectedProjectId = projectId;
-          if (action.dataset.cardAction === "open") {
-            openProject(projectId);
-            return;
-          }
-
-          if (action.dataset.cardAction === "duplicate") {
-            store.duplicateProject(projectId);
-            renderProjects();
-            return;
-          }
-
-          if (action.dataset.cardAction === "export") {
-            store.downloadProject(projectId, `${projectId}.json`);
-            return;
-          }
-
-          if (action.dataset.cardAction === "delete") {
-            if (
-              !window.confirm("Delete this project from the local dashboard?")
-            ) {
-              return;
-            }
-            store.deleteProject(projectId);
-            renderProjects();
-          }
-        });
-
-        gallery.addEventListener("keydown", (event) => {
-          const card = event.target.closest("[data-project-id]");
-          if (!card) {
-            return;
-          }
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            const projectId = card.dataset.projectId;
-            if (selectedProjectId === projectId) {
-              openProject(projectId);
-              return;
-            }
-            selectedProjectId = projectId;
-            renderProjects();
-          }
-        });
-
-        document.addEventListener("click", (event) => {
-          if (
-            event.target.closest("[data-project-id]") ||
-            event.target.closest("[data-empty-action]")
-          ) {
-            return;
-          }
-          if (selectedProjectId) {
-            selectedProjectId = "";
-            renderProjects();
-          }
-        });
-
-        renderProjects();
-      })();
+      window.ProjektikDashboardView.init();
     </script>
   </body>
 </html>

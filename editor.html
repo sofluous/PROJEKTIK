@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PROJEKTIK Editor</title>
-  <link rel="stylesheet" href="./theme.css">
+  <script src="./js/app-bootstrap.js"></script>
   <style>
     :root {
       color-scheme: dark;
@@ -180,28 +180,25 @@
     }
 
     .pk-utility-select {
+      justify-self: start;
       min-width: var(--ds-control-select-min-w);
-      min-height: var(--ds-control-select-h);
-      padding: 0 var(--ds-control-select-pad-end) 0 var(--ds-control-select-pad-x);
-      border-radius: var(--ds-control-surface-radius);
-      border: 1px solid var(--ds-control-surface-border);
-      background: var(--ds-control-surface-bg-strong);
-      color: var(--ds-control-surface-text);
-      font: inherit;
     }
 
-    .pk-icon-btn {
-      min-width: var(--ds-control-icon-size);
-      width: var(--ds-control-icon-size);
-      min-height: var(--ds-control-icon-size);
-      height: var(--ds-control-icon-size);
-      padding: 0;
-      border-radius: var(--ds-control-icon-radius);
-      border: 1px solid var(--ds-control-surface-border);
-      background: var(--ds-control-surface-bg-strong);
-      color: var(--ds-control-surface-text-muted);
+    .pk-icon-btn,
+    .pk-more-menu summary {
+      justify-self: auto;
+      flex: 0 0 auto;
       font-size: 11px;
       cursor: pointer;
+    }
+
+    .pk-icon-btn .pk-glyph,
+    .pk-toolbar-toggle .pk-glyph,
+    .pk-more-menu summary .pk-glyph {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      stroke-width: 1.9;
     }
 
     .pk-glyph {
@@ -227,13 +224,6 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
-    }
-
-    .pk-icon-btn.is-active,
-    .pk-icon-btn:hover {
-      color: var(--ds-control-surface-text);
-      border-color: var(--ds-control-surface-active-border);
-      background: var(--ds-control-surface-active-bg);
     }
 
     .pk-icon-btn.is-danger {
@@ -604,26 +594,23 @@
     }
 
     .pk-toolbar-toggle {
-      display: inline-flex;
-      align-items: center;
+      justify-self: auto;
       gap: 6px;
       min-height: 32px;
       padding: 0 12px;
       border-radius: 999px;
-      border: 1px solid var(--ds-control-surface-border);
-      background: var(--ds-control-surface-bg-strong);
-      color: var(--ds-control-surface-text-muted);
-      font: inherit;
-      cursor: pointer;
+      line-height: 1;
+      white-space: nowrap;
     }
 
-    .pk-toolbar-toggle:hover,
-    .pk-toolbar-toggle:focus-visible,
+    .pk-toolbar-toggle span {
+      line-height: 1;
+    }
+
     .pk-toolbar-toggle.is-active {
       color: var(--ds-control-surface-text);
       border-color: var(--ds-control-surface-active-border);
       background: var(--ds-control-surface-active-bg);
-      outline: none;
     }
 
     .pk-toolbar-divider {
@@ -1417,21 +1404,6 @@
 
     .pk-stage-tag,
     .pk-status-badge,
-    .pk-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--ds-control-surface-gap);
-      min-height: 24px;
-      padding: 0 10px;
-      border-radius: var(--ds-control-surface-radius);
-      border: 1px solid var(--ds-control-surface-border-strong);
-      background: color-mix(in oklab, var(--ds-bg-raised) 84%, transparent);
-      color: var(--ds-control-surface-text);
-      font-size: var(--ds-fs-1);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
     .pk-stage-tag {
       position: absolute;
       top: 12px;
@@ -1641,8 +1613,9 @@
     .pk-item-line {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--ds-space-2);
       min-width: 0;
+      flex-wrap: wrap;
     }
 
     .pk-tree-item .pk-item-main {
@@ -1721,13 +1694,8 @@
     }
 
     .pk-mini-btn {
-      min-width: var(--ds-control-icon-size);
-      min-height: var(--ds-control-icon-size);
-      padding: 0;
-      border-radius: var(--ds-radius-2);
-      border: 1px solid var(--ds-control-surface-border);
-      background: var(--ds-control-surface-bg-strong);
-      color: var(--ds-control-surface-text-muted);
+      justify-self: auto;
+      flex: 0 0 auto;
       cursor: pointer;
     }
 
@@ -1737,9 +1705,9 @@
     }
 
     .pk-mini-btn.is-active {
-      color: var(--ds-control-surface-text);
-      border-color: var(--ds-control-surface-active-border);
-      background: color-mix(in oklab, var(--ds-accent) 14%, var(--ds-bg));
+      background: var(--ds-icon-action-active-bg);
+      border-color: var(--ds-icon-action-border-hover);
+      color: var(--ds-icon-action-fg-active);
     }
 
     .pk-item-actions.is-rail {
@@ -1831,7 +1799,7 @@
     .pk-nudge-grid {
       display: grid;
       grid-template-columns: repeat(3, 28px);
-      gap: 4px;
+      gap: var(--ds-space-1);
       justify-content: start;
     }
 
@@ -1844,24 +1812,13 @@
     .pk-inspector-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
+      gap: var(--ds-space-2);
     }
 
     .pk-grid-4 {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: var(--ds-space-2);
-    }
-
-    .pk-chip {
-      min-height: var(--ds-tag-h);
-      padding: 0 calc(var(--ds-tag-pad-x) + 1px);
-      border-radius: var(--ds-radius-1);
-      border-color: var(--ds-tag-border);
-      background: var(--ds-tag-bg);
-      color: var(--ds-tag-text);
-      font-size: var(--ds-tag-font-size);
-      letter-spacing: var(--ds-tag-letter-spacing);
     }
 
     .pk-status-badge {
@@ -1874,31 +1831,33 @@
     }
 
     .pk-inspector-card {
-      padding: 8px;
-      border-radius: var(--ds-radius-2);
-      border: 1px solid color-mix(in oklab, var(--ds-border) 74%, transparent);
-      background: color-mix(in oklab, var(--ds-bg-raised) 66%, transparent);
+      gap: var(--ds-space-2);
+    }
+
+    .pk-inspector-card > .pk-section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: var(--ds-space-3);
+      margin-bottom: var(--ds-space-1);
+    }
+
+    .pk-inspector-card > .pk-section-head > :first-child {
+      min-width: 0;
+      display: grid;
+      gap: var(--ds-rhythm-title-body);
+      align-content: start;
     }
 
     .pk-info-btn {
-      width: 24px;
-      height: 24px;
-      padding: 0;
-      border-radius: var(--ds-control-surface-radius);
-      border: 1px solid var(--ds-control-surface-border);
-      background: var(--ds-control-surface-bg-strong);
-      color: var(--ds-control-surface-text-muted);
-      font: inherit;
+      justify-self: auto;
+      flex: 0 0 auto;
       cursor: help;
-    }
-
-    .pk-info-btn:hover {
-      color: var(--ds-control-surface-text);
-      border-color: var(--ds-border-strong);
     }
 
     .pk-more-menu {
       position: relative;
+      --ds-popover-gap: 8px;
     }
 
     .pk-more-menu summary {
@@ -1907,10 +1866,6 @@
       min-height: 32px;
       padding: 0 10px;
       border-radius: var(--ds-control-surface-radius);
-      border: 1px solid var(--ds-menu-trigger-border);
-      background: var(--ds-menu-trigger-bg);
-      color: var(--ds-control-surface-text);
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1934,12 +1889,22 @@
       z-index: calc(var(--ds-z-sticky) + 2);
       min-width: 170px;
       padding: 8px;
-      border-radius: var(--ds-radius-2);
-      border: 1px solid var(--ds-menu-surface-border);
-      background: var(--ds-menu-surface-bg);
-      box-shadow: var(--ds-menu-surface-shadow);
       display: grid;
       gap: 6px;
+    }
+
+    .pk-more-menu:not([open]) .pk-more-menu-list {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(4px);
+    }
+
+    .pk-more-menu[open] .pk-more-menu-list {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .pk-more-menu-list .ds-btn {
@@ -1948,6 +1913,7 @@
     }
 
     .pk-field label {
+      display: block;
       font-size: 10px;
       color: var(--ds-text-muted);
       letter-spacing: 0.08em;
@@ -1959,13 +1925,43 @@
       width: 100%;
     }
 
+    .pk-grid-2 .pk-field,
+    .pk-grid-4 .pk-field,
     .pk-inspector-grid .pk-field {
-      gap: 3px;
+      gap: 4px;
     }
 
-    .pk-inspector-grid .ds-input {
+    .pk-inspector-grid .ds-input,
+    .pk-inspector-grid .ds-select {
       min-height: 30px;
       padding: 0 8px;
+    }
+
+    .pk-inspector-card .pk-item-line {
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pk-inspector-card .pk-item-line > .pk-kicker,
+    .pk-inspector-card .pk-item-line > .pk-item-main {
+      flex: 1 1 140px;
+      min-width: 0;
+    }
+
+    .pk-inspector-card .pk-item-line > .pk-field {
+      flex: 1 1 160px;
+      min-width: 140px;
+      max-width: 100%;
+    }
+
+    .pk-inspector-card .pk-item-line > .pk-item-actions,
+    .pk-inspector-card .pk-item-line > .pk-nudge-grid {
+      margin-left: auto;
+    }
+
+    .pk-inspector-card .pk-stack-inline,
+    .pk-inspector-card .pk-item-tags {
+      gap: var(--ds-space-2);
     }
 
     .pk-stage-header.is-minimal .pk-stage-head-top {
@@ -2267,6 +2263,13 @@
       <path d="M8 12h5"></path>
       <path d="M8 15h8"></path>
     </symbol>
+    <symbol id="pk-icon-frame" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="16" rx="1.5"></rect>
+      <path d="M8 4v16"></path>
+      <path d="M16 4v16"></path>
+      <path d="M4 8h16"></path>
+      <path d="M4 16h16"></path>
+    </symbol>
     <symbol id="pk-icon-file" viewBox="0 0 24 24">
       <path d="M8 4h6l4 4v12H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
       <path d="M14 4v4h4"></path>
@@ -2331,12 +2334,12 @@
           <div class="pk-section-head pk-titlebar">
             <div class="pk-titlebar-main">
               <button class="pk-panel-title pk-title-button" id="projectTitle" type="button">Venue Setup A</button>
-              <span class="pk-chip" id="projectStatusChip">Saved</span>
+              <span class="pk-chip ds-chip" id="projectStatusChip">Saved</span>
             </div>
             <div class="pk-titlebar-actions">
-              <details class="pk-more-menu">
-              <summary aria-label="Project file actions"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-file"></use></svg></summary>
-              <div class="pk-more-menu-list">
+              <details class="pk-more-menu ds-popover-wrap">
+              <summary class="ds-btn ds-btn-icon ds-icon-action" aria-label="Project file actions"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-file"></use></svg></summary>
+              <div class="pk-more-menu-list ds-popover ds-popover-static">
                 <button class="ds-btn ds-btn-primary" id="saveProjectBtn" type="button">Save</button>
                 <button class="ds-btn" id="saveAsProjectBtn" type="button">Save Copy</button>
                 <button class="ds-btn" id="exportProjectBtn" type="button">Export</button>
@@ -2364,9 +2367,9 @@
           </section>
 
           <section class="pk-list" id="assetsPanel" hidden>
-            <div class="pk-assets-top">
+            <div class="pk-assets-top ds-card ds-card-secondary">
               <div class="pk-section-head pk-assets-toolbar">
-              <span class="pk-chip" id="assetCountBadge">4 loaded</span>
+              <span class="pk-chip ds-chip" id="assetCountBadge">4 loaded</span>
               <button class="ds-btn ds-btn-primary" id="importAssetBtn" type="button">Import Asset</button>
               </div>
               <div id="selectedAssetPreview"></div>
@@ -2375,10 +2378,10 @@
           </section>
 
           <section class="pk-list" id="settingsPanel" hidden>
-            <div class="pk-inspector-card">
+            <div class="pk-inspector-card ds-card ds-card-secondary">
               <div class="pk-field">
                 <label for="themeSelect">Theme</label>
-                <select class="pk-utility-select" id="themeSelect" aria-label="Theme" data-ds-theme-select data-ds-theme-storage="projektik-theme" data-ds-theme-default="tech-grid"></select>
+                <select class="pk-utility-select ds-select" id="themeSelect" aria-label="Theme" data-ds-theme-select data-ds-theme-storage="projektik-theme" data-ds-theme-default="tech-grid"></select>
               </div>
             </div>
           </section>
@@ -2421,9 +2424,9 @@
                   <button class="ds-btn" id="pinProjectionLayerBtn" type="button">Pin Layer</button>
                   <button class="ds-btn" id="pinProjectionSurfaceBtn" type="button">Pin Surface</button>
                     <button class="ds-btn" id="clearProjectionPinBtn" type="button">Clear</button>
-                    <button class="pk-icon-btn" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
-                    <button class="pk-icon-btn" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
-                    <button class="pk-icon-btn" id="projectionCalibrationToggle" type="button" title="Toggle projection calibration" aria-label="Toggle projection calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
+                    <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+                    <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
+                    <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionCalibrationToggle" type="button" title="Toggle projection calibration" aria-label="Toggle projection calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
                   </div>
                 </div>
               </div>
@@ -2451,30 +2454,30 @@
               <div class="pk-stage-draw-preview" id="stageDrawPreview" hidden></div>
             </div>
             <div class="pk-stage-legend" id="stageLegend">
-              <span class="pk-chip">Grid 1m</span>
-              <span class="pk-chip">Crosshair</span>
-              <span class="pk-chip">Edge Frame</span>
+              <span class="pk-chip ds-chip">Grid 1m</span>
+              <span class="pk-chip ds-chip">Crosshair</span>
+              <span class="pk-chip ds-chip">Edge Frame</span>
             </div>
           </div>
           <div class="pk-overlay-controls" id="overlayControls" aria-label="Overlay controls">
             <div class="pk-overlay-control-group" aria-label="Edit tools">
-              <button class="pk-icon-btn" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
-              <button class="pk-icon-btn" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
-              <button class="pk-icon-btn" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
               <span class="pk-toolbar-divider" aria-hidden="true"></span>
-              <button class="pk-icon-btn" id="overlayLayersToggle" type="button" title="Toggle layers drawer" aria-label="Toggle layers drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-panel-left"></use></svg></button>
-              <button class="pk-icon-btn" id="overlayToolsToggle" type="button" title="Toggle inspector drawer" aria-label="Toggle inspector drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="overlayLayersToggle" type="button" title="Toggle layers drawer" aria-label="Toggle layers drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-panel-left"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="overlayToolsToggle" type="button" title="Toggle inspector drawer" aria-label="Toggle inspector drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
             </div>
             <div class="pk-overlay-control-group pk-overlay-control-group-run" aria-label="View and run controls">
-              <button class="pk-toolbar-toggle" id="outputToggle" type="button" title="Enable preview" aria-label="Enable preview">
+              <button class="pk-toolbar-toggle ds-btn" id="outputToggle" type="button" title="Enable preview" aria-label="Enable preview">
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
                 <span>Preview</span>
               </button>
-              <button class="pk-toolbar-toggle" id="overlayFullscreenToggle" type="button" title="Toggle fullscreen" aria-label="Toggle fullscreen">
+              <button class="pk-toolbar-toggle ds-btn" id="overlayFullscreenToggle" type="button" title="Toggle fullscreen" aria-label="Toggle fullscreen">
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg>
                 <span>Fullscreen</span>
               </button>
-              <button class="pk-toolbar-toggle" id="playbackToggle" type="button" title="Start live output" aria-label="Start live output">
+              <button class="pk-toolbar-toggle ds-btn" id="playbackToggle" type="button" title="Start live output" aria-label="Start live output">
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-play"></use></svg>
                 <span>Live</span>
               </button>
@@ -2515,10 +2518,10 @@
         </section>
 
         <div class="pk-panel-body">
-          <section class="pk-inspector-card" id="projectSettingsCard" hidden>
+          <section class="pk-inspector-card ds-card ds-card-secondary" id="projectSettingsCard" hidden>
             <div class="pk-section-head">
               <div class="pk-eyebrow">Project Settings</div>
-              <button class="pk-info-btn" type="button" title="Project-wide metadata and projector output settings. Select the project title to edit these.">i</button>
+              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Project-wide metadata and projector output settings. Select the project title to edit these.">i</button>
             </div>
             <div class="pk-grid-2">
               <div class="pk-field">
@@ -2533,7 +2536,7 @@
             <div class="pk-grid-2">
               <div class="pk-field">
                 <label for="outputPresetSelect">Output Preset</label>
-                <select class="ds-input" id="outputPresetSelect" aria-label="Output preset">
+                <select class="ds-select" id="outputPresetSelect" aria-label="Output preset">
                   <option value="1920x1080">1920 x 1080</option>
                   <option value="1280x720">1280 x 720</option>
                   <option value="1024x768">1024 x 768</option>
@@ -2580,15 +2583,15 @@
             </div>
           </section>
 
-          <section class="pk-inspector-card" id="calibrationTemplateCard" hidden>
+          <section class="pk-inspector-card ds-card ds-card-secondary" id="calibrationTemplateCard" hidden>
             <div class="pk-section-head">
               <div class="pk-eyebrow">Calibration Template</div>
-              <button class="pk-info-btn" type="button" title="Calibration defines the shared frame, grid, and reference system for mapped output.">i</button>
+              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Calibration defines the shared frame, grid, and reference system for mapped output.">i</button>
             </div>
             <div class="pk-grid-2">
               <div class="pk-field">
                 <label for="calibrationGridType">Grid Type</label>
-                <select class="ds-input" id="calibrationGridType" aria-label="Calibration grid type">
+                <select class="ds-select" id="calibrationGridType" aria-label="Calibration grid type">
                   <option value="line">Line Grid</option>
                   <option value="dot">Dot Grid</option>
                 </select>
@@ -2620,7 +2623,7 @@
             </div>
             <div class="pk-field">
               <label for="calibrationOutsideFill">Outside Fill</label>
-              <select class="ds-input" id="calibrationOutsideFill" aria-label="Projection fill outside calibration">
+              <select class="ds-select" id="calibrationOutsideFill" aria-label="Projection fill outside calibration">
                 <option value="#000000">Black</option>
                 <option value="#ffffff">White</option>
                 <option value="transparent">Transparent</option>
@@ -2628,16 +2631,16 @@
             </div>
           </section>
 
-          <section class="pk-inspector-card" id="layerStateCard">
+          <section class="pk-inspector-card ds-card ds-card-secondary" id="layerStateCard">
             <div class="pk-section-head">
               <div class="pk-eyebrow">Layer</div>
-              <button class="pk-info-btn" type="button" title="Layer controls affect the selected layer only.">i</button>
+              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Layer controls affect the selected layer only.">i</button>
             </div>
             <div class="pk-item-line">
               <div class="pk-item-tags" id="inspectorLayerMeta" hidden></div>
               <div class="pk-item-actions">
-                <button class="pk-mini-btn is-active" id="layerVisibleBtn" type="button" title="Toggle layer visibility" aria-label="Toggle layer visibility"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-eye"></use></svg></button>
-                <button class="pk-mini-btn" id="layerLockedBtn" type="button" title="Toggle layer lock" aria-label="Toggle layer lock"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action is-active" id="layerVisibleBtn" type="button" title="Toggle layer visibility" aria-label="Toggle layer visibility"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-eye"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="layerLockedBtn" type="button" title="Toggle layer lock" aria-label="Toggle layer lock"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
               </div>
             </div>
             <div class="pk-item-line">
@@ -2649,31 +2652,31 @@
             <div class="pk-item-line">
               <span class="pk-kicker">Calibration Link</span>
               <div class="pk-item-actions">
-                <button class="pk-mini-btn is-active" id="inspectorLinkBtn" type="button" title="Toggle calibration follow" aria-label="Toggle calibration follow"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action is-active" id="inspectorLinkBtn" type="button" title="Toggle calibration follow" aria-label="Toggle calibration follow"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
               </div>
             </div>
           </section>
 
-          <section class="pk-inspector-card" id="referenceLayerCard" hidden>
+          <section class="pk-inspector-card ds-card ds-card-secondary" id="referenceLayerCard" hidden>
             <div class="pk-section-head">
               <div class="pk-eyebrow">Reference</div>
-              <button class="pk-info-btn" type="button" title="Reference is a calibration aid rendered through its assigned surface.">i</button>
+              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Reference is a calibration aid rendered through its assigned surface.">i</button>
             </div>
             <div class="pk-field">
               <label for="referenceAssetSelect">Reference Source</label>
-              <select class="ds-input" id="referenceAssetSelect" aria-label="Reference source"></select>
+              <select class="ds-select" id="referenceAssetSelect" aria-label="Reference source"></select>
             </div>
             <div class="pk-grid-2">
               <div class="pk-field">
                 <label for="referenceFitMode">Reference Fit</label>
-                <select class="ds-input" id="referenceFitMode" aria-label="Reference fit mode">
+                <select class="ds-select" id="referenceFitMode" aria-label="Reference fit mode">
                   <option value="surface">Scaled</option>
                   <option value="anchored">Pinned</option>
                 </select>
               </div>
               <div class="pk-field">
                 <label for="referenceVisibilityMode">Visible In</label>
-                <select class="ds-input" id="referenceVisibilityMode" aria-label="Reference visibility mode">
+                <select class="ds-select" id="referenceVisibilityMode" aria-label="Reference visibility mode">
                   <option value="both">Calibration + Mapping</option>
                   <option value="calibration">Calibration Edit Only</option>
                   <option value="mapping">Mapping Edit Only</option>
@@ -2693,15 +2696,15 @@
             </div>
           </section>
 
-          <section class="pk-inspector-card" id="surfaceTransformCard">
+          <section class="pk-inspector-card ds-card ds-card-secondary" id="surfaceTransformCard">
             <div class="pk-section-head">
               <div class="pk-eyebrow">Surface Geometry</div>
-              <button class="pk-info-btn" type="button" title="Surface geometry controls output mode, bounds, local grid, alignment, and warp reset.">i</button>
+              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Surface geometry controls output mode, bounds, local grid, alignment, and warp reset.">i</button>
             </div>
             <div class="pk-grid-2">
               <div class="pk-field">
                 <label for="surfaceOutputMode">Surface Output</label>
-                <select class="ds-input" id="surfaceOutputMode" aria-label="Surface output mode">
+                <select class="ds-select" id="surfaceOutputMode" aria-label="Surface output mode">
                   <option value="transparent">Transparent</option>
                   <option value="asset">Assigned Asset</option>
                   <option value="fill">Solid Fill</option>
@@ -2727,13 +2730,13 @@
             </div>
             <div class="pk-field">
               <label for="surfaceAssetSelect">Assigned Asset</label>
-              <select class="ds-input" id="surfaceAssetSelect" aria-label="Assigned asset"></select>
+              <select class="ds-select" id="surfaceAssetSelect" aria-label="Assigned asset"></select>
             </div>
 
             <div class="pk-inspector-grid">
               <div class="pk-field">
                 <label for="surfaceGridEnabled">Local Grid</label>
-                <select class="ds-input" id="surfaceGridEnabled" aria-label="Local grid visibility">
+                <select class="ds-select" id="surfaceGridEnabled" aria-label="Local grid visibility">
                   <option value="off">Off</option>
                   <option value="on">On</option>
                 </select>
@@ -2766,15 +2769,15 @@
                 <input id="surfaceOpacity" type="range" min="0" max="100" value="42">
               </div>
               <div class="pk-nudge-grid" id="surfaceNudgeGrid" aria-label="Nudge controls">
-                <button class="pk-mini-btn" type="button" data-nudge-x="-1" data-nudge-y="-1" aria-label="Nudge up left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up-left"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="0" data-nudge-y="-1" aria-label="Nudge up"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="1" data-nudge-y="-1" aria-label="Nudge up right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up-right"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="-1" data-nudge-y="0" aria-label="Nudge left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-left"></use></svg></button>
-                <button class="pk-mini-btn is-active" type="button" data-nudge-x="0" data-nudge-y="0" aria-label="Center selection"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-center"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="1" data-nudge-y="0" aria-label="Nudge right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-right"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="-1" data-nudge-y="1" aria-label="Nudge down left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down-left"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="0" data-nudge-y="1" aria-label="Nudge down"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down"></use></svg></button>
-                <button class="pk-mini-btn" type="button" data-nudge-x="1" data-nudge-y="1" aria-label="Nudge down right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down-right"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="-1" data-nudge-y="-1" aria-label="Nudge up left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up-left"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="0" data-nudge-y="-1" aria-label="Nudge up"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="1" data-nudge-y="-1" aria-label="Nudge up right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up-right"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="-1" data-nudge-y="0" aria-label="Nudge left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-left"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action is-active" type="button" data-nudge-x="0" data-nudge-y="0" aria-label="Center selection"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-center"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="1" data-nudge-y="0" aria-label="Nudge right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-right"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="-1" data-nudge-y="1" aria-label="Nudge down left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down-left"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="0" data-nudge-y="1" aria-label="Nudge down"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="1" data-nudge-y="1" aria-label="Nudge down right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down-right"></use></svg></button>
               </div>
             </div>
             <div class="pk-stack-inline">
@@ -2788,10 +2791,10 @@
             </div>
           </section>
 
-          <section class="pk-inspector-card" id="assetTransformCard">
+          <section class="pk-inspector-card ds-card ds-card-secondary" id="assetTransformCard">
             <div class="pk-section-head">
               <div class="pk-eyebrow">Asset Placement</div>
-              <button class="pk-info-btn" type="button" title="Asset placement controls how media fits, crops, and moves inside the selected surface mask.">i</button>
+              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Asset placement controls how media fits, crops, and moves inside the selected surface mask.">i</button>
             </div>
             <div class="pk-inspector-grid">
               <div class="pk-field" style="grid-column: 1 / -1;">
@@ -2804,7 +2807,7 @@
               </div>
               <div class="pk-field">
                 <label for="assetFitMode">Map Mode</label>
-                <select class="ds-input" id="assetFitMode" aria-label="Asset fit mode">
+                <select class="ds-select" id="assetFitMode" aria-label="Asset fit mode">
                   <option value="crop">Manual Crop</option>
                   <option value="fit">Fit to Frame</option>
                   <option value="warp">Warp to Frame</option>
@@ -2834,7 +2837,7 @@
             <div class="pk-item-line">
               <span class="pk-kicker">Proportion Lock</span>
               <div class="pk-item-actions">
-                <button class="pk-mini-btn is-active" id="assetAspectLockBtn" type="button" title="Lock asset proportions" aria-label="Lock asset proportions"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action is-active" id="assetAspectLockBtn" type="button" title="Lock asset proportions" aria-label="Lock asset proportions"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
               </div>
             </div>
           </section>
@@ -2849,7 +2852,7 @@
         <div class="pk-section-head">
           <div class="pk-eyebrow" id="mobileSheetKicker">Workspace</div>
           <h2 id="mobileSheetTitle">Mode Structure</h2>
-          <button class="pk-info-btn" id="mobileSheetInfo" type="button" title="Compact mobile mode panel for direct adjustments while keeping the stage visible.">i</button>
+          <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" id="mobileSheetInfo" type="button" title="Compact mobile mode panel for direct adjustments while keeping the stage visible.">i</button>
         </div>
       </div>
       <div class="pk-sheet-body">
@@ -2865,15 +2868,15 @@
         </section>
 
         <section class="pk-list" data-mobile-panel="align" hidden>
-          <div class="pk-inspector-card">
+          <div class="pk-inspector-card ds-card ds-card-secondary">
             <div class="pk-field">
               <label for="mobileOverlay">Overlay Opacity</label>
               <input id="mobileOverlay" type="range" min="0" max="100" value="42">
             </div>
             <div class="pk-stack-inline">
-              <span class="pk-chip">Grid On</span>
-              <span class="pk-chip">Crosshair</span>
-              <span class="pk-chip">Labels</span>
+              <span class="pk-chip ds-chip">Grid On</span>
+              <span class="pk-chip ds-chip">Crosshair</span>
+              <span class="pk-chip ds-chip">Labels</span>
             </div>
             <div class="pk-stack-inline">
               <button class="ds-btn ds-btn-primary" type="button">Toggle Overlay</button>
@@ -2891,15 +2894,9 @@
     </nav>
   </div>
 
-  <script src="./js/theme-registry.js"></script>
-  <script src="./js/theme-selector.js"></script>
-  <script src="./js/project-store.js"></script>
-    <script src="./js/projection-session.js"></script>
+    <script src="./js/views/editor.js"></script>
     <script>
-    (function () {
-      const root = document.documentElement;
-      const store = window.ProjektikStore;
-      const themeSelectorApi = window.DesignSystemThemeSelector;
+    window.ProjektikEditorView.start(({ root, store, themeSelectorApi, projectionSession, bootstrap }) => {
       const IMPORT_ASSET_OPTION_VALUE = "__import_asset__";
       const appShell = document.querySelector(".pk-app");
       const themeSelect = document.getElementById("themeSelect");
@@ -3012,8 +3009,8 @@
       const calibrationShowMatrixLabels = document.getElementById("calibrationShowMatrixLabels");
       const calibrationOutsideFill = document.getElementById("calibrationOutsideFill");
       const layerStateCard = document.getElementById("layerStateCard");
-      const themeController = themeSelectorApi && themeSelect
-        ? themeSelectorApi.initThemeSelector(themeSelect, {
+      const themeController = themeSelect
+        ? bootstrap.initThemeSelector(themeSelect, {
             root,
             storageKey: "projektik-theme",
             defaultTheme: root.getAttribute("data-theme") || "tech-grid"
@@ -3246,7 +3243,6 @@
       let calibrationDragHistorySnapshot = null;
       let lastStagePressMeta = null;
       const PROJECT_SCHEMA_VERSION = 1;
-      const projectionSession = window.ProjektikProjectionSession;
       const OUTPUT_PRESETS = {
         "1920x1080": { width: 1920, height: 1080 },
         "1280x720": { width: 1280, height: 720 },
@@ -7209,7 +7205,7 @@
         if (state.ui.focus.type === "calibration") {
           return null;
           /*
-            <section class="pk-inspector-card" data-context-target="overlay-tools" data-entity-type="calibration" data-entity-id="calibration-parent">
+            <section class="pk-inspector-card ds-card ds-card-secondary" data-context-target="overlay-tools" data-entity-type="calibration" data-entity-id="calibration-parent">
               <div class="pk-section-head">
                 <div class="pk-eyebrow">Calibration Parent</div>
                 <button class="pk-info-btn" type="button" title="Calibration edits affect the shared baseline used by mapped output.">i</button>
@@ -7937,8 +7933,8 @@
                   </div>
                 </div>
                 <div class="pk-item-actions is-rail">
-                  <button class="pk-mini-btn pk-state-toggle${!layer.visible ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-layer-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
-                  <button class="pk-mini-btn pk-state-toggle${layer.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-layer-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${!layer.visible ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-layer-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${layer.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-layer-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
               </article>
               <div class="pk-tree-children"${isLayerExpanded ? "" : " hidden"}>
@@ -7992,7 +7988,7 @@
                 </div>
               </div>
               <div class="pk-item-actions is-rail">
-                <button class="pk-mini-btn${isCalibrationEditing() ? " is-active" : ""}" type="button" data-calibration-toggle="true" title="${isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration"}" aria-label="${isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration"}">${iconMarkup("grid", isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration")}</button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action${isCalibrationEditing() ? " is-active" : ""}" type="button" data-calibration-toggle="true" title="${isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration"}" aria-label="${isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration"}">${iconMarkup("grid", isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration")}</button>
               </div>
             </article>
             ${renderCalibrationReferenceChild()}
@@ -8348,7 +8344,7 @@
         }
         stageLegend.innerHTML = stageLegendItems
           .slice(0, showSummary ? 2 : 0)
-          .map((value) => `<span class="pk-chip">${value}</span>`)
+          .map((value) => `<span class="pk-chip ds-chip">${value}</span>`)
           .join("");
 
         renderProjectionFrame();
@@ -10287,7 +10283,9 @@
       }
       setMobileMode("workspace");
       render();
-    }());
+    }).catch((error) => {
+      console.error("Editor boot failed", error);
+    });
   </script>
 </body>
 </html>
