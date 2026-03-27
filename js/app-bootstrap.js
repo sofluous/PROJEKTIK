@@ -1,8 +1,5 @@
 (function (global) {
   const DEFAULTS = {
-    themeHref: "./_DesignSystem/theme.css",
-    themeRegistrySrc: "./_DesignSystem/js/theme-registry.js",
-    themeSelectorSrc: "./_DesignSystem/js/theme-selector.js",
     storeSrc: "./js/project-store.js",
     projectionSessionSrc: "./js/projection-session.js",
     storageKey: "projektik-theme",
@@ -13,27 +10,6 @@
 
   function toAbsoluteUrl(path) {
     return new URL(path, global.location.href).href;
-  }
-
-  function ensureThemeStylesheet(href = DEFAULTS.themeHref) {
-    const absoluteHref = toAbsoluteUrl(href);
-    const existing = Array.from(document.querySelectorAll("link[rel='stylesheet']"))
-      .find((node) => node.dataset.projektikTheme === "true" || node.href === absoluteHref);
-    if (existing) {
-      existing.dataset.projektikTheme = "true";
-      return existing;
-    }
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = href;
-    link.dataset.projektikTheme = "true";
-    const firstStyleNode = document.head.querySelector("style, link[rel='stylesheet']");
-    if (firstStyleNode) {
-      document.head.insertBefore(link, firstStyleNode);
-    } else {
-      document.head.appendChild(link);
-    }
-    return link;
   }
 
   function ensureScript(src) {
@@ -61,9 +37,6 @@
 
   async function load(options = {}) {
     const config = { ...DEFAULTS, ...options };
-    ensureThemeStylesheet(config.themeHref);
-    await ensureScript(config.themeRegistrySrc);
-    await ensureScript(config.themeSelectorSrc);
     if (config.store) {
       await ensureScript(config.storeSrc);
     }

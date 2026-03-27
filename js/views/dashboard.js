@@ -2,12 +2,6 @@
   async function initDashboard() {
     const bootstrap = global.ProjektikBootstrap;
     const { root, store } = await bootstrap.load({ store: true });
-    const themeSelect = document.getElementById("themeSelect");
-    bootstrap.initThemeSelector(themeSelect, {
-      root,
-      storageKey: "projektik-theme",
-      defaultTheme: root.getAttribute("data-theme") || "tech-grid"
-    });
 
     const gallery = document.getElementById("projectGallery");
     const projectCountLabel = document.getElementById("projectCountLabel");
@@ -226,3 +220,4 @@
 
   global.ProjektikDashboardView = { init: initDashboard };
 })(window);
+

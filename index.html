@@ -1,10 +1,13 @@
 <!doctype html>
-<html lang="en" data-theme="tech-grid">
+<html lang="en" data-theme="tech-grid" data-ds-theme-storage="projektik-theme" data-ds-theme-default="tech-grid">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="app-version" content="0.5" />
     <title>PROJEKTIK Dashboard</title>
+    <link rel="stylesheet" href="./_DesignSystem/theme.css" />
+    <script src="./_DesignSystem/js/theme-registry.js"></script>
+    <script src="./_DesignSystem/js/theme-selector.js"></script>
     <script src="./js/app-bootstrap.js"></script>
     <style>
       :root {
@@ -370,8 +373,6 @@
               id="themeSelect"
               class="ds-select"
               data-ds-theme-select
-              data-ds-theme-storage="projektik-theme"
-              data-ds-theme-default="tech-grid"
             ></select>
           </div>
           <button
@@ -416,3 +417,4 @@
     </script>
   </body>
 </html>
+
