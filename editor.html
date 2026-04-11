@@ -113,6 +113,10 @@
       margin: 0;
       font-size: clamp(1rem, 1.6vw, 1.25rem);
       letter-spacing: 0.04em;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .pk-panel-note {
@@ -243,6 +247,16 @@
 
     .pk-item-main {
       min-width: 0;
+    }
+
+    .pk-item-title,
+    .pk-kicker,
+    .pk-eyebrow,
+    .pk-stage-tag {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .pk-shell {
@@ -413,15 +427,17 @@
 
     .pk-tree-group {
       display: grid;
-      gap: 6px;
+      gap: 4px;
+      --pk-tree-level: 0;
     }
 
     .pk-tree-children {
       display: grid;
-      gap: 6px;
-      padding-left: 18px;
-      margin-left: 10px;
-      border-left: 1px solid color-mix(in oklab, var(--ds-border) 72%, transparent);
+      gap: 2px;
+      padding-left: 0;
+      margin-left: 0;
+      border-left: none;
+      --pk-tree-level: calc(var(--pk-tree-level, 0) + 1);
     }
 
     .pk-tree-children[hidden] {
@@ -432,31 +448,88 @@
       position: relative;
     }
 
-    .pk-tree-item .pk-item {
-      min-height: 42px;
+    .pk-tree-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding-inline: 8px 8px;
+      padding-inline-start: calc(28px + (var(--pk-tree-level, 0) * 10px));
+      position: relative;
+      border-radius: 6px;
+      background: transparent;
+      opacity: 1;
+      transition:
+        background-color 140ms ease,
+        opacity 140ms ease,
+        box-shadow 140ms ease;
     }
 
-    .pk-tree-item.is-child .pk-item {
-      padding-block: 6px;
+    .pk-tree-row::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 5px;
+      bottom: 5px;
+      width: 2px;
+      border-radius: 999px;
+      background: var(--ds-focus);
+      opacity: 0;
+      transition: opacity 140ms ease;
+      pointer-events: none;
     }
 
-    .pk-tree-item.is-child .pk-item-icon {
-      min-width: 22px;
-      width: 22px;
-      min-height: 22px;
-      height: 22px;
-      font-size: 10px;
+    .pk-tree-row.has-rail {
+      padding-right: 56px;
     }
 
-    .pk-tree-item.is-technical .pk-item {
-      background: color-mix(in oklab, var(--ds-bg) 70%, transparent);
+    .pk-tree-item.is-child .pk-tree-row {
+      padding-block: 2px;
     }
 
-    .pk-tree-toggle {
+    .pk-tree-item.is-child::before {
+      content: "";
+      position: absolute;
+      left: calc(12px + (var(--pk-tree-level, 0) * 10px));
+      top: -2px;
+      bottom: -2px;
+      width: 1px;
+      background: color-mix(in oklab, var(--ds-border) 18%, transparent);
+      pointer-events: none;
+    }
+
+    .pk-tree-item.is-child::after {
+      content: "";
+      position: absolute;
+      left: calc(12px + (var(--pk-tree-level, 0) * 10px));
+      top: 50%;
+      width: 10px;
+      height: 1px;
+      background: color-mix(in oklab, var(--ds-border) 18%, transparent);
+      pointer-events: none;
+    }
+
+    .pk-tree-item.is-child .pk-tree-row-icon {
       min-width: 18px;
       width: 18px;
       min-height: 18px;
       height: 18px;
+      font-size: 10px;
+    }
+
+    .pk-tree-item.is-technical .pk-tree-row {
+      background: transparent;
+    }
+
+    .pk-tree-toggle {
+      position: absolute;
+      left: calc(8px + (var(--pk-tree-level, 0) * 10px));
+      top: 50%;
+      transform: translateY(-50%);
+      min-width: 16px;
+      width: 16px;
+      min-height: 16px;
+      height: 16px;
       padding: 0;
       border: 0;
       border-radius: 50%;
@@ -467,8 +540,8 @@
     }
 
     .pk-tree-toggle .pk-glyph {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
     }
 
     .pk-tree-toggle:hover,
@@ -477,10 +550,62 @@
       background: color-mix(in oklab, var(--ds-bg) 72%, transparent);
     }
 
-    .pk-tree-toggle-spacer {
-      width: 18px;
-      height: 18px;
-      flex: 0 0 18px;
+    .pk-tree-row:hover,
+    .pk-tree-row:focus-within {
+      background: color-mix(in oklab, var(--ds-bg-raised) 18%, transparent);
+    }
+
+    .pk-tree-row.is-active {
+      background: color-mix(in oklab, var(--ds-accent) 4%, transparent);
+    }
+
+    .pk-tree-row.is-active::after {
+      opacity: 0.92;
+    }
+
+    .pk-tree-row.is-hover-linked:not(.is-active) {
+      background: color-mix(in oklab, var(--ds-focus) 3%, transparent);
+    }
+
+    .pk-tree-row.is-hover-linked:not(.is-active)::after {
+      opacity: 0.44;
+    }
+
+    .pk-tree-row.is-dimmed {
+      opacity: 0.76;
+    }
+
+    .pk-tree-row.is-drag-source {
+      opacity: 0.48;
+      outline: 1px dashed color-mix(in oklab, var(--ds-border) 52%, transparent);
+      outline-offset: -1px;
+    }
+
+    .pk-tree-row.is-drop-target {
+      background: color-mix(in oklab, var(--ds-accent) 16%, var(--ds-bg-raised));
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--ds-accent) 30%, transparent);
+    }
+
+    .pk-tree-row.is-drop-target::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: -1px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--ds-accent);
+      opacity: 0.96;
+    }
+
+    .pk-tree-row.is-mode-disabled {
+      opacity: 0.56;
+      background: transparent;
+    }
+
+    .pk-tree-row.is-mode-disabled .pk-item-title,
+    .pk-tree-row.is-mode-disabled .pk-tree-row-icon {
+      color: var(--ds-text-muted);
     }
 
     .pk-stage-shell {
@@ -603,10 +728,11 @@
       line-height: 1;
     }
 
-    .pk-toolbar-toggle.is-active {
-      color: var(--ds-control-surface-text);
-      border-color: var(--ds-control-surface-active-border);
-      background: var(--ds-control-surface-active-bg);
+    .pk-toolbar-toggle[aria-pressed="true"] {
+      background: var(--ds-btn-selected-bg);
+      border-color: var(--ds-btn-selected-border);
+      box-shadow: var(--ds-btn-selected-shadow, var(--ds-btn-shadow-hover));
+      color: var(--ds-btn-selected-text, var(--ds-text-inverse));
     }
 
     .pk-toolbar-divider {
@@ -795,6 +921,10 @@
       border-radius: var(--ds-control-surface-radius);
       border: 1px solid var(--ds-control-surface-border);
       background: var(--ds-control-surface-bg);
+    }
+
+    .pk-projection-strip.is-compact {
+      padding-inline: 8px;
     }
 
     .pk-projection-strip-main {
@@ -1048,11 +1178,12 @@
     .pk-stage-surface-outline polygon {
       fill: transparent;
       stroke: var(--pk-stage-outline);
-      stroke-width: 1.5;
+      stroke-width: 1.25;
       vector-effect: non-scaling-stroke;
       opacity: 0;
       transition: stroke var(--ds-dur-fast) var(--ds-ease-standard),
         stroke-width var(--ds-dur-fast) var(--ds-ease-standard),
+        fill var(--ds-dur-fast) var(--ds-ease-standard),
         filter var(--ds-dur-fast) var(--ds-ease-standard),
         opacity var(--ds-dur-fast) var(--ds-ease-standard);
     }
@@ -1103,15 +1234,17 @@
     .pk-stage-surface:hover .pk-stage-surface-outline polygon,
     .pk-stage-surface.is-hovered .pk-stage-surface-outline polygon,
     .pk-stage-surface.is-active .pk-stage-surface-outline polygon {
-      stroke: var(--ds-focus);
-      stroke-width: 2.5;
-      opacity: 1;
-      filter: drop-shadow(0 0 6px color-mix(in oklab, var(--ds-focus) 34%, transparent));
+      stroke: color-mix(in oklab, var(--ds-focus) 62%, white 8%);
+      stroke-width: 1.75;
+      fill: color-mix(in oklab, var(--ds-focus) 8%, transparent);
+      opacity: 0.92;
+      filter: drop-shadow(0 0 4px color-mix(in oklab, var(--ds-focus) 18%, transparent));
     }
 
     .pk-stage-surface.is-ancestor:not(.is-active) .pk-stage-surface-outline polygon {
-      stroke: color-mix(in oklab, var(--ds-focus) 42%, transparent);
-      opacity: 0.28;
+      stroke: transparent;
+      fill: color-mix(in oklab, var(--ds-focus) 4%, transparent);
+      opacity: 0.5;
     }
 
     .pk-stage-surface.is-dragging {
@@ -1119,17 +1252,19 @@
     }
 
     .pk-stage-surface.is-dragging .pk-stage-surface-outline polygon {
-      stroke: var(--ds-focus);
-      stroke-width: 2.5;
+      stroke: color-mix(in oklab, var(--ds-focus) 72%, white 12%);
+      stroke-width: 1.9;
+      fill: color-mix(in oklab, var(--ds-focus) 10%, transparent);
       opacity: 1;
       filter:
-        drop-shadow(0 0 6px color-mix(in oklab, var(--ds-focus) 38%, transparent))
+        drop-shadow(0 0 4px color-mix(in oklab, var(--ds-focus) 24%, transparent))
         drop-shadow(0 8px 14px rgba(0, 0, 0, 0.24));
     }
 
     .pk-stage-surface.is-hovered:not(.is-active) .pk-stage-surface-outline polygon {
-      stroke: color-mix(in oklab, var(--ds-focus) 70%, white 10%);
-      opacity: 0.86;
+      stroke: color-mix(in oklab, var(--ds-focus) 42%, white 8%);
+      fill: color-mix(in oklab, var(--ds-focus) 5%, transparent);
+      opacity: 0.72;
     }
 
     .pk-stage-surface.is-hovered:not(.is-dragging) {
@@ -1491,71 +1626,49 @@
       filter: saturate(0.72) brightness(0.68);
     }
 
-    .pk-item {
-      display: grid;
-      grid-template-columns: auto auto minmax(0, 1fr) auto;
-      gap: var(--ds-space-2);
-      align-items: center;
-      position: relative;
-      min-height: 46px;
-      padding: 7px 8px;
-      border-radius: var(--ds-radius-2);
-      border: 1px solid color-mix(in oklab, var(--ds-border) 74%, transparent);
-      background: color-mix(in oklab, var(--ds-bg-raised) 70%, transparent);
-    }
-
-    .pk-item.is-active {
-      border-color: var(--ds-accent);
-      background: color-mix(in oklab, var(--ds-accent) 12%, var(--ds-bg-raised));
-    }
-
-    .pk-item.is-dimmed {
-      opacity: 0.76;
-    }
-
-    .pk-item.is-mode-disabled {
-      opacity: 0.56;
-      border-color: color-mix(in oklab, var(--ds-border) 48%, transparent);
-      background: color-mix(in oklab, var(--ds-bg) 54%, transparent);
-    }
-
-    .pk-item.is-mode-disabled .pk-item-title,
-    .pk-item.is-mode-disabled .pk-item-meta,
-    .pk-item.is-mode-disabled .pk-item-icon {
-      color: var(--ds-text-muted);
-    }
-
     .pk-group-divider {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: flex-start;
+      gap: 6px;
       margin: 6px 0 2px;
+      padding-left: 28px;
     }
 
     .pk-group-divider::before,
     .pk-group-divider::after {
       content: "";
-      flex: 1 1 auto;
+      flex: 0 0 0;
       height: 1px;
-      background: color-mix(in oklab, var(--ds-border) 72%, transparent);
+      background: color-mix(in oklab, var(--ds-border) 24%, transparent);
+    }
+
+    .pk-group-divider::before {
+      display: none;
+    }
+
+    .pk-group-divider::after {
+      flex: 1 1 auto;
+      min-width: 24px;
     }
 
     .pk-group-divider span {
       font-size: var(--ds-fs-1);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--ds-text-muted);
       white-space: nowrap;
+      opacity: 0.64;
     }
 
     .pk-item-swatch,
     .pk-item-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
       display: grid;
       place-items: center;
-      font-size: 12px;
+      font-size: 10px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       border: 1px solid color-mix(in oklab, var(--ds-border) 74%, white 8%);
@@ -1566,8 +1679,25 @@
 
     .pk-item-icon .pk-glyph,
     .pk-item-swatch .pk-glyph {
-      width: 15px;
-      height: 15px;
+      width: 11px;
+      height: 11px;
+    }
+
+    .pk-tree-row-icon {
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 0;
+      border: 0;
+      background: transparent;
+      color: color-mix(in oklab, var(--ds-text) 84%, var(--ds-text-muted));
+      place-items: center start;
+      padding: 0;
+    }
+
+    .pk-tree-row-icon .pk-glyph {
+      width: 14px;
+      height: 14px;
     }
 
     .pk-item-swatch.asset-video {
@@ -1609,23 +1739,30 @@
     .pk-item-line {
       display: flex;
       align-items: center;
-      gap: var(--ds-space-2);
+      gap: 6px;
       min-width: 0;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      width: 100%;
+      flex: 1 1 auto;
     }
 
-    .pk-tree-item .pk-item-main {
+    .pk-tree-row-main {
       display: flex;
       align-items: center;
+      justify-content: flex-start;
+      flex: 1 1 auto;
+      width: auto;
       min-width: 0;
-      min-height: 22px;
+      min-height: 20px;
+      text-align: left;
+      gap: 0;
     }
 
-    .pk-item-kicker-row,
     .pk-item-title-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
     }
 
@@ -1637,9 +1774,18 @@
     }
 
     .pk-item-title {
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       min-width: 0;
       font-size: var(--ds-fs-2);
+      line-height: 1.2;
+      text-align: left;
+    }
+
+    .pk-tree-row .pk-item-title,
+    .pk-tree-row .pk-item-title-input {
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 0;
     }
 
     .pk-item-title-input {
@@ -1652,12 +1798,7 @@
       background: color-mix(in oklab, var(--ds-bg) 82%, transparent);
       color: var(--ds-text);
       font: inherit;
-    }
-
-    .pk-item-meta {
-      font-size: var(--ds-fs-1);
-      color: var(--ds-text-muted);
-      flex: 0 1 auto;
+      text-align: left;
     }
 
     .pk-item-tags {
@@ -1695,6 +1836,12 @@
       cursor: pointer;
     }
 
+    .pk-context-menu-btn .pk-glyph {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+    }
+
     .pk-mini-btn .pk-glyph {
       width: 13px;
       height: 13px;
@@ -1706,20 +1853,19 @@
       color: var(--ds-icon-action-fg-active);
     }
 
-    .pk-item-actions.is-rail {
-      gap: 4px;
+    .pk-tree-row-actions {
+      display: flex;
+      gap: 2px;
       flex-wrap: nowrap;
-      justify-self: end;
       align-self: center;
-      min-width: 52px;
       justify-content: flex-end;
     }
 
-    .pk-item-actions.is-rail .pk-mini-btn {
-      min-width: 24px;
-      width: 24px;
-      min-height: 24px;
-      height: 24px;
+    .pk-tree-row-actions .pk-mini-btn {
+      min-width: 20px;
+      width: 20px;
+      min-height: 20px;
+      height: 20px;
       border-radius: 6px;
       font-size: 10px;
     }
@@ -1732,14 +1878,49 @@
       transition: opacity 140ms ease, color 140ms ease, background 140ms ease, border-color 140ms ease;
     }
 
-    .pk-item:hover .pk-state-toggle,
-    .pk-item:focus-within .pk-state-toggle {
+    .pk-tree-row:hover .pk-state-toggle,
+    .pk-tree-row:focus-within .pk-state-toggle {
       opacity: 1;
+    }
+
+    .pk-tree-row-actions {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      justify-self: auto;
+      flex: 0 0 auto;
+      margin-left: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+      min-width: auto;
+    }
+
+    .pk-tree-row:hover .pk-tree-row-actions,
+    .pk-tree-row:focus-within .pk-tree-row-actions,
+    .pk-tree-row.is-active .pk-tree-row-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pk-tree-row.has-persistent-actions .pk-tree-row-actions {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .pk-state-toggle.is-active {
       opacity: 1;
       color: var(--ds-text);
+    }
+
+    .pk-tree-group[data-drop-target="detach"] .pk-group-divider {
+      color: var(--ds-accent);
+    }
+
+    .pk-tree-group[data-drop-target="detach"] .pk-group-divider::before,
+    .pk-tree-group[data-drop-target="detach"] .pk-group-divider::after {
+      background: color-mix(in oklab, var(--ds-accent) 74%, transparent);
     }
 
     .pk-state-toggle:hover,
@@ -1828,6 +2009,15 @@
 
     .pk-inspector-card {
       gap: var(--ds-space-2);
+    }
+
+    .pk-panel-right .pk-inspector-card,
+    #settingsPanel .pk-inspector-card {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
     }
 
     .pk-inspector-card > .pk-section-head {
@@ -1925,6 +2115,53 @@
     .pk-grid-4 .pk-field,
     .pk-inspector-grid .pk-field {
       gap: 4px;
+    }
+
+    .pk-panel-right .pk-grid-2,
+    .pk-panel-right .pk-grid-4,
+    .pk-panel-right .pk-inspector-grid,
+    #settingsPanel .pk-grid-2,
+    #settingsPanel .pk-grid-4,
+    #settingsPanel .pk-inspector-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px 12px;
+    }
+
+    .pk-panel-right .pk-grid-2 .pk-field,
+    .pk-panel-right .pk-grid-4 .pk-field,
+    .pk-panel-right .pk-inspector-grid .pk-field,
+    #settingsPanel .pk-field {
+      display: grid;
+      grid-template-columns: 104px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pk-panel-right .pk-field label,
+    #settingsPanel .pk-field label {
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pk-panel-right .pk-field.pk-field-multiline,
+    #settingsPanel .pk-field.pk-field-multiline {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+    }
+
+    .pk-panel-right .pk-field.pk-field-multiline label,
+    #settingsPanel .pk-field.pk-field-multiline label {
+      margin-bottom: 4px;
+    }
+
+    .pk-panel-right textarea.ds-input,
+    #settingsPanel textarea.ds-input {
+      min-height: 88px;
+      resize: vertical;
     }
 
     .pk-inspector-grid .ds-input,
@@ -2042,6 +2279,9 @@
       min-width: 0;
       flex: 1 1 auto;
       font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .pk-project-menu {
@@ -2056,6 +2296,16 @@
       width: 100%;
       min-width: 0;
       list-style: none;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .pk-title-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1 1 auto;
     }
 
     .pk-project-menu > summary::after {
@@ -2119,6 +2369,14 @@
     .pk-panel-body > .pk-inspector-card + .pk-inspector-card,
     .pk-panel-body > .pk-inspector-card + .pk-list {
       margin-top: 8px;
+    }
+
+    .pk-panel-right .pk-panel-body > .pk-inspector-card + .pk-inspector-card,
+    #settingsPanel > .pk-inspector-card + .pk-inspector-card,
+    #settingsPanel > .pk-inspector-card + .pk-list {
+      margin-top: 0;
+      padding-top: 10px;
+      border-top: 1px solid color-mix(in oklab, var(--ds-border) 56%, transparent);
     }
 
     @media (min-width: 761px) {
@@ -2378,7 +2636,7 @@
               <button class="pk-panel-title pk-title-button pk-titlebar-home" id="homeDashboardBtn" type="button" title="Return to dashboard">PROJEKTIK</button>
               <span class="pk-titlebar-divider" aria-hidden="true"></span>
               <details class="pk-more-menu pk-project-menu ds-popover-wrap">
-              <summary class="pk-panel-title pk-title-button pk-titlebar-project" id="projectTitle" aria-label="Project actions">Venue Setup A</summary>
+              <summary class="pk-panel-title pk-title-button pk-titlebar-project" id="projectTitle" aria-label="Project actions"><span class="pk-title-text">Venue Setup A</span></summary>
               <div class="pk-more-menu-list ds-popover ds-popover-static">
                 <button class="ds-btn ds-btn-primary" id="saveProjectBtn" type="button">Save</button>
                 <button class="ds-btn" id="saveAsProjectBtn" type="button">Save Copy</button>
@@ -2505,10 +2763,9 @@
           </div>
           <div class="pk-overlay-controls" id="overlayControls" aria-label="Overlay controls">
             <div class="pk-overlay-control-group" aria-label="Edit tools">
-              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
-              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
-              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
-              <span class="pk-toolbar-divider" aria-hidden="true"></span>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides" hidden><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference" hidden><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link" hidden><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="overlayLayersToggle" type="button" title="Toggle layers drawer" aria-label="Toggle layers drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-panel-left"></use></svg></button>
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="overlayToolsToggle" type="button" title="Toggle inspector drawer" aria-label="Toggle inspector drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
             </div>
@@ -2621,7 +2878,7 @@
                 <input class="ds-input" id="projectionHeightInput" type="text" aria-label="Projection height" placeholder="e.g. 3.4 m">
               </div>
             </div>
-            <div class="pk-field">
+            <div class="pk-field pk-field-multiline">
               <label for="projectNotesInput">Notes</label>
               <textarea class="ds-input" id="projectNotesInput" aria-label="Project notes"></textarea>
             </div>
@@ -3193,6 +3450,8 @@
           activeDragLabel: "",
           editingTitle: null,
           treeDrag: null,
+          treeDropTarget: null,
+          treeHover: null,
           contextMenu: {
             open: false,
             x: 0,
@@ -3202,8 +3461,8 @@
             contextTarget: ""
           },
           focus: {
-            type: "calibration",
-            id: "calibration-parent"
+            type: "stage",
+            id: "stage"
           },
           assetLibraryId: ""
         },
@@ -3267,7 +3526,9 @@
           y: 0,
           scaleX: 1,
           scaleY: 1,
-          rotation: 0
+          rotation: 0,
+          visible: true,
+          locked: false
         },
         surfaces: [],
         layers: []
@@ -3315,7 +3576,7 @@
       const KNOWN_PROJECT_KEYS = ["id", "name", "createdAt", "updatedAt", "thumbnailDataUrl", "schemaVersion", "dirty", "settings"];
       const KNOWN_UI_KEYS = ["leftPanelTab", "expandedLayerIds", "calibrationEditActive", "presentationEnabled", "calibrationLinkEnabled", "guidesEnabled", "playbackRunning", "showReferenceLayer", "focus", "assetLibraryId"];
       const KNOWN_PROJECTION_VIEW_KEYS = ["windowOpen", "preset", "pinnedLayerId", "pinnedSurfaceKey", "showGuides", "showReference", "showCalibration"];
-      const KNOWN_CALIBRATION_KEYS = ["x", "y", "scaleX", "scaleY", "rotation"];
+      const KNOWN_CALIBRATION_KEYS = ["x", "y", "scaleX", "scaleY", "rotation", "visible", "locked"];
       const KNOWN_CALIBRATION_TEMPLATE_KEYS = ["gridType", "gridSize", "rows", "columns", "showFrame", "showMatrixLabels", "outsideFill", "referenceAssetId", "referenceOpacity"];
       const KNOWN_CALIBRATION_REFERENCE_KEYS = ["assetId", "surfaceKey", "visible", "visibilityMode", "fitMode", "opacity", "locked"];
       const KNOWN_OUTPUT_KEYS = ["width", "height"];
@@ -3517,20 +3778,13 @@
 
       function normalizeFocusState() {
         if (state.ui.focus?.type === "reference") {
-          if (!hasCalibrationReference() || !isCalibrationEditing()) {
-            state.ui.focus = { type: "calibration", id: "calibration-parent" };
+          if (!hasCalibrationReference()) {
+            state.ui.focus = { type: "stage", id: "stage" };
           }
           return;
         }
         if (state.ui.focus?.type === "mode" || !state.ui.focus?.type) {
-          if (state.ui.calibrationEditActive) {
-            state.ui.focus = { type: "calibration", id: "calibration-parent" };
-            return;
-          }
-          const fallbackLayer = getMappedLayers()[0] || state.layers[0];
-          state.ui.focus = fallbackLayer
-            ? { type: "layer", id: fallbackLayer.id }
-            : { type: "calibration", id: "calibration-parent" };
+          state.ui.focus = { type: "stage", id: "stage" };
         }
       }
 
@@ -3539,10 +3793,10 @@
 
       function buildSerializableUiState() {
         return {
-          leftPanelTab: state.ui.leftPanelTab,
+          leftPanelTab: "workspace",
           expandedLayerIds: state.ui.expandedLayerIds.slice(),
           calibrationEditActive: state.ui.calibrationEditActive,
-          presentationEnabled: state.ui.presentationEnabled,
+          presentationEnabled: false,
           calibrationLinkEnabled: state.ui.calibrationLinkEnabled,
           guidesEnabled: state.ui.guidesEnabled,
           playbackRunning: false,
@@ -3951,10 +4205,17 @@
 
       function updateProjectChrome() {
         const isEditingProjectTitle = state.ui.editingTitle?.type === "project" && state.ui.editingTitle?.id === state.project.id;
+        const safeProjectName = state.project.name
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        const safeProjectNameValue = state.project.name
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;");
         projectTitle.classList.toggle("is-editing", isEditingProjectTitle);
         projectTitle.innerHTML = isEditingProjectTitle
-          ? `<input class="pk-item-title-input" type="text" value="${state.project.name.replace(/"/g, "&quot;")}" data-title-input="project" data-title-id="${state.project.id}" aria-label="Rename project" autofocus>`
-          : state.project.name;
+          ? `<input class="pk-item-title-input" type="text" value="${safeProjectNameValue}" data-title-input="project" data-title-id="${state.project.id}" aria-label="Rename project" autofocus>`
+          : `<span class="pk-title-text">${safeProjectName}</span>`;
         projectTitle.classList.toggle("is-active", state.ui.focus?.type === "project");
         projectTitle.title = isEditingProjectTitle ? "Rename project" : "Project actions";
         projectStatusChip.textContent = state.project.dirty ? "Unsaved changes" : "All changes saved";
@@ -3994,7 +4255,10 @@
         nextState.ui = {
           ...nextState.ui,
           ...(envelope.ui || {}),
+          leftPanelTab: "workspace",
           calibrationEditActive: Boolean(envelope?.ui?.calibrationEditActive || envelope?.ui?.workflowState === "calibration"),
+          presentationEnabled: false,
+          playbackRunning: false,
           controlsHidden: false,
           overlayLayersOpen: false,
           overlayToolsOpen: false,
@@ -4022,6 +4286,8 @@
           activeDragLabel: "",
           editingTitle: null,
           treeDrag: null,
+          treeDropTarget: null,
+          treeHover: null,
           contextMenu: {
             open: false,
             x: 0,
@@ -4158,7 +4424,7 @@
       }
 
       function isCalibrationEditing() {
-        return Boolean(state.ui.calibrationEditActive);
+        return state.ui.focus.type === "calibration" || state.ui.focus.type === "reference";
       }
 
       function getCurrentEditMode() {
@@ -5404,7 +5670,10 @@
 
       function isEntityLockedInCurrentState(entity) {
         if (entity.type === "reference") {
-          return getCalibrationReference().locked || !canEditCalibration();
+          return getCalibrationReference().locked
+            || state.ui.focus.type !== "reference"
+            || isPresentationPreviewActive()
+            || isLivePlaybackActive();
         }
         if (entity.type === "layer") {
           return entity.locked || !isLayerEditableInCurrentState(entity);
@@ -5425,7 +5694,10 @@
           return ownerLayer ? isEntityLockedInCurrentState({ type: "layer", ...ownerLayer }) : false;
         }
         if (entity.type === "calibration") {
-          return !isCalibrationEditing();
+          return state.calibration.locked
+            || state.ui.focus.type !== "calibration"
+            || isPresentationPreviewActive()
+            || isLivePlaybackActive();
         }
         return false;
       }
@@ -5511,7 +5783,13 @@
       }
 
       function canEditCalibration() {
-        return isCalibrationEditing() && !isPresentationPreviewActive() && !isLivePlaybackActive();
+        if (!isCalibrationEditing() || isPresentationPreviewActive() || isLivePlaybackActive()) {
+          return false;
+        }
+        if (state.ui.focus.type === "reference") {
+          return !getCalibrationReference().locked;
+        }
+        return !state.calibration.locked;
       }
 
       function getRunStateStatus() {
@@ -5836,12 +6114,21 @@
         const summaryLabel = getProjectionOperatorSummary();
 
         projectionPresetSelect.value = state.projectionView.preset;
-        openProjectionBtn.textContent = windowOpen ? "Reconnect" : "Open";
+        openProjectionBtn.textContent = windowOpen ? "Reconnect" : "Open Projection";
         openProjectionBtn.title = windowOpen ? "Reconnect the projection window" : "Open the projection window";
         projectionFullscreenBtn.disabled = !windowOpen;
         pinProjectionLayerBtn.disabled = !selectedLayer;
         pinProjectionSurfaceBtn.disabled = !selectedSurface;
         clearProjectionPinBtn.disabled = !pinnedActive;
+        projectionPresetSelect.hidden = !windowOpen;
+        projectionFullscreenBtn.hidden = !windowOpen;
+        pinProjectionLayerBtn.hidden = !windowOpen;
+        pinProjectionSurfaceBtn.hidden = !windowOpen;
+        clearProjectionPinBtn.hidden = !windowOpen;
+        projectionGuidesToggle.hidden = !windowOpen;
+        projectionReferenceToggle.hidden = !windowOpen;
+        projectionCalibrationToggle.hidden = !windowOpen;
+        document.querySelector(".pk-projection-strip")?.classList.toggle("is-compact", !windowOpen);
         projectionFullscreenBtn.title = windowOpen ? "Focus the projection window and request fullscreen there" : "Open the projection window first";
         pinProjectionLayerBtn.title = selectedLayer ? `Pin ${selectedLayer.name} to projection` : "Select a layer to pin";
         pinProjectionSurfaceBtn.title = selectedSurface ? `Pin ${selectedSurface.listTitle || selectedSurface.name} to projection` : "Select a surface to pin";
@@ -5902,9 +6189,45 @@
         state.ui.focus = { type, id };
       }
 
+      function setTreeHover(type, id) {
+        const next = type && id ? { type, id } : null;
+        const prev = state.ui.treeHover;
+        if ((prev?.type || null) === (next?.type || null) && (prev?.id || null) === (next?.id || null)) {
+          return false;
+        }
+        state.ui.treeHover = next;
+        return true;
+      }
+
+      function clearTreeHover() {
+        if (!state.ui.treeHover) {
+          return false;
+        }
+        state.ui.treeHover = null;
+        return true;
+      }
+
+      function setTreeDropTarget(type, id, action) {
+        const next = type && id && action ? { type, id, action } : null;
+        const prev = state.ui.treeDropTarget;
+        if ((prev?.type || null) === (next?.type || null) && (prev?.id || null) === (next?.id || null) && (prev?.action || null) === (next?.action || null)) {
+          return false;
+        }
+        state.ui.treeDropTarget = next;
+        return true;
+      }
+
+      function clearTreeDropTarget() {
+        if (!state.ui.treeDropTarget) {
+          return false;
+        }
+        state.ui.treeDropTarget = null;
+        return true;
+      }
+
       function deselectCurrentFocus() {
         clearStageEditTarget();
-        setFocus("project", state.project.id);
+        setFocus("stage", "stage");
       }
 
       function selectLayer(layerId) {
@@ -5983,7 +6306,7 @@
       }
 
       function selectCalibrationReference() {
-        if (!hasCalibrationReference() || !isCalibrationEditing()) {
+        if (!hasCalibrationReference()) {
           return;
         }
         clearStageEditTarget();
@@ -6891,13 +7214,10 @@
       function setCalibrationEditActive(nextValue) {
         closeTransientInteractionState();
         state.ui.calibrationEditActive = Boolean(nextValue);
-        if (state.ui.calibrationEditActive) {
+        if (nextValue) {
           selectCalibrationParent();
-        } else if (state.ui.focus.type === "calibration") {
-          const fallbackLayer = getMappedLayers()[0] || state.layers[0];
-          if (fallbackLayer) {
-            state.ui.focus = { type: "layer", id: fallbackLayer.id };
-          }
+        } else if (state.ui.focus.type === "calibration" || state.ui.focus.type === "reference") {
+          deselectCurrentFocus();
         }
         render();
         queueLayoutRefresh();
@@ -7716,23 +8036,23 @@
             }, disabled: !canMutateStructure() },
             { label: "Add Mapping Layer", icon: "layers", action: () => selectLayer(createLayer("media")), disabled: !canMutateStructure() },
             contextMenuSeparator(),
-            { label: isCalibrationEditing() ? "Finish Calibration Edit" : "Edit Calibration", icon: "grid", action: () => setCalibrationEditActive(!isCalibrationEditing()) },
             { label: state.ui.guidesEnabled ? "Hide Guides" : "Show Guides", icon: "grid", action: () => { state.ui.guidesEnabled = !state.ui.guidesEnabled; } }
           ];
         }
         if (menu.entityType === "calibration") {
           return [
-            { label: isCalibrationEditing() ? "Finish Calibration Edit" : "Edit Calibration", icon: "grid", action: () => setCalibrationEditActive(!isCalibrationEditing()) },
+            { label: state.calibration.visible ? "Hide Calibration" : "Show Calibration", icon: "grid", action: () => { state.calibration.visible = !state.calibration.visible; } },
+            { label: state.calibration.locked ? "Unlock Calibration" : "Lock Calibration", icon: "lock", action: () => { state.calibration.locked = !state.calibration.locked; } },
             contextMenuSeparator(),
             { label: state.ui.guidesEnabled ? "Hide Guides" : "Show Guides", icon: "grid", action: () => { state.ui.guidesEnabled = !state.ui.guidesEnabled; } }
           ];
         }
         if (menu.entityType === "reference") {
           return [
-            { label: "Focus Reference", icon: "focus", action: () => selectCalibrationReference(), disabled: !isCalibrationEditing() || !hasCalibrationReference() },
+            { label: "Focus Reference", icon: "focus", action: () => selectCalibrationReference(), disabled: !hasCalibrationReference() },
             { label: "Fit To Calibration", icon: "focus", action: () => fitCalibrationReferenceToCalibration(), disabled: !isCalibrationReferenceEditable() },
             { label: "Reset Reference Fit", icon: "surface", action: () => resetCalibrationReferenceFit(), disabled: !isCalibrationReferenceEditable() },
-            { label: getCalibrationReference().locked ? "Unlock Reference" : "Lock Reference", icon: "lock", action: () => { state.calibrationReference.locked = !state.calibrationReference.locked; }, disabled: !isCalibrationEditing() },
+            { label: getCalibrationReference().locked ? "Unlock Reference" : "Lock Reference", icon: "lock", action: () => { state.calibrationReference.locked = !state.calibrationReference.locked; } },
             contextMenuSeparator(),
             { label: state.calibrationReference.visible ? "Hide Reference" : "Show Reference", icon: "reference", action: () => { state.calibrationReference.visible = !state.calibrationReference.visible; state.ui.showReferenceLayer = state.calibrationReference.visible; } }
           ];
@@ -7893,6 +8213,27 @@
         const visibleLayers = getEffectiveVisibleLayers();
         const layerGroups = getLayerGroups();
         const unmappedSurfaces = getUnmappedSurfaces();
+        const getTreeDropClass = (type, id, action = "reorder") => {
+          const target = state.ui.treeDropTarget;
+          return target && target.type === type && target.id === id && target.action === action ? " is-drop-target" : "";
+        };
+        const getTreeHoverClass = (type, id) => {
+          const hover = state.ui.treeHover;
+          return hover && hover.type === type && hover.id === id ? " is-hover-linked" : "";
+        };
+        const renderContentChild = (content, contentType, isContentActive, isModeDisabled, level = 2) => `
+          <div class="pk-tree-item is-child" style="--pk-tree-level:${level}">
+            <article class="pk-tree-row${isContentActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${content ? getTreeHoverClass("content", content.id) : ""}" data-content-id="${content?.id || ""}" data-context-target="workspace-row" data-entity-type="content" data-entity-id="${content?.id || ""}">
+              <div class="pk-tree-row-icon" title="${contentType.label}" aria-label="${contentType.label}">${iconMarkup(contentType.icon, contentType.label)}</div>
+              <div class="pk-tree-row-main">
+                <div class="pk-tree-row-line pk-item-line">
+                  <div class="pk-item-title">${content?.name || ""}</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        `;
+
         const renderSurfaceChild = (surface, layer, isModeDisabled) => {
           const content = getContentForSurface(surface, layer);
           const surfaceType = { icon: "surface", label: getSurfaceTypeInfo(surface).label };
@@ -7900,47 +8241,44 @@
           const isSurfaceActive = isFocused("surface", surface.key);
           const isContentActive = content ? isFocused("content", content.id) : false;
           return `
-            <div class="pk-tree-item is-child is-technical">
-              <article class="pk-item${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
-                <span class="pk-tree-toggle-spacer" aria-hidden="true"></span>
-                <div class="pk-item-icon" title="${surfaceType.label}" aria-label="${surfaceType.label}">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
+            <div class="pk-tree-item is-child is-technical" style="--pk-tree-level:1">
+              <article class="pk-tree-row${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "surface" && state.ui.treeDrag.id === surface.key ? " is-drag-source" : ""}${getTreeDropClass("surface", surface.key)}${getTreeHoverClass("surface", surface.key)}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
+                <div class="pk-tree-row-icon" title="${surfaceType.label}" aria-label="${surfaceType.label}">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
+                <div class="pk-tree-row-main">
+                  <div class="pk-tree-row-line pk-item-line">
                     ${renderEditableTitle("surface", surface.key, surface.listTitle)}
                   </div>
                 </div>
               </article>
               <div class="pk-tree-children"${content ? "" : " hidden"}>
-                <div class="pk-tree-item is-child">
-                  <article class="pk-item${isContentActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}" data-content-id="${content?.id || ""}" data-context-target="workspace-row" data-entity-type="content" data-entity-id="${content?.id || ""}">
-                    <span class="pk-tree-toggle-spacer" aria-hidden="true"></span>
-                    <div class="pk-item-icon" title="${contentType.label}" aria-label="${contentType.label}">${iconMarkup(contentType.icon, contentType.label)}</div>
-                    <div class="pk-item-main">
-                      <div class="pk-item-line">
-                        <div class="pk-item-title">${content?.name || ""}</div>
-                      </div>
-                    </div>
-                  </article>
-                </div>
+                ${content ? renderContentChild(content, contentType, isContentActive, isModeDisabled, 2) : ""}
               </div>
             </div>
           `;
         };
 
         const renderCalibrationReferenceChild = () => {
-          const referenceSurface = getCalibrationReferenceSurfaceSource();
           const referenceAsset = getCalibrationReferenceAsset();
           const isActive = state.ui.focus.type === "reference";
-          const isDisabled = !isCalibrationEditing();
+          const isDisabled = Boolean(state.calibrationReference.locked);
+          const referenceVisibleLabel = state.calibrationReference.visible ? "Hide reference" : "Show reference";
+          const referenceVisibilityStateIcon = state.calibrationReference.visible ? "eye" : "eye-off";
+          const referenceVisibilityActionIcon = state.calibrationReference.visible ? "eye-off" : "eye";
+          const referenceLockLabel = state.calibrationReference.locked ? "Unlock reference" : "Lock reference";
+          const referenceLockStateIcon = state.calibrationReference.locked ? "lock" : "unlock";
+          const referenceLockActionIcon = state.calibrationReference.locked ? "unlock" : "lock";
           return `
-            <div class="pk-tree-item is-child">
-              <article class="pk-item${isActive ? " is-active" : ""}${isDisabled ? " is-mode-disabled" : ""}" data-reference-row="true" data-context-target="workspace-row" data-entity-type="reference" data-entity-id="calibration-reference">
-                <span class="pk-tree-toggle-spacer" aria-hidden="true"></span>
-                <div class="pk-item-icon" title="Calibration Reference" aria-label="Calibration Reference">${iconMarkup("reference", "Calibration Reference")}</div>
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
+            <div class="pk-tree-item is-child" style="--pk-tree-level:1">
+              <article class="pk-tree-row has-rail${(!state.calibrationReference.visible || state.calibrationReference.locked) ? " has-persistent-actions" : ""}${isActive ? " is-active" : ""}${isDisabled ? " is-mode-disabled" : ""}" data-reference-row="true" data-context-target="workspace-row" data-entity-type="reference" data-entity-id="calibration-reference">
+                <div class="pk-tree-row-icon" title="Calibration Reference" aria-label="Calibration Reference">${iconMarkup("reference", "Calibration Reference")}</div>
+                <div class="pk-tree-row-main">
+                  <div class="pk-tree-row-line pk-item-line">
                     <div class="pk-item-title">${referenceAsset?.name || "Reference"}</div>
                   </div>
+                </div>
+                <div class="pk-tree-row-actions">
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${!state.calibrationReference.visible ? " is-active" : ""}" type="button" title="${referenceVisibleLabel}" aria-label="${referenceVisibleLabel}" data-reference-action="visible">${stateToggleIconMarkup(referenceVisibilityStateIcon, referenceVisibilityActionIcon, referenceVisibleLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${state.calibrationReference.locked ? " is-active" : ""}" type="button" title="${referenceLockLabel}" aria-label="${referenceLockLabel}" data-reference-action="locked">${stateToggleIconMarkup(referenceLockStateIcon, referenceLockActionIcon, referenceLockLabel)}</button>
                 </div>
               </article>
             </div>
@@ -7963,16 +8301,16 @@
           const lockStateIcon = layer.locked ? "lock" : "unlock";
           const lockActionIcon = layer.locked ? "unlock" : "lock";
           return `
-            <div class="pk-tree-item is-child${isDimmed ? " is-dimmed" : ""}">
-              <article class="pk-item${isLayerActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}" data-layer-id="${layer.id}" data-context-target="workspace-row" data-entity-type="layer" data-entity-id="${layer.id}" draggable="true">
-                ${hasChildren ? `<button class="pk-tree-toggle" type="button" data-tree-toggle="layer" data-layer-id="${layer.id}" aria-label="${isLayerExpanded ? "Collapse layer" : "Expand layer"}">${iconMarkup(isLayerExpanded ? "chevron-down" : "chevron-right", isLayerExpanded ? "Collapse layer" : "Expand layer")}</button>` : `<span class="pk-tree-toggle-spacer" aria-hidden="true"></span>`}
-                <div class="pk-item-icon" title="${layerType.label}" aria-label="${layerType.label}">${iconMarkup("layers", layerType.label)}</div>
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
+            <div class="pk-tree-item${isDimmed ? " is-dimmed" : ""}">
+              <article class="pk-tree-row has-rail${(!layer.visible || layer.locked) ? " has-persistent-actions" : ""}${isLayerActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "layer" && state.ui.treeDrag.id === layer.id ? " is-drag-source" : ""}${getTreeDropClass("layer", layer.id)}${getTreeHoverClass("layer", layer.id)}" data-layer-id="${layer.id}" data-context-target="workspace-row" data-entity-type="layer" data-entity-id="${layer.id}" draggable="true">
+                ${hasChildren ? `<button class="pk-tree-toggle" type="button" data-tree-toggle="layer" data-layer-id="${layer.id}" aria-label="${isLayerExpanded ? "Collapse layer" : "Expand layer"}">${iconMarkup(isLayerExpanded ? "chevron-down" : "chevron-right", isLayerExpanded ? "Collapse layer" : "Expand layer")}</button>` : ``}
+                <div class="pk-tree-row-icon" title="${layerType.label}" aria-label="${layerType.label}">${iconMarkup("layers", layerType.label)}</div>
+                <div class="pk-tree-row-main">
+                  <div class="pk-tree-row-line pk-item-line">
                     ${renderEditableTitle("layer", layer.id, layer.name)}
                   </div>
                 </div>
-                <div class="pk-item-actions is-rail">
+                <div class="pk-tree-row-actions">
                   <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${!layer.visible ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-layer-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
                   <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${layer.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-layer-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
@@ -7990,47 +8328,40 @@
           const isModeDisabled = isEntityLockedInCurrentState({ type: "surface", ...surface });
           const content = getContentForSurface(surface, null);
           const contentType = getContentTypeInfo(content);
+          const isContentActive = content ? isFocused("content", content.id) : false;
           return `
-            <div class="pk-tree-item is-child is-technical">
-              <article class="pk-item${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
-                <span class="pk-tree-toggle-spacer" aria-hidden="true"></span>
-                <div class="pk-item-icon" title="${surfaceType.label}" aria-label="${surfaceType.label}">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
-                <div class="pk-item-main">
-                  <div class="pk-item-line">
+            <div class="pk-tree-item is-technical">
+              <article class="pk-tree-row${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "surface" && state.ui.treeDrag.id === surface.key ? " is-drag-source" : ""}${getTreeDropClass("surface", surface.key)}${getTreeHoverClass("surface", surface.key)}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
+                <div class="pk-tree-row-icon" title="${surfaceType.label}" aria-label="${surfaceType.label}">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
+                <div class="pk-tree-row-main">
+                  <div class="pk-tree-row-line pk-item-line">
                     ${renderEditableTitle("surface", surface.key, surface.listTitle)}
                   </div>
                 </div>
               </article>
               <div class="pk-tree-children"${content ? "" : " hidden"}>
-                <div class="pk-tree-item is-child">
-                  <article class="pk-item" data-content-id="${content?.id || ""}" data-context-target="workspace-row" data-entity-type="content" data-entity-id="${content?.id || ""}">
-                    <span class="pk-tree-toggle-spacer" aria-hidden="true"></span>
-                    <div class="pk-item-icon" title="${contentType.label}" aria-label="${contentType.label}">${iconMarkup(contentType.icon, contentType.label)}</div>
-                    <div class="pk-item-main">
-                      <div class="pk-item-line">
-                        <div class="pk-item-title">${content?.name || ""}</div>
-                      </div>
-                    </div>
-                  </article>
-                </div>
+                ${content ? renderContentChild(content, contentType, isContentActive, isModeDisabled, 1) : ""}
               </div>
             </div>
           `;
         }).join("");
 
         const treeHtml = `
-          <div class="pk-tree-group">
-            <article class="pk-item${state.ui.focus.type === "calibration" ? " is-active" : ""}" data-calibration-parent="true" data-context-target="workspace-row" data-entity-type="calibration" data-entity-id="calibration-parent">
-              <div class="pk-item-icon" title="Calibration Parent" aria-label="Calibration Parent">${iconMarkup("grid", "Calibration Parent")}</div>
-              <div class="pk-item-main">
-                <div class="pk-item-line">
-                  <div class="pk-item-title">Calibration</div>
+          <div class="pk-tree-group"${state.ui.treeDropTarget?.action === "detach" ? ` data-drop-target="detach"` : ""}>
+            <div class="pk-tree-item">
+              <article class="pk-tree-row has-rail${(!state.calibration.visible || state.calibration.locked) ? " has-persistent-actions" : ""}${state.ui.focus.type === "calibration" ? " is-active" : ""}${state.calibration.locked ? " is-mode-disabled" : ""}" data-calibration-parent="true" data-context-target="workspace-row" data-entity-type="calibration" data-entity-id="calibration-parent">
+                <div class="pk-tree-row-icon" title="Calibration Parent" aria-label="Calibration Parent">${iconMarkup("grid", "Calibration Parent")}</div>
+                <div class="pk-tree-row-main">
+                  <div class="pk-tree-row-line pk-item-line">
+                    <div class="pk-item-title">Calibration</div>
+                  </div>
                 </div>
-              </div>
-              <div class="pk-item-actions is-rail">
-                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action${isCalibrationEditing() ? " is-active" : ""}" type="button" data-calibration-toggle="true" title="${isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration"}" aria-label="${isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration"}">${iconMarkup("grid", isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration")}</button>
-              </div>
-            </article>
+                <div class="pk-tree-row-actions">
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${!state.calibration.visible ? " is-active" : ""}" type="button" data-calibration-action="visible" title="${state.calibration.visible ? "Hide calibration" : "Show calibration"}" aria-label="${state.calibration.visible ? "Hide calibration" : "Show calibration"}">${stateToggleIconMarkup(state.calibration.visible ? "eye" : "eye-off", state.calibration.visible ? "eye-off" : "eye", state.calibration.visible ? "Hide calibration" : "Show calibration")}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${state.calibration.locked ? " is-active" : ""}" type="button" data-calibration-action="locked" title="${state.calibration.locked ? "Unlock calibration" : "Lock calibration"}" aria-label="${state.calibration.locked ? "Unlock calibration" : "Lock calibration"}">${stateToggleIconMarkup(state.calibration.locked ? "lock" : "unlock", state.calibration.locked ? "unlock" : "lock", state.calibration.locked ? "Unlock calibration" : "Lock calibration")}</button>
+                </div>
+              </article>
+            </div>
             ${renderCalibrationReferenceChild()}
             <div class="pk-group-divider"><span>Mapping Content</span></div>
             ${renderLayerGroup(layerGroups.mapping)}
@@ -8049,7 +8380,6 @@
         mobileWorkspaceTree.innerHTML = treeHtml;
         overlayWorkspaceTree.innerHTML = treeHtml;
       }
-
       function renderStageSurfaceNode(surfaceNode) {
         const sourceSurface = state.surfaces.find((item) => item.key === surfaceNode.dataset.surfaceKey);
         if (!sourceSurface) {
@@ -8060,6 +8390,12 @@
         const interactionState = getSurfaceInteractionState(surface.key);
         const ownerLayer = getLayersForSurface(surface.key)[0];
         const content = ownerLayer ? getContentForSurface(surface, ownerLayer) : null;
+        const treeHover = state.ui.treeHover;
+        const isTreeHoverLinked = Boolean(
+          (treeHover?.type === "surface" && treeHover.id === surface.key)
+          || (treeHover?.type === "content" && content && treeHover.id === content.id)
+          || (treeHover?.type === "layer" && ownerLayer && treeHover.id === ownerLayer.id)
+        );
         const isVisibleInMode = isReferenceSurface
           ? isReferenceVisible()
           : ownerLayer
@@ -8230,7 +8566,7 @@
         surfaceNode.classList.toggle("is-editable", editingEnabled && isActive);
         surfaceNode.classList.toggle("is-passive-mode", !editingEnabled);
         surfaceNode.classList.toggle("is-dragging", isDragging);
-        surfaceNode.classList.toggle("is-hovered", isHovered);
+        surfaceNode.classList.toggle("is-hovered", isHovered || isTreeHoverLinked);
         surfaceNode.classList.toggle("is-free-warp", interactionState.freeAnchor || interactionState.freeEdge);
         surfaceNode.classList.toggle("is-asset-crop", isAssetCrop);
         surfaceNode.classList.toggle("is-crop-muted", isCropMuted);
@@ -8249,7 +8585,9 @@
       function renderCalibrationOverlay() {
         const rect = getCalibrationFrameRect();
         const canEditOverlay = canEditCalibration();
-        const showOverlay = !isPresentationPreviewActive() && (state.ui.guidesEnabled || canEditOverlay || state.ui.focus.type === "calibration");
+        const showOverlay = state.calibration.visible !== false
+          && !isPresentationPreviewActive()
+          && (state.ui.guidesEnabled || canEditOverlay || state.ui.focus.type === "calibration");
         stageCalibration.hidden = !showOverlay;
         if (!showOverlay) {
           return;
@@ -8258,6 +8596,7 @@
         stageCalibration.style.top = `${(rect.y / stageViewport.height) * 100}%`;
         stageCalibration.style.width = `${(rect.w / stageViewport.width) * 100}%`;
         stageCalibration.style.height = `${(rect.h / stageViewport.height) * 100}%`;
+        stageCalibration.style.pointerEvents = state.ui.focus.type === "calibration" ? "auto" : "none";
         stageCalibration.classList.toggle("is-editable", canEditOverlay);
         stageCalibration.classList.toggle("is-active", canEditOverlay);
         stageCalibration.classList.toggle("is-dragging", Boolean(calibrationDragState));
@@ -8397,18 +8736,24 @@
         outputToggle.classList.toggle("is-active", runState.previewActive);
         overlayFullscreenToggle.classList.toggle("is-active", Boolean(document.fullscreenElement));
         playbackToggle.classList.toggle("is-active", runState.liveActive);
+        guideToggle.setAttribute("aria-pressed", String(state.ui.guidesEnabled));
+        referenceToggle.setAttribute("aria-pressed", String(isReferenceVisible()));
+        linkToggle.setAttribute("aria-pressed", String(state.ui.calibrationLinkEnabled));
+        outputToggle.setAttribute("aria-pressed", String(runState.previewActive));
+        overlayFullscreenToggle.setAttribute("aria-pressed", String(Boolean(document.fullscreenElement)));
+        playbackToggle.setAttribute("aria-pressed", String(runState.liveActive));
         outputToggle.setAttribute("aria-label", runState.previewActive ? "Disable preview" : "Enable preview");
         outputToggle.title = runState.previewActive ? "Disable clean output preview" : "Enable clean output preview";
-        outputToggle.innerHTML = `${iconMarkup("screen", "Preview")}<span>${runState.previewActive ? "Preview On" : "Preview"}</span>`;
+        outputToggle.innerHTML = `${iconMarkup("screen", "Preview")}<span>Preview</span>`;
         overlayFullscreenToggle.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
         overlayFullscreenToggle.title = document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen";
-        overlayFullscreenToggle.innerHTML = `${iconMarkup("expand", "Fullscreen")}<span>${document.fullscreenElement ? "Fullscreen On" : "Fullscreen"}</span>`;
-        playbackToggle.innerHTML = `${iconMarkup(runState.liveActive ? "pause" : "play", runState.liveActive ? "Stop live output" : "Start live output")}<span>${runState.liveActive ? "Live On" : "Live"}</span>`;
+        overlayFullscreenToggle.innerHTML = `${iconMarkup("expand", "Fullscreen")}<span>Fullscreen</span>`;
+        playbackToggle.innerHTML = `${iconMarkup(runState.liveActive ? "pause" : "play", runState.liveActive ? "Stop live output" : "Start live output")}<span>Live</span>`;
         playbackToggle.setAttribute("aria-label", runState.liveActive ? "Stop live output" : "Start live output");
         playbackToggle.title = runState.liveActive ? "Stop live output" : "Start live output";
-        guideToggle.hidden = !showLiveToggles;
-        referenceToggle.hidden = !showLiveToggles;
-        linkToggle.hidden = !showLiveToggles;
+        guideToggle.hidden = true;
+        referenceToggle.hidden = true;
+        linkToggle.hidden = true;
         overlayLayersToggle.hidden = isConsoleUI() || isUiHidden();
         overlayToolsToggle.hidden = isConsoleUI() || isUiHidden();
         outputToggle.hidden = isUiHidden();
@@ -9210,27 +9555,45 @@
           return;
         }
 
-        const calibrationToggle = event.target.closest("[data-calibration-toggle]");
-        if (calibrationToggle) {
-          runWithHistory(isCalibrationEditing() ? "Finish calibration edit" : "Edit calibration", () => {
-            setCalibrationEditActive(!isCalibrationEditing());
+        const calibrationAction = event.target.closest("[data-calibration-action]");
+        if (calibrationAction) {
+          const action = calibrationAction.dataset.calibrationAction;
+          runWithHistory(action === "visible" ? "Toggle calibration visibility" : "Toggle calibration lock", () => {
+            if (action === "visible") {
+              state.calibration.visible = !state.calibration.visible;
+            } else {
+              state.calibration.locked = !state.calibration.locked;
+            }
           });
+          render();
           return;
         }
 
         const calibrationParent = event.target.closest("[data-calibration-parent]");
         if (calibrationParent) {
-          if (!isCalibrationEditing()) {
-            return;
-          }
           selectCalibrationParent();
+          render();
+          return;
+        }
+
+        const referenceAction = event.target.closest("[data-reference-action]");
+        if (referenceAction) {
+          const action = referenceAction.dataset.referenceAction;
+          runWithHistory(action === "visible" ? "Toggle reference visibility" : "Toggle reference lock", () => {
+            if (action === "visible") {
+              state.calibrationReference.visible = !state.calibrationReference.visible;
+              state.ui.showReferenceLayer = state.calibrationReference.visible;
+            } else {
+              state.calibrationReference.locked = !state.calibrationReference.locked;
+            }
+          });
           render();
           return;
         }
 
         const referenceRow = event.target.closest("[data-reference-row]");
         if (referenceRow) {
-          if (!isCalibrationEditing() || !hasCalibrationReference()) {
+          if (!hasCalibrationReference()) {
             return;
           }
           selectCalibrationReference();
@@ -9314,6 +9677,9 @@
             event.dataTransfer.setData("text/projektik-tree", `surface:${dragRow.dataset.surfaceKey}`);
           }
           event.dataTransfer.effectAllowed = "move";
+          if (clearTreeDropTarget()) {
+            render();
+          }
         });
 
         treeNode.addEventListener("dragover", (event) => {
@@ -9330,7 +9696,29 @@
             return;
           }
           event.preventDefault();
+          if (isSurfaceAttachTarget && dragTarget.dataset.layerId && !isExpanded(state.ui.expandedLayerIds, dragTarget.dataset.layerId)) {
+            state.ui.expandedLayerIds = [...state.ui.expandedLayerIds, dragTarget.dataset.layerId];
+          }
+          let changed = false;
+          if (isLayerTarget) {
+            changed = setTreeDropTarget("layer", dragTarget.dataset.layerId, "reorder");
+          } else if (isSurfaceTarget) {
+            changed = setTreeDropTarget("surface", dragTarget.dataset.surfaceKey, "reorder");
+          } else if (isSurfaceAttachTarget) {
+            changed = setTreeDropTarget("layer", dragTarget.dataset.layerId, "attach");
+          } else if (isSurfaceDetachTarget) {
+            changed = setTreeDropTarget("detach", "unmapped-surfaces", "detach");
+          }
           event.dataTransfer.dropEffect = "move";
+          if (changed) {
+            render();
+          }
+        });
+
+        treeNode.addEventListener("dragleave", (event) => {
+          if (!treeNode.contains(event.relatedTarget) && clearTreeDropTarget()) {
+            render();
+          }
         });
 
         treeNode.addEventListener("drop", (event) => {
@@ -9348,6 +9736,7 @@
               reorderLayers(treeDrag.id, dragTarget.dataset.layerId);
             });
             state.ui.treeDrag = null;
+            clearTreeDropTarget();
             render();
             return;
           }
@@ -9357,6 +9746,7 @@
               reorderSurfaces(treeDrag.id, dragTarget.dataset.surfaceKey);
             });
             state.ui.treeDrag = null;
+            clearTreeDropTarget();
             render();
             return;
           }
@@ -9366,6 +9756,7 @@
               attachSurfaceToLayer(dragTarget.dataset.layerId, treeDrag.id);
             });
             state.ui.treeDrag = null;
+            clearTreeDropTarget();
             selectSurface(treeDrag.id);
             render();
             return;
@@ -9375,12 +9766,14 @@
             const ownerLayer = getSurfaceOwnerLayer(treeDrag.id);
             if (!ownerLayer) {
               state.ui.treeDrag = null;
+              clearTreeDropTarget();
               return;
             }
             runWithHistory("Detach surface from layer", () => {
               detachSurfaceFromLayer(ownerLayer.id, treeDrag.id);
             });
             state.ui.treeDrag = null;
+            clearTreeDropTarget();
             selectSurface(treeDrag.id);
             render();
           }
@@ -9388,6 +9781,39 @@
 
         treeNode.addEventListener("dragend", () => {
           state.ui.treeDrag = null;
+          const didClear = clearTreeDropTarget();
+          if (didClear) {
+            render();
+          }
+        });
+
+        treeNode.addEventListener("pointerover", (event) => {
+          const layerRow = event.target.closest("[data-layer-id]");
+          if (layerRow) {
+            if (setTreeHover("layer", layerRow.dataset.layerId)) {
+              render();
+            }
+            return;
+          }
+          const surfaceRow = event.target.closest("[data-surface-key]");
+          if (surfaceRow) {
+            if (setTreeHover("surface", surfaceRow.dataset.surfaceKey)) {
+              render();
+            }
+            return;
+          }
+          const contentRow = event.target.closest("[data-content-id]");
+          if (contentRow && contentRow.dataset.contentId) {
+            if (setTreeHover("content", contentRow.dataset.contentId)) {
+              render();
+            }
+          }
+        });
+
+        treeNode.addEventListener("pointerleave", () => {
+          if (clearTreeHover()) {
+            render();
+          }
         });
 
         treeNode.addEventListener("dblclick", (event) => {
@@ -9477,6 +9903,9 @@
         if (!surfaceNode || state.ui.surfaceCreateActive) {
           return;
         }
+        if (surfaceNode.dataset.entityType === "reference" && state.ui.focus.type !== "reference") {
+          return;
+        }
         if (cropFocusSurfaceKey && cropFocusSurfaceKey !== surfaceNode.dataset.surfaceKey) {
           event.preventDefault();
           return;
@@ -9486,9 +9915,7 @@
           return;
         }
         const interactionState = getSurfaceInteractionState(surfaceNode.dataset.surfaceKey);
-        if (surfaceNode.dataset.entityType === "reference") {
-          selectCalibrationReference();
-        } else {
+        if (surfaceNode.dataset.entityType !== "reference") {
           selectSurface(surfaceNode.dataset.surfaceKey, { preserveStageTarget: interactionState.assetCrop || interactionState.freeAnchor || interactionState.freeEdge });
         }
 
@@ -9613,8 +10040,10 @@
         if (!canEditCalibration()) {
           return;
         }
+        if (state.ui.focus.type !== "calibration") {
+          return;
+        }
         event.preventDefault();
-        selectCalibrationParent();
         const handle = event.target.closest("[data-calibration-handle]");
         beginCalibrationDrag(handle ? "resize" : "move", handle?.dataset.calibrationHandle || "", projectClientPointToStage(event.clientX, event.clientY));
         if (typeof stageCalibration.setPointerCapture === "function") {
@@ -10188,6 +10617,13 @@
           return;
         }
 
+        if (key === "escape" && !["stage", "project"].includes(state.ui.focus.type)) {
+          event.preventDefault();
+          deselectCurrentFocus();
+          render();
+          return;
+        }
+
         if (key === "delete" || key === "backspace") {
           if (!canMutateStructure()) {
             return;
@@ -10305,6 +10741,7 @@
   </script>
 </body>
 </html>
+
 
 
 
