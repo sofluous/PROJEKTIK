@@ -43,6 +43,11 @@
       --pk-stage-surface-c: rgba(125, 255, 198, 0.14);
       --pk-stage-outline: rgba(239, 244, 255, 0.72);
       --pk-stage-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+      --pk-icon-sm: 12px;
+      --pk-icon-md: 16px;
+      --pk-icon-lg: 20px;
+      --pk-icon-stroke-sm: 1.85;
+      --pk-icon-stroke-md: 1.9;
     }
 
     body {
@@ -202,20 +207,21 @@
     .pk-icon-btn .pk-glyph,
     .pk-toolbar-toggle .pk-glyph,
     .pk-more-menu summary .pk-glyph {
-      width: 16px;
-      height: 16px;
-      flex: 0 0 16px;
-      stroke-width: 1.9;
+      width: var(--pk-icon-md);
+      height: var(--pk-icon-md);
+      flex: 0 0 var(--pk-icon-md);
+      stroke-width: var(--pk-icon-stroke-md);
     }
 
     .pk-glyph {
-      width: var(--ds-control-glyph-size);
-      height: var(--ds-control-glyph-size);
+      width: var(--pk-icon-md);
+      height: var(--pk-icon-md);
+      aspect-ratio: 1 / 1;
       display: inline-block;
       vertical-align: middle;
       fill: none;
       stroke: currentColor;
-      stroke-width: 1.8;
+      stroke-width: var(--pk-icon-stroke-md);
       stroke-linecap: round;
       stroke-linejoin: round;
       flex: 0 0 auto;
@@ -540,8 +546,8 @@
     }
 
     .pk-tree-toggle .pk-glyph {
-      width: 12px;
-      height: 12px;
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
     }
 
     .pk-tree-toggle:hover,
@@ -1002,9 +1008,7 @@
       padding: 10px 12px;
       min-height: 0;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
-        linear-gradient(180deg, rgba(4, 8, 14, 0.96), rgba(4, 6, 10, 1));
+
     }
 
     .pk-stage {
@@ -1150,6 +1154,30 @@
       backdrop-filter: blur(2px);
     }
 
+    .pk-stage-appearance-stack {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .pk-stage-appearance-layer,
+    .pk-stage-media {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      border-radius: inherit;
+      pointer-events: none;
+      background: transparent;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      transform-origin: top left;
+    }
+
     .pk-stage-surface.is-asset-crop .pk-stage-surface-content {
       overflow: visible;
       z-index: 3;
@@ -1186,19 +1214,6 @@
         fill var(--ds-dur-fast) var(--ds-ease-standard),
         filter var(--ds-dur-fast) var(--ds-ease-standard),
         opacity var(--ds-dur-fast) var(--ds-ease-standard);
-    }
-
-    .pk-stage-media {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-      border-radius: inherit;
-      pointer-events: none;
-      background: transparent;
     }
 
     .pk-stage-media img,
@@ -1679,8 +1694,8 @@
 
     .pk-item-icon .pk-glyph,
     .pk-item-swatch .pk-glyph {
-      width: 11px;
-      height: 11px;
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
     }
 
     .pk-tree-row-icon {
@@ -1696,8 +1711,8 @@
     }
 
     .pk-tree-row-icon .pk-glyph {
-      width: 14px;
-      height: 14px;
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
     }
 
     .pk-item-swatch.asset-video {
@@ -1837,14 +1852,20 @@
     }
 
     .pk-context-menu-btn .pk-glyph {
-      width: 14px;
-      height: 14px;
-      flex: 0 0 14px;
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
+      flex: 0 0 var(--pk-icon-sm);
     }
 
     .pk-mini-btn .pk-glyph {
-      width: 13px;
-      height: 13px;
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
+    }
+
+    .pk-info-btn .pk-glyph,
+    .pk-state-toggle .pk-glyph {
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
     }
 
     .pk-mini-btn.is-active {
@@ -2035,10 +2056,19 @@
       align-content: start;
     }
 
+    .pk-inspector-card > .pk-section-head.pk-section-head-inline > :first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-content: center;
+    }
+
     .pk-info-btn {
       justify-self: auto;
       flex: 0 0 auto;
       cursor: help;
+      font-size: var(--pk-icon-sm);
+      line-height: 1;
     }
 
     .pk-more-menu {
@@ -2156,6 +2186,56 @@
     .pk-panel-right .pk-field.pk-field-multiline label,
     #settingsPanel .pk-field.pk-field-multiline label {
       margin-bottom: 4px;
+    }
+
+    .pk-dimension-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .pk-dimension-row {
+      display: grid;
+      grid-template-columns: 104px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .pk-dimension-row-label {
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      color: var(--ds-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pk-dimension-row-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .pk-inline-metric {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .pk-inline-metric > span {
+      font-size: 11px;
+      color: var(--ds-text-muted);
+      width: 10px;
+      flex: 0 0 10px;
+      text-align: center;
+    }
+
+    .pk-inline-metric > .ds-input,
+    .pk-inline-metric > .pk-scrub-control {
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .pk-panel-right textarea.ds-input,
@@ -2379,16 +2459,266 @@
       border-top: 1px solid color-mix(in oklab, var(--ds-border) 56%, transparent);
     }
 
-    @media (min-width: 761px) {
-      .pk-item-actions.is-rail {
-        position: static;
-        transform: none;
-        pointer-events: auto;
-      }
+    .pk-prop-section-head {
+      margin: 4px 0 2px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ds-text-muted);
+      opacity: 0.78;
+    }
 
-      .pk-item-main {
-        padding-right: 0;
-      }
+    .pk-appearance-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .pk-appearance-row {
+      display: grid;
+      grid-template-columns: auto minmax(112px, 1fr) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 0 6px 0 8px;
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 140ms ease, opacity 140ms ease, box-shadow 140ms ease;
+    }
+
+    .pk-appearance-row::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      border-radius: 999px;
+      background: var(--ds-focus);
+      opacity: 0;
+      transition: opacity 140ms ease;
+      pointer-events: none;
+    }
+
+    .pk-appearance-row.is-active {
+      background: color-mix(in oklab, var(--ds-accent) 4%, transparent);
+    }
+
+    .pk-appearance-row.is-active::after {
+      opacity: 0.92;
+    }
+
+    .pk-appearance-row:hover,
+    .pk-appearance-row:focus-within {
+      background: color-mix(in oklab, var(--ds-bg-raised) 18%, transparent);
+    }
+
+    .pk-appearance-row.is-hidden {
+      opacity: 0.66;
+    }
+
+    .pk-appearance-actions {
+      display: inline-flex;
+      gap: 2px;
+      align-items: center;
+      flex-wrap: nowrap;
+      margin-left: auto;
+      justify-self: end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .pk-appearance-row:hover .pk-appearance-actions,
+    .pk-appearance-row:focus-within .pk-appearance-actions,
+    .pk-appearance-row.is-active .pk-appearance-actions,
+    .pk-appearance-row.is-hidden .pk-appearance-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pk-appearance-actions .pk-state-toggle.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pk-appearance-row .pk-mini-btn {
+      min-width: 22px;
+      width: 22px;
+      min-height: 22px;
+      height: 22px;
+      border-radius: 6px;
+      padding: 0;
+    }
+
+    .pk-appearance-detail {
+      grid-column: 2 / -1;
+      display: grid;
+      gap: 8px;
+      padding: 6px 0 2px 0;
+    }
+
+    .pk-appearance-detail .pk-inspector-grid,
+    .pk-appearance-detail .pk-grid-2,
+    .pk-appearance-detail .pk-field {
+      gap: 6px;
+    }
+
+    .pk-align-groups {
+      display: grid;
+      gap: 6px;
+    }
+
+    .pk-align-group {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .pk-appearance-type {
+      min-width: 0;
+    }
+
+    .pk-appearance-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .pk-appearance-inline .ds-select,
+    .pk-appearance-inline .ds-input {
+      min-width: 0;
+    }
+
+    .pk-scrub-control {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      height: 28px;
+      border: 1px solid color-mix(in oklab, var(--ds-border) 84%, transparent);
+      border-radius: 8px;
+      background: color-mix(in oklab, var(--ds-bg-soft) 76%, transparent);
+      overflow: hidden;
+    }
+
+    .pk-scrub-control .ds-input {
+      min-width: 0;
+      flex: 1 1 auto;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      padding-inline: 8px;
+      height: 100%;
+      text-align: right;
+    }
+
+    .pk-scrub-handle {
+      min-width: 28px;
+      width: 28px;
+      height: 28px;
+      min-height: 28px;
+      padding: 0;
+      border: 0;
+      border-left: 1px solid color-mix(in oklab, var(--ds-border) 82%, transparent);
+      border-radius: 0;
+      background: color-mix(in oklab, var(--ds-bg-raised) 76%, transparent);
+      color: color-mix(in oklab, var(--ds-text) 82%, var(--ds-text-muted));
+      cursor: ew-resize;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+    }
+
+    .pk-scrub-handle:hover,
+    .pk-scrub-handle:focus-visible {
+      background: color-mix(in oklab, var(--ds-bg-raised) 92%, white 4%);
+      color: var(--ds-text);
+    }
+
+    .pk-scrub-handle.is-active {
+      background: var(--ds-icon-action-active-bg);
+      color: var(--ds-icon-action-fg-active);
+    }
+
+    .pk-scrub-handle .pk-glyph {
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
+      stroke-width: var(--pk-icon-stroke-sm);
+      display: block;
+    }
+
+    .pk-appearance-inline input[type="color"] {
+      width: 22px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .pk-appearance-opacity-input {
+      width: 52px;
+      min-width: 52px;
+      text-align: right;
+      cursor: text;
+    }
+
+    .pk-surface-opacity-input {
+      width: 52px;
+      min-width: 52px;
+      text-align: right;
+    }
+
+    .pk-section-head-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .pk-section-head-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+
+    .pk-section-head-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+
+    .pk-appearance-row.is-drag-source {
+      opacity: 0.48;
+    }
+
+    .pk-appearance-row.is-drop-target {
+      background: color-mix(in oklab, var(--ds-accent) 16%, var(--ds-bg-raised));
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--ds-accent) 30%, transparent);
+    }
+
+    .pk-appearance-row.is-drop-target::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: -1px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--ds-accent);
+      opacity: 0.96;
     }
 
     @media (max-width: 1100px) {
@@ -2447,15 +2777,17 @@
         display: none;
       }
 
-      .pk-item-actions.is-rail {
-        position: static;
-        pointer-events: auto;
-        transform: none;
-      }
+    }
 
-      .pk-item-main {
-        padding-right: 0;
-      }
+    .pk-app input[type="number"]::-webkit-outer-spin-button,
+    .pk-app input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .pk-app input[type="number"] {
+      appearance: textfield;
+      -moz-appearance: textfield;
     }
   </style>
 </head>
@@ -2471,6 +2803,10 @@
       <rect x="3" y="5" width="18" height="14" rx="2"></rect>
       <circle cx="9" cy="10" r="1.5"></circle>
       <path d="M6 16l4-4 3 3 2-2 3 3"></path>
+    </symbol>
+    <symbol id="pk-icon-add" viewBox="0 0 24 24">
+      <path d="M12 5v14"></path>
+      <path d="M5 12h14"></path>
     </symbol>
     <symbol id="pk-icon-link" viewBox="0 0 24 24">
       <path d="M10 8l-2 2a3 3 0 004 4l2-2"></path>
@@ -2491,6 +2827,11 @@
       <circle cx="9" cy="7" r="1.5"></circle>
       <circle cx="15" cy="12" r="1.5"></circle>
       <circle cx="11" cy="17" r="1.5"></circle>
+    </symbol>
+    <symbol id="pk-icon-scrub-horizontal" viewBox="0 0 24 24">
+      <path d="M10 8l-4 4 4 4"></path>
+      <path d="M14 8l4 4-4 4"></path>
+      <path d="M12 9.5v5"></path>
     </symbol>
     <symbol id="pk-icon-screen" viewBox="0 0 24 24">
       <rect x="4" y="5" width="16" height="11" rx="2"></rect>
@@ -2850,32 +3191,27 @@
                 <input class="ds-input" id="projectorDistanceInput" type="text" aria-label="Surface to projector distance" placeholder="e.g. 4.2 m">
               </div>
             </div>
-            <div class="pk-grid-4">
-              <div class="pk-field">
-                <label for="projectorNativeWidthInput">Native W</label>
-                <input class="ds-input" id="projectorNativeWidthInput" type="number" min="1" step="1" aria-label="Projector native width">
+            <div class="pk-dimension-stack">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Native</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="projectorNativeWidthInput"><span>W</span><input class="ds-input" id="projectorNativeWidthInput" type="number" min="1" step="1" aria-label="Projector native width"></label>
+                  <label class="pk-inline-metric" for="projectorNativeHeightInput"><span>H</span><input class="ds-input" id="projectorNativeHeightInput" type="number" min="1" step="1" aria-label="Projector native height"></label>
+                </div>
               </div>
-              <div class="pk-field">
-                <label for="projectorNativeHeightInput">Native H</label>
-                <input class="ds-input" id="projectorNativeHeightInput" type="number" min="1" step="1" aria-label="Projector native height">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Output</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="outputWidthInput"><span>W</span><input class="ds-input" id="outputWidthInput" type="number" min="1" step="1" aria-label="Output width"></label>
+                  <label class="pk-inline-metric" for="outputHeightInput"><span>H</span><input class="ds-input" id="outputHeightInput" type="number" min="1" step="1" aria-label="Output height"></label>
+                </div>
               </div>
-              <div class="pk-field">
-                <label for="outputWidthInput">Output W</label>
-                <input class="ds-input" id="outputWidthInput" type="number" min="1" step="1" aria-label="Output width">
-              </div>
-              <div class="pk-field">
-                <label for="outputHeightInput">Output H</label>
-                <input class="ds-input" id="outputHeightInput" type="number" min="1" step="1" aria-label="Output height">
-              </div>
-            </div>
-            <div class="pk-grid-2">
-              <div class="pk-field">
-                <label for="projectionWidthInput">Projection Width</label>
-                <input class="ds-input" id="projectionWidthInput" type="text" aria-label="Projection width" placeholder="e.g. 6.5 m">
-              </div>
-              <div class="pk-field">
-                <label for="projectionHeightInput">Projection Height</label>
-                <input class="ds-input" id="projectionHeightInput" type="text" aria-label="Projection height" placeholder="e.g. 3.4 m">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Projection</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="projectionWidthInput"><span>W</span><input class="ds-input" id="projectionWidthInput" type="text" aria-label="Projection width" placeholder="e.g. 6.5 m"></label>
+                  <label class="pk-inline-metric" for="projectionHeightInput"><span>H</span><input class="ds-input" id="projectionHeightInput" type="text" aria-label="Projection height" placeholder="e.g. 3.4 m"></label>
+                </div>
               </div>
             </div>
             <div class="pk-field pk-field-multiline">
@@ -2885,9 +3221,19 @@
           </section>
 
           <section class="pk-inspector-card ds-card ds-card-secondary" id="calibrationTemplateCard" hidden>
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">Calibration Template</div>
-              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Calibration defines the shared frame, grid, and reference system for mapped output.">i</button>
+            <div class="pk-section-head pk-section-head-inline">
+              <div class="pk-section-head-title">
+                <div class="pk-eyebrow">Calibration</div>
+                <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Calibration defines the shared frame, grid, and reference system for mapped output.">i</button>
+              </div>
+              <div class="pk-section-head-controls">
+                <div class="pk-scrub-control">
+                  <input class="ds-input pk-surface-opacity-input" id="calibrationOpacity" type="number" min="0" max="100" step="1" value="100" aria-label="Calibration opacity" data-no-scrub="true">
+                  <button class="pk-scrub-handle" type="button" data-scrub-target="calibrationOpacity" title="Scrub calibration opacity" aria-label="Scrub calibration opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
+                </div>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="calibrationVisibleBtn" type="button" title="Hide calibration" aria-label="Hide calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-eye"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="calibrationLockedBtn" type="button" title="Lock calibration" aria-label="Lock calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
+              </div>
             </div>
             <div class="pk-grid-2">
               <div class="pk-field">
@@ -2933,22 +3279,22 @@
           </section>
 
           <section class="pk-inspector-card ds-card ds-card-secondary" id="layerStateCard">
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">Layer</div>
-              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Layer controls affect the selected layer only.">i</button>
-            </div>
-            <div class="pk-item-line">
-              <div class="pk-item-tags" id="inspectorLayerMeta" hidden></div>
-              <div class="pk-item-actions">
+            <div class="pk-section-head pk-section-head-inline">
+              <div class="pk-section-head-title">
+                <div class="pk-eyebrow">Layer</div>
+                <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Layer controls affect the selected layer only.">i</button>
+              </div>
+              <div class="pk-section-head-controls">
+                <div class="pk-scrub-control">
+                  <input class="ds-input pk-surface-opacity-input" id="layerOpacity" type="number" min="0" max="100" step="1" value="100" aria-label="Layer opacity" data-no-scrub="true">
+                  <button class="pk-scrub-handle" type="button" data-scrub-target="layerOpacity" title="Scrub layer opacity" aria-label="Scrub layer opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
+                </div>
                 <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action is-active" id="layerVisibleBtn" type="button" title="Toggle layer visibility" aria-label="Toggle layer visibility"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-eye"></use></svg></button>
                 <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="layerLockedBtn" type="button" title="Toggle layer lock" aria-label="Toggle layer lock"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
               </div>
             </div>
             <div class="pk-item-line">
-              <span class="pk-kicker">Layer Opacity <strong id="layerOpacityValue">100%</strong></span>
-              <div class="pk-field" style="flex:1 1 auto;">
-                <input id="layerOpacity" type="range" min="0" max="100" value="100">
-              </div>
+              <div class="pk-item-tags" id="inspectorLayerMeta" hidden></div>
             </div>
             <div class="pk-item-line">
               <span class="pk-kicker">Calibration Link</span>
@@ -2959,9 +3305,19 @@
           </section>
 
           <section class="pk-inspector-card ds-card ds-card-secondary" id="referenceLayerCard" hidden>
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">Reference</div>
-              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Reference is a calibration aid rendered through its assigned surface.">i</button>
+            <div class="pk-section-head pk-section-head-inline">
+              <div class="pk-section-head-title">
+                <div class="pk-eyebrow">Reference</div>
+                <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Reference is a calibration aid rendered through its assigned surface.">i</button>
+              </div>
+              <div class="pk-section-head-controls">
+                <div class="pk-scrub-control">
+                  <input class="ds-input pk-surface-opacity-input" id="referenceOpacity" type="number" min="0" max="100" step="1" value="100" aria-label="Reference opacity" data-no-scrub="true">
+                  <button class="pk-scrub-handle" type="button" data-scrub-target="referenceOpacity" title="Scrub reference opacity" aria-label="Scrub reference opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
+                </div>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="referenceVisibleBtn" type="button" title="Hide reference" aria-label="Hide reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-eye"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="referenceLockedBtn" type="button" title="Lock reference" aria-label="Lock reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
+              </div>
             </div>
             <div class="pk-field">
               <label for="referenceAssetSelect">Reference Source</label>
@@ -2984,91 +3340,62 @@
                 </select>
               </div>
             </div>
-            <div class="pk-item-line">
-              <span class="pk-kicker">Reference Opacity <strong id="referenceOpacityValue">100%</strong></span>
-              <div class="pk-field" style="flex:1 1 auto;">
-                <input id="referenceOpacity" type="range" min="0" max="100" value="100">
-              </div>
-            </div>
             <div class="pk-stack-inline">
               <button class="ds-btn" id="referenceFitToCalibrationBtn" type="button">Fit To Calibration</button>
               <button class="ds-btn" id="referenceResetFitBtn" type="button">Reset Reference Fit</button>
-              <button class="ds-btn" id="referenceLockBtn" type="button">Lock Reference</button>
             </div>
           </section>
 
           <section class="pk-inspector-card ds-card ds-card-secondary" id="surfaceTransformCard">
-            <div class="pk-section-head">
-              <div class="pk-eyebrow">Surface Geometry</div>
-              <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Surface geometry controls output mode, bounds, local grid, alignment, and warp reset.">i</button>
-            </div>
-            <div class="pk-grid-2">
-              <div class="pk-field">
-                <label for="surfaceOutputMode">Surface Output</label>
-                <select class="ds-select" id="surfaceOutputMode" aria-label="Surface output mode">
-                  <option value="transparent">Transparent</option>
-                  <option value="asset">Assigned Asset</option>
-                  <option value="fill">Solid Fill</option>
-                  <option value="mask">Mask Fill</option>
-                  <option value="pattern-grid">Grid Pattern</option>
-                  <option value="pattern-hatch">Hatch Pattern</option>
-                </select>
+            <div class="pk-section-head pk-section-head-inline">
+              <div class="pk-section-head-title">
+                <div class="pk-eyebrow">Surface</div>
+                <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Surface controls organize frame, visibility, and stacked fills.">i</button>
               </div>
-              <div class="pk-field">
-                <label for="surfacePatternScale">Pattern Size</label>
-                <input class="ds-input" id="surfacePatternScale" type="number" min="8" max="320" step="4" value="48">
+              <div class="pk-section-head-controls">
+                <div class="pk-scrub-control">
+                  <input class="ds-input pk-surface-opacity-input" id="surfaceOpacity" type="number" min="0" max="100" step="1" value="42" aria-label="Surface opacity" data-no-scrub="true">
+                  <button class="pk-scrub-handle" type="button" data-scrub-target="surfaceOpacity" title="Scrub surface opacity" aria-label="Scrub surface opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
+                </div>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="surfaceVisibleBtn" type="button" title="Hide surface" aria-label="Hide surface"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-eye"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="surfaceLockedBtn" type="button" title="Lock surface" aria-label="Lock surface"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
               </div>
             </div>
-            <div class="pk-grid-2">
-              <div class="pk-field">
-                <label for="surfaceFillColor">Fill Color</label>
-                <input class="ds-input" id="surfaceFillColor" type="color" aria-label="Surface fill color" value="#ffffff">
+            <div class="pk-prop-section-head">Position and Size</div>
+            <div class="pk-dimension-stack">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Position</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="surfaceX"><span>X</span><input class="ds-input" id="surfaceX" type="number" value="188"></label>
+                  <label class="pk-inline-metric" for="surfaceY"><span>Y</span><input class="ds-input" id="surfaceY" type="number" value="84"></label>
+                </div>
               </div>
-              <div class="pk-field">
-                <label for="surfacePatternColor">Pattern Color</label>
-                <input class="ds-input" id="surfacePatternColor" type="color" aria-label="Surface pattern color" value="#ffffff">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Dimensions</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="surfaceW"><span>W</span><input class="ds-input" id="surfaceW" type="number" value="654"></label>
+                  <label class="pk-inline-metric" for="surfaceH"><span>H</span><input class="ds-input" id="surfaceH" type="number" value="458"></label>
+                </div>
               </div>
             </div>
-            <div class="pk-field">
-              <label for="surfaceAssetSelect">Assigned Asset</label>
-              <select class="ds-select" id="surfaceAssetSelect" aria-label="Assigned asset"></select>
-            </div>
-
-            <div class="pk-inspector-grid">
-              <div class="pk-field">
-                <label for="surfaceGridEnabled">Local Grid</label>
-                <select class="ds-select" id="surfaceGridEnabled" aria-label="Local grid visibility">
-                  <option value="off">Off</option>
-                  <option value="on">On</option>
-                </select>
+            <div class="pk-align-groups">
+              <div class="pk-align-group" aria-label="Output fit controls">
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceFitBtn" type="button" title="Fit to output" aria-label="Fit to output"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceFillBtn" type="button" title="Fill output" aria-label="Fill output"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="resetWarpBtn" type="button" title="Reset shape" aria-label="Reset shape"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-surface"></use></svg></button>
               </div>
-              <div class="pk-field">
-                <label for="surfaceGridDensity">Grid Size</label>
-                <input class="ds-input" id="surfaceGridDensity" type="number" min="24" max="480" step="8" value="96">
+              <div class="pk-align-group" aria-label="Snap controls">
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceSnapGridBtn" type="button" title="Align to grid" aria-label="Align to grid"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceSnapFrameBtn" type="button" title="Align to frame" aria-label="Align to frame"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
               </div>
-              <div class="pk-field">
-                <label for="surfaceX">X</label>
-                <input class="ds-input" id="surfaceX" type="number" value="188">
-              </div>
-              <div class="pk-field">
-                <label for="surfaceY">Y</label>
-                <input class="ds-input" id="surfaceY" type="number" value="84">
-              </div>
-              <div class="pk-field">
-                <label for="surfaceW">W</label>
-                <input class="ds-input" id="surfaceW" type="number" value="654">
-              </div>
-              <div class="pk-field">
-                <label for="surfaceH">H</label>
-                <input class="ds-input" id="surfaceH" type="number" value="458">
+              <div class="pk-align-group" aria-label="Edge straighten controls">
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceStraightenTopBtn" type="button" title="Straighten top edge" aria-label="Straighten top edge"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up"></use></svg></button>
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceStraightenLeftBtn" type="button" title="Straighten left edge" aria-label="Straighten left edge"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-left"></use></svg></button>
               </div>
             </div>
 
             <div class="pk-item-line">
-              <span class="pk-kicker">Surface Overlay</span>
-              <div class="pk-field" style="flex:1 1 auto;">
-                <input id="surfaceOpacity" type="range" min="0" max="100" value="42">
-              </div>
+              <span class="pk-kicker">Nudge</span>
               <div class="pk-nudge-grid" id="surfaceNudgeGrid" aria-label="Nudge controls">
                 <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="-1" data-nudge-y="-1" aria-label="Nudge up left"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up-left"></use></svg></button>
                 <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="0" data-nudge-y="-1" aria-label="Nudge up"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-up"></use></svg></button>
@@ -3081,14 +3408,23 @@
                 <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-nudge-x="1" data-nudge-y="1" aria-label="Nudge down right"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-arrow-down-right"></use></svg></button>
               </div>
             </div>
-            <div class="pk-stack-inline">
-              <button class="ds-btn" id="resetWarpBtn" type="button">Reset Shape</button>
-              <button class="ds-btn" id="surfaceFitBtn" type="button">Fit to Output</button>
-              <button class="ds-btn" id="surfaceFillBtn" type="button">Fill Output</button>
-              <button class="ds-btn" id="surfaceSnapGridBtn" type="button">Align to Grid</button>
-              <button class="ds-btn" id="surfaceSnapFrameBtn" type="button">Align to Frame</button>
-              <button class="ds-btn" id="surfaceStraightenTopBtn" type="button">Straighten Top Edge</button>
-              <button class="ds-btn" id="surfaceStraightenLeftBtn" type="button">Straighten Left Edge</button>
+
+            <div class="pk-section-head">
+              <div class="pk-eyebrow">Fill Stack</div>
+              <div class="pk-item-actions" id="surfaceAppearanceActions">
+                <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" id="surfaceAddFillBtn" type="button" title="Add fill" aria-label="Add fill"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-add"></use></svg></button>
+              </div>
+            </div>
+            <div class="pk-appearance-list" id="surfaceAppearanceList"></div>
+            <div class="pk-grid-2" id="surfacePatternFields">
+              <div class="pk-field">
+                <label for="surfacePatternScale">Scale</label>
+                <input class="ds-input" id="surfacePatternScale" type="number" min="8" max="320" step="4" value="48">
+              </div>
+              <div class="pk-field">
+                <label for="surfacePatternColor">Pattern</label>
+                <input class="ds-input" id="surfacePatternColor" type="color" aria-label="Surface pattern color" value="#ffffff">
+              </div>
             </div>
           </section>
 
@@ -3097,6 +3433,7 @@
               <div class="pk-eyebrow">Asset Placement</div>
               <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Asset placement controls how media fits, crops, and moves inside the selected surface mask.">i</button>
             </div>
+            <div class="pk-prop-section-head">Mapping</div>
             <div class="pk-inspector-grid">
               <div class="pk-field" style="grid-column: 1 / -1;">
                 <div class="pk-stack-inline">
@@ -3114,6 +3451,9 @@
                   <option value="warp">Warp to Frame</option>
                 </select>
               </div>
+            </div>
+            <div class="pk-prop-section-head">Transform</div>
+            <div class="pk-inspector-grid">
               <div class="pk-field">
                 <label for="assetRotation">Rotation</label>
                 <input class="ds-input" id="assetRotation" type="number" value="0">
@@ -3310,27 +3650,29 @@
       const calibrationShowFrame = document.getElementById("calibrationShowFrame");
       const calibrationShowMatrixLabels = document.getElementById("calibrationShowMatrixLabels");
       const calibrationOutsideFill = document.getElementById("calibrationOutsideFill");
+      const calibrationOpacity = document.getElementById("calibrationOpacity");
+      const calibrationVisibleBtn = document.getElementById("calibrationVisibleBtn");
+      const calibrationLockedBtn = document.getElementById("calibrationLockedBtn");
       const layerStateCard = document.getElementById("layerStateCard");
 
       const referenceLayerCard = document.getElementById("referenceLayerCard");
       const surfaceTransformCard = document.getElementById("surfaceTransformCard");
+      const surfaceAppearanceList = document.getElementById("surfaceAppearanceList");
+      const surfaceAddFillBtn = document.getElementById("surfaceAddFillBtn");
       const layerVisibleBtn = document.getElementById("layerVisibleBtn");
       const layerLockedBtn = document.getElementById("layerLockedBtn");
       const inspectorLinkBtn = document.getElementById("inspectorLinkBtn");
       const layerOpacity = document.getElementById("layerOpacity");
-      const layerOpacityValue = document.getElementById("layerOpacityValue");
       const referenceAssetSelect = document.getElementById("referenceAssetSelect");
       const referenceFitMode = document.getElementById("referenceFitMode");
       const referenceVisibilityMode = document.getElementById("referenceVisibilityMode");
       const referenceOpacity = document.getElementById("referenceOpacity");
-      const referenceOpacityValue = document.getElementById("referenceOpacityValue");
+      const referenceVisibleBtn = document.getElementById("referenceVisibleBtn");
+      const referenceLockedBtn = document.getElementById("referenceLockedBtn");
       const referenceFitToCalibrationBtn = document.getElementById("referenceFitToCalibrationBtn");
       const referenceResetFitBtn = document.getElementById("referenceResetFitBtn");
-      const referenceLockBtn = document.getElementById("referenceLockBtn");
-      const surfaceAssetSelect = document.getElementById("surfaceAssetSelect");
-      const surfaceOutputMode = document.getElementById("surfaceOutputMode");
+      const surfacePatternFields = document.getElementById("surfacePatternFields");
       const surfacePatternScale = document.getElementById("surfacePatternScale");
-      const surfaceFillColor = document.getElementById("surfaceFillColor");
       const surfacePatternColor = document.getElementById("surfacePatternColor");
       const assetTransformCard = document.getElementById("assetTransformCard");
       const assetFitMode = document.getElementById("assetFitMode");
@@ -3344,9 +3686,9 @@
       const surfaceY = document.getElementById("surfaceY");
       const surfaceW = document.getElementById("surfaceW");
       const surfaceH = document.getElementById("surfaceH");
-      const surfaceGridEnabled = document.getElementById("surfaceGridEnabled");
-      const surfaceGridDensity = document.getElementById("surfaceGridDensity");
       const surfaceOpacity = document.getElementById("surfaceOpacity");
+      const surfaceVisibleBtn = document.getElementById("surfaceVisibleBtn");
+      const surfaceLockedBtn = document.getElementById("surfaceLockedBtn");
       const surfaceNudgeGrid = document.getElementById("surfaceNudgeGrid");
       const surfaceFitBtn = document.getElementById("surfaceFitBtn");
       const surfaceFillBtn = document.getElementById("surfaceFillBtn");
@@ -3372,6 +3714,8 @@
           note: "Mode, console, calibration link, and presentation controls kept close to the stage."
         }
       };
+
+      installNumericScrubHandles();
 
       const stageModeMeta = {
         calibration: {
@@ -3460,6 +3804,9 @@
             entityId: "",
             contextTarget: ""
           },
+          selectedAppearanceLayerId: "",
+          appearanceDragId: "",
+          appearanceDropTargetId: "",
           focus: {
             type: "stage",
             id: "stage"
@@ -3527,6 +3874,7 @@
           scaleX: 1,
           scaleY: 1,
           rotation: 0,
+          opacity: 100,
           visible: true,
           locked: false
         },
@@ -3541,6 +3889,8 @@
       let surfaceDragHistorySnapshot = null;
       let calibrationDragState = null;
       let calibrationDragHistorySnapshot = null;
+      let appearanceOpacityScrubState = null;
+      let numericScrubState = null;
       let lastStagePressMeta = null;
       const PROJECT_SCHEMA_VERSION = 1;
       const OUTPUT_PRESETS = {
@@ -3565,6 +3915,18 @@
         "pattern-grid": "Grid Pattern",
         "pattern-hatch": "Hatch Pattern"
       };
+      const APPEARANCE_LAYER_LABELS = {
+        asset: "Asset",
+        fill: "Solid",
+        "pattern-grid": "Grid",
+        "pattern-hatch": "Pattern"
+      };
+      const APPEARANCE_LAYER_ICON_NAMES = {
+        asset: "image",
+        fill: "surface",
+        "pattern-grid": "grid",
+        "pattern-hatch": "grid"
+      };
       const ASSET_FIT_MODE_LABELS = {
         crop: "Crop",
         fit: "Fit",
@@ -3576,7 +3938,7 @@
       const KNOWN_PROJECT_KEYS = ["id", "name", "createdAt", "updatedAt", "thumbnailDataUrl", "schemaVersion", "dirty", "settings"];
       const KNOWN_UI_KEYS = ["leftPanelTab", "expandedLayerIds", "calibrationEditActive", "presentationEnabled", "calibrationLinkEnabled", "guidesEnabled", "playbackRunning", "showReferenceLayer", "focus", "assetLibraryId"];
       const KNOWN_PROJECTION_VIEW_KEYS = ["windowOpen", "preset", "pinnedLayerId", "pinnedSurfaceKey", "showGuides", "showReference", "showCalibration"];
-      const KNOWN_CALIBRATION_KEYS = ["x", "y", "scaleX", "scaleY", "rotation", "visible", "locked"];
+      const KNOWN_CALIBRATION_KEYS = ["x", "y", "scaleX", "scaleY", "rotation", "opacity", "visible", "locked"];
       const KNOWN_CALIBRATION_TEMPLATE_KEYS = ["gridType", "gridSize", "rows", "columns", "showFrame", "showMatrixLabels", "outsideFill", "referenceAssetId", "referenceOpacity"];
       const KNOWN_CALIBRATION_REFERENCE_KEYS = ["assetId", "surfaceKey", "visible", "visibilityMode", "fitMode", "opacity", "locked"];
       const KNOWN_OUTPUT_KEYS = ["width", "height"];
@@ -3768,7 +4130,8 @@
             outputMode: getSurfaceOutputMode(surface),
             fillColor: getSurfaceFillColor(surface),
             patternColor: getSurfacePatternColor(surface),
-            patternScale: getSurfacePatternScale(surface)
+            patternScale: getSurfacePatternScale(surface),
+            appearanceLayers: getSurfaceAppearanceLayers(surface)
           };
         });
         state.ui.showReferenceLayer = state.calibrationReference.visible;
@@ -3786,6 +4149,15 @@
         if (state.ui.focus?.type === "mode" || !state.ui.focus?.type) {
           state.ui.focus = { type: "stage", id: "stage" };
         }
+        state.ui.selectedAppearanceLayerId = typeof state.ui.selectedAppearanceLayerId === "string"
+          ? state.ui.selectedAppearanceLayerId
+          : "";
+        state.ui.appearanceDragId = typeof state.ui.appearanceDragId === "string"
+          ? state.ui.appearanceDragId
+          : "";
+        state.ui.appearanceDropTargetId = typeof state.ui.appearanceDropTargetId === "string"
+          ? state.ui.appearanceDropTargetId
+          : "";
       }
 
       normalizeLayerSurfaceModel();
@@ -4007,15 +4379,15 @@
         return request;
       }
 
-      function drawThumbnailPatternGrid(ctx, surface, sx, sy) {
-        const step = Math.max(8, Number(surface.patternScale) || 48);
+      function drawThumbnailPatternGrid(ctx, surface, appearanceLayer, sx, sy) {
+        const step = Math.max(8, Number(appearanceLayer?.patternScale) || 48);
         const width = Math.max(1, surface.w * sx);
         const height = Math.max(1, surface.h * sy);
         const left = surface.x * sx;
         const top = surface.y * sy;
-        ctx.fillStyle = surface.fillColor || "#ffffff";
+        ctx.fillStyle = appearanceLayer?.fillColor || "#ffffff";
         ctx.fillRect(left, top, width, height);
-        ctx.strokeStyle = surface.patternColor || "#ffffff";
+        ctx.strokeStyle = appearanceLayer?.patternColor || "#ffffff";
         ctx.lineWidth = 1;
         for (let x = 0; x <= width; x += step * sx) {
           ctx.beginPath();
@@ -4031,15 +4403,15 @@
         }
       }
 
-      function drawThumbnailPatternHatch(ctx, surface, sx, sy) {
-        const step = Math.max(8, Number(surface.patternScale) || 48) * Math.max(sx, sy);
+      function drawThumbnailPatternHatch(ctx, surface, appearanceLayer, sx, sy) {
+        const step = Math.max(8, Number(appearanceLayer?.patternScale) || 48) * Math.max(sx, sy);
         const width = Math.max(1, surface.w * sx);
         const height = Math.max(1, surface.h * sy);
         const left = surface.x * sx;
         const top = surface.y * sy;
-        ctx.fillStyle = surface.fillColor || "#ffffff";
+        ctx.fillStyle = appearanceLayer?.fillColor || "#ffffff";
         ctx.fillRect(left, top, width, height);
-        ctx.strokeStyle = surface.patternColor || "#ffffff";
+        ctx.strokeStyle = appearanceLayer?.patternColor || "#ffffff";
         ctx.lineWidth = 2;
         for (let offset = -height; offset <= width + height; offset += step) {
           ctx.beginPath();
@@ -4053,46 +4425,51 @@
         if (!surface?.visible) {
           return;
         }
-        const outputMode = surface.outputMode || (surface.asset?.sourceUrl ? "asset" : "transparent");
         ctx.save();
         traceSurfacePath(ctx, surface, sx, sy);
         ctx.clip();
         ctx.globalAlpha = Math.max(0, Math.min(1, Number(surface.opacity) || 1));
+        const appearanceLayers = getSurfaceVisibleAppearanceLayers(surface);
 
-        if (outputMode === "asset" && surface.asset?.sourceUrl) {
-          const image = await loadThumbnailImage(surface.asset.sourceUrl, imageCache);
-          if (image) {
-            const fitMode = normalizeAssetFitMode(surface.assetTransform?.fitMode);
-            if (fitMode === "warp") {
-              ctx.drawImage(
-                image,
-                surface.x * sx,
-                surface.y * sy,
-                Math.max(1, surface.w * sx),
-                Math.max(1, surface.h * sy)
-              );
-            } else {
-              const assetBox = getSurfaceAssetDisplayBox(surface, surface.asset, surface.assetTransform);
-              const drawX = (surface.x + assetBox.x) * sx;
-              const drawY = (surface.y + assetBox.y) * sy;
-              const drawW = Math.max(1, assetBox.w * sx);
-              const drawH = Math.max(1, assetBox.h * sy);
-              const cx = drawX + (drawW / 2);
-              const cy = drawY + (drawH / 2);
-              ctx.save();
-              ctx.translate(cx, cy);
-              ctx.rotate(((surface.assetTransform?.rotation || 0) * Math.PI) / 180);
-              ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
-              ctx.restore();
+        for (const appearanceLayer of appearanceLayers) {
+          ctx.save();
+          ctx.globalAlpha *= Math.max(0, Math.min(1, appearanceLayer.opacity ?? 1));
+          if (appearanceLayer.kind === "asset" && surface.asset?.sourceUrl) {
+            const image = await loadThumbnailImage(surface.asset.sourceUrl, imageCache);
+            if (image) {
+              const fitMode = normalizeAssetFitMode(surface.assetTransform?.fitMode);
+              if (fitMode === "warp") {
+                ctx.drawImage(
+                  image,
+                  surface.x * sx,
+                  surface.y * sy,
+                  Math.max(1, surface.w * sx),
+                  Math.max(1, surface.h * sy)
+                );
+              } else {
+                const assetBox = getSurfaceAssetDisplayBox(surface, surface.asset, surface.assetTransform);
+                const drawX = (surface.x + assetBox.x) * sx;
+                const drawY = (surface.y + assetBox.y) * sy;
+                const drawW = Math.max(1, assetBox.w * sx);
+                const drawH = Math.max(1, assetBox.h * sy);
+                const cx = drawX + (drawW / 2);
+                const cy = drawY + (drawH / 2);
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(((surface.assetTransform?.rotation || 0) * Math.PI) / 180);
+                ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
+                ctx.restore();
+              }
             }
+          } else if (appearanceLayer.kind === "fill" || appearanceLayer.kind === "mask") {
+            ctx.fillStyle = appearanceLayer.fillColor || "#ffffff";
+            ctx.fillRect(surface.x * sx, surface.y * sy, Math.max(1, surface.w * sx), Math.max(1, surface.h * sy));
+          } else if (appearanceLayer.kind === "pattern-grid") {
+            drawThumbnailPatternGrid(ctx, surface, appearanceLayer, sx, sy);
+          } else if (appearanceLayer.kind === "pattern-hatch") {
+            drawThumbnailPatternHatch(ctx, surface, appearanceLayer, sx, sy);
           }
-        } else if (outputMode === "fill" || outputMode === "mask") {
-          ctx.fillStyle = surface.fillColor || "#ffffff";
-          ctx.fillRect(surface.x * sx, surface.y * sy, Math.max(1, surface.w * sx), Math.max(1, surface.h * sy));
-        } else if (outputMode === "pattern-grid") {
-          drawThumbnailPatternGrid(ctx, surface, sx, sy);
-        } else if (outputMode === "pattern-hatch") {
-          drawThumbnailPatternHatch(ctx, surface, sx, sy);
+          ctx.restore();
         }
 
         ctx.restore();
@@ -4762,6 +5139,170 @@
         return surface?.assetId ? "asset" : "transparent";
       }
 
+      function createAppearanceLayer(kind, overrides = {}) {
+        return {
+          id: overrides.id || `appearance-${kind}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          kind,
+          visible: overrides.visible !== false,
+          opacity: Math.max(0, Math.min(1, Number(overrides.opacity) || 1)),
+          assetId: kind === "asset" ? (overrides.assetId || null) : null,
+          fillColor: overrides.fillColor || "#ffffff",
+          patternColor: overrides.patternColor || "#7bd0ff",
+          patternScale: Math.max(8, Math.min(320, Number(overrides.patternScale) || 48))
+        };
+      }
+
+      function buildLegacyAppearanceLayers(surface) {
+        const layers = [];
+        const outputMode = getSurfaceOutputMode(surface);
+        if (surface?.assetId) {
+          layers.push(createAppearanceLayer("asset", {
+            id: `${surface.key}-asset`,
+            visible: outputMode === "asset",
+            assetId: surface.assetId
+          }));
+        }
+        if (outputMode === "fill" || outputMode === "mask") {
+          layers.push(createAppearanceLayer("fill", {
+            id: `${surface.key}-fill`,
+            fillColor: getSurfaceFillColor(surface)
+          }));
+        } else if (outputMode === "pattern-grid" || outputMode === "pattern-hatch") {
+          layers.push(createAppearanceLayer(outputMode, {
+            id: `${surface.key}-${outputMode}`,
+            fillColor: getSurfaceFillColor(surface),
+            patternColor: getSurfacePatternColor(surface),
+            patternScale: getSurfacePatternScale(surface)
+          }));
+        }
+        return layers;
+      }
+
+      function getSurfaceAppearanceLayers(surface) {
+        if (!surface) {
+          return [];
+        }
+        const source = Array.isArray(surface.appearanceLayers) ? surface.appearanceLayers : buildLegacyAppearanceLayers(surface);
+        return source
+          .map((layer) => createAppearanceLayer(layer.kind, layer))
+          .filter((layer) => ["asset", "fill", "pattern-grid", "pattern-hatch"].includes(layer.kind));
+      }
+
+      function getSurfaceVisibleAppearanceLayers(surface) {
+        return getSurfaceAppearanceLayers(surface).filter((layer) => layer.visible !== false);
+      }
+
+      function getSurfacePrimaryAppearanceLayer(surface) {
+        const visible = getSurfaceVisibleAppearanceLayers(surface);
+        return visible[visible.length - 1] || getSurfaceAppearanceLayers(surface)[0] || null;
+      }
+
+      function getAppearanceLayerLabel(kind) {
+        return APPEARANCE_LAYER_LABELS[kind] || kind || "Fill";
+      }
+
+      function syncSurfaceLegacyAppearance(surface, appearanceLayers) {
+        const layers = appearanceLayers.map((layer) => createAppearanceLayer(layer.kind, layer));
+        const assetLayer = layers.find((layer) => layer.kind === "asset");
+        const primaryLayer = layers.filter((layer) => layer.visible !== false).slice(-1)[0] || null;
+        return {
+          ...surface,
+          appearanceLayers: layers,
+          assetId: assetLayer?.assetId || null,
+          outputMode: primaryLayer?.kind || "transparent",
+          fillColor: primaryLayer?.fillColor || getSurfaceFillColor(surface),
+          patternColor: primaryLayer?.patternColor || getSurfacePatternColor(surface),
+          patternScale: primaryLayer?.patternScale || getSurfacePatternScale(surface)
+        };
+      }
+
+      function updateSurfaceAppearance(surfaceKey, updater) {
+        updateSurfaceRecord(surfaceKey, (surface) => {
+          const currentLayers = getSurfaceAppearanceLayers(surface);
+          const nextLayers = updater(currentLayers.map((layer) => ({ ...layer }))) || currentLayers;
+          return syncSurfaceLegacyAppearance(surface, nextLayers);
+        });
+      }
+
+      function clampAppearanceOpacityPercent(value) {
+        return Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+      }
+
+      function setAppearanceLayerKind(surfaceKey, layerId, nextKind) {
+        const surface = state.surfaces.find((item) => item.key === surfaceKey);
+        if (!surface) {
+          return;
+        }
+        updateSurfaceAppearance(surfaceKey, (layers) => {
+          const nextLayers = layers.map((layer) => {
+            if (layer.id !== layerId) {
+              return layer;
+            }
+            return createAppearanceLayer(nextKind, {
+              ...layer,
+              id: layer.id,
+              kind: nextKind,
+              visible: layer.visible !== false,
+              opacity: layer.opacity ?? 1,
+              fillColor: layer.fillColor || getSurfaceFillColor(surface),
+              patternColor: layer.patternColor || getSurfacePatternColor(surface),
+              patternScale: layer.patternScale || getSurfacePatternScale(surface),
+              assetId: nextKind === "asset" ? (layer.assetId || surface.assetId || null) : null
+            });
+          });
+          if (nextKind === "asset") {
+            return nextLayers.filter((layer) => layer.kind !== "asset" || layer.id === layerId);
+          }
+          return nextLayers;
+        });
+      }
+
+      function setAppearanceLayerOpacity(surfaceKey, layerId, percent) {
+        const nextOpacity = clampAppearanceOpacityPercent(percent) / 100;
+        updateSurfaceAppearance(surfaceKey, (layers) => layers.map((layer) => layer.id === layerId
+          ? { ...layer, opacity: nextOpacity }
+          : layer));
+      }
+
+      function isAppearanceInteractiveTarget(target) {
+        return Boolean(target?.closest("select, input, button, option, label"));
+      }
+
+      function formatNumericScrubValue(value, step) {
+        const decimals = String(step || 1).includes(".")
+          ? String(step).split(".")[1].length
+          : 0;
+        return decimals > 0 ? value.toFixed(decimals) : String(Math.round(value));
+      }
+
+      function installNumericScrubHandles() {
+        const scrubInputs = Array.from(document.querySelectorAll(
+          '.pk-inspector-card input.ds-input[type="number"]:not([data-no-scrub])'
+        ));
+        scrubInputs.forEach((input) => {
+          if (input.dataset.scrubEnhanced === "true") {
+            return;
+          }
+          if (input.closest(".pk-scrub-control")) {
+            input.dataset.scrubEnhanced = "true";
+            return;
+          }
+          const wrapper = document.createElement("div");
+          wrapper.className = "pk-scrub-control";
+          input.parentNode.insertBefore(wrapper, input);
+          wrapper.appendChild(input);
+          const handle = document.createElement("button");
+          handle.type = "button";
+          handle.className = "pk-scrub-handle";
+          handle.dataset.scrubTarget = input.id;
+          handle.title = `Scrub ${input.getAttribute("aria-label") || input.id || "value"}`;
+          handle.setAttribute("aria-label", handle.title);
+          handle.innerHTML = iconMarkup("scrub-horizontal", "Scrub value");
+          wrapper.appendChild(handle);
+          input.dataset.scrubEnhanced = "true";
+        });
+      }
+
       function getSurfacePatternScale(surface) {
         return Math.max(8, Math.min(320, Number(surface?.patternScale) || 48));
       }
@@ -4787,10 +5328,20 @@
       }
 
       function getSurfaceOutputVisual(surface) {
-        const mode = getSurfaceOutputMode(surface);
-        const fillColor = getSurfaceFillColor(surface);
-        const patternColor = getSurfacePatternColor(surface);
-        const patternScale = getSurfacePatternScale(surface);
+        const primaryLayer = getSurfacePrimaryAppearanceLayer(surface);
+        return getAppearanceLayerVisual(primaryLayer || {
+          kind: getSurfaceOutputMode(surface),
+          fillColor: getSurfaceFillColor(surface),
+          patternColor: getSurfacePatternColor(surface),
+          patternScale: getSurfacePatternScale(surface)
+        });
+      }
+
+      function getAppearanceLayerVisual(layer) {
+        const mode = layer?.kind || "transparent";
+        const fillColor = layer?.fillColor || "#ffffff";
+        const patternColor = layer?.patternColor || "#ffffff";
+        const patternScale = Math.max(8, Math.min(320, Number(layer?.patternScale) || 48));
 
         if (mode === "fill") {
           return {
@@ -4847,6 +5398,16 @@
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"
         };
+      }
+
+      function getAppearanceLayerAsset(surface, layer) {
+        if (!surface || layer?.kind !== "asset") {
+          return null;
+        }
+        if (layer.assetId) {
+          return state.assets.find((asset) => asset.id === layer.assetId) || getSurfaceAsset(surface);
+        }
+        return getSurfaceAsset(surface);
       }
 
       function isSurfacePaintAssistMode(surface) {
@@ -5133,12 +5694,18 @@
         state.calibrationReference.assetId = assetId || null;
         state.calibrationTemplate.referenceAssetId = assetId || null;
         if (targetSurface) {
-          updateSurfaceRecord(targetSurface.key, (surface) => ({
-            ...surface,
-            assetId: assetId || null,
-            assetFitMode: state.calibrationReference.fitMode || surface.assetFitMode || "surface",
-            outputMode: assetId ? "asset" : "transparent"
-          }));
+          updateSurfaceRecord(targetSurface.key, (surface) => {
+            const base = {
+              ...surface,
+              assetId: assetId || null,
+              assetFitMode: state.calibrationReference.fitMode || surface.assetFitMode || "surface"
+            };
+            const existing = getSurfaceAppearanceLayers(base).filter((layer) => layer.kind !== "asset");
+            const nextLayers = assetId
+              ? [createAppearanceLayer("asset", { id: `${targetSurface.key}-asset`, assetId, visible: true }), ...existing]
+              : existing;
+            return syncSurfaceLegacyAppearance(base, nextLayers);
+          });
         }
       }
 
@@ -5655,6 +6222,9 @@
           return entity.visible && isEntityVisibleInMode({ type: "content", ...content });
         }
         if (entity.type === "surface") {
+          if (entity.visible === false) {
+            return false;
+          }
           return getLayersForSurface(entity.key).some((layer) => isEntityVisibleInMode({ type: "layer", ...layer }));
         }
         return true;
@@ -5679,6 +6249,9 @@
           return entity.locked || !isLayerEditableInCurrentState(entity);
         }
         if (entity.type === "surface") {
+          if (entity.locked) {
+            return true;
+          }
           if (isCalibrationReferenceSurfaceKey(entity.key)) {
             return isEntityLockedInCurrentState({ type: "reference", id: "calibration-reference" });
           }
@@ -6010,6 +6583,7 @@
               fillColor: getSurfaceFillColor(sourceSurface),
               patternColor: getSurfacePatternColor(sourceSurface),
               patternScale: getSurfacePatternScale(sourceSurface),
+              appearanceLayers: getSurfaceAppearanceLayers(sourceSurface),
               tint: layerIndex % 3 === 0
                 ? "rgba(87,214,255,0.18)"
                 : layerIndex % 3 === 1
@@ -6374,6 +6948,13 @@
         }));
       }
 
+      function toggleSurfaceFlag(surfaceKey, flag) {
+        updateSurfaceRecord(surfaceKey, (surface) => ({
+          ...surface,
+          [flag]: !surface[flag]
+        }));
+      }
+
       function beginTitleEdit(type, id) {
         state.ui.editingTitle = { type, id };
       }
@@ -6733,6 +7314,123 @@
         }
       }
 
+      function syncSurfaceAppearanceNodes(container, appearanceLayers) {
+        if (!container) {
+          return [];
+        }
+        const existing = new Map(
+          Array.from(container.querySelectorAll("[data-appearance-key]"))
+            .map((node) => [node.dataset.appearanceKey, node])
+        );
+
+        appearanceLayers.forEach((layer) => {
+          const appearanceKey = layer.kind === "asset" ? `asset:${layer.id}` : layer.id;
+          let node = existing.get(appearanceKey);
+          if (!node) {
+            node = document.createElement("div");
+            node.dataset.appearanceKey = appearanceKey;
+            if (layer.kind === "asset") {
+              node.className = "pk-stage-media";
+              node.dataset.stageMedia = "";
+              node.setAttribute("aria-hidden", "true");
+            } else {
+              node.className = "pk-stage-appearance-layer";
+            }
+          }
+          container.append(node);
+          existing.delete(appearanceKey);
+        });
+
+        existing.forEach((node) => node.remove());
+        return Array.from(container.querySelectorAll("[data-appearance-key]"));
+      }
+
+      function renderSurfaceAppearanceNode(node, surface, appearanceLayer, assetTransform, options = {}) {
+        if (!node || !surface || !appearanceLayer) {
+          return;
+        }
+        const { assetBox = null, isReferenceSurface = false, referenceOpacity = 1, ownerLayer = null } = options;
+
+        if (appearanceLayer.kind === "asset") {
+          const asset = isReferenceSurface
+            ? getCalibrationReferenceAsset()
+            : getAppearanceLayerAsset(surface, appearanceLayer);
+          const fitMode = normalizeAssetFitMode(assetTransform?.fitMode);
+
+          node.style.opacity = `${Math.max(0, Math.min(1, appearanceLayer.opacity ?? 1))}`;
+          node.style.transformOrigin = fitMode === "warp" ? "top left" : "center";
+
+          if (!asset?.sourceUrl) {
+            node.innerHTML = "";
+            node.style.backgroundImage = "";
+            node.style.backgroundColor = "transparent";
+            node.style.backgroundSize = "";
+            node.style.backgroundPosition = "center";
+            node.style.backgroundRepeat = "no-repeat";
+            node.style.transform = "";
+          } else if (asset.kind === "Video") {
+            let videoNode = node.querySelector("video");
+            if (!videoNode) {
+              node.innerHTML = '<video muted playsinline loop></video>';
+              videoNode = node.querySelector("video");
+            }
+            node.style.backgroundImage = "";
+            node.style.backgroundColor = "transparent";
+            node.style.backgroundSize = "100% 100%";
+            node.style.backgroundPosition = "center";
+            node.style.backgroundRepeat = "no-repeat";
+            if (videoNode.dataset.sourceUrl !== asset.sourceUrl) {
+              videoNode.src = asset.sourceUrl;
+              videoNode.dataset.sourceUrl = asset.sourceUrl;
+            }
+            if (state.ui.playbackRunning && (ownerLayer?.playing !== false || isReferenceSurface)) {
+              if (videoNode.paused) {
+                videoNode.play().catch(() => {});
+              }
+            } else if (!videoNode.paused) {
+              videoNode.pause();
+            }
+          } else {
+            node.innerHTML = "";
+            node.style.backgroundImage = `url("${asset.sourceUrl}")`;
+            node.style.backgroundColor = "transparent";
+            node.style.backgroundSize = "100% 100%";
+            node.style.backgroundPosition = "center";
+            node.style.backgroundRepeat = "no-repeat";
+          }
+
+          if (!isReferenceSurface && fitMode !== "warp" && assetBox) {
+            node.style.width = `${(assetBox.w / Math.max(1, surface.w)) * 100}%`;
+            node.style.height = `${(assetBox.h / Math.max(1, surface.h)) * 100}%`;
+            node.style.left = `${(assetBox.x / Math.max(1, surface.w)) * 100}%`;
+            node.style.top = `${(assetBox.y / Math.max(1, surface.h)) * 100}%`;
+            node.style.transform = `rotate(${assetTransform.rotation}deg)`;
+          } else {
+            node.style.width = "100%";
+            node.style.height = "100%";
+            node.style.left = "0";
+            node.style.top = "0";
+            node.style.transform = "";
+          }
+
+          return;
+        }
+
+        const visual = getAppearanceLayerVisual(appearanceLayer);
+        node.innerHTML = "";
+        node.style.opacity = `${Math.max(0, Math.min(1, appearanceLayer.opacity ?? 1))}`;
+        node.style.left = "0";
+        node.style.top = "0";
+        node.style.width = "100%";
+        node.style.height = "100%";
+        node.style.transform = "";
+        node.style.backgroundImage = visual.backgroundImage;
+        node.style.backgroundColor = visual.backgroundColor;
+        node.style.backgroundSize = visual.backgroundSize;
+        node.style.backgroundPosition = visual.backgroundPosition;
+        node.style.backgroundRepeat = visual.backgroundRepeat;
+      }
+
       function createStageSurfaceNode(surfaceKey) {
         const node = document.createElement("div");
         node.className = "pk-stage-surface";
@@ -6743,7 +7441,7 @@
         node.dataset.entityId = surfaceKey;
         node.innerHTML = `
           <div class="pk-stage-surface-content" data-surface-content aria-hidden="true">
-            <div class="pk-stage-media" data-stage-media aria-hidden="true"></div>
+            <div class="pk-stage-appearance-stack" data-stage-appearance aria-hidden="true"></div>
             <div class="pk-stage-surface-grid" data-surface-grid aria-hidden="true"></div>
           </div>
           <svg class="pk-stage-surface-outline" data-surface-outline aria-hidden="true" preserveAspectRatio="none">
@@ -7602,11 +8300,17 @@
           return;
         }
 
-        updateSurfaceRecord(surfaceKey, (currentSurface) => ({
-          ...currentSurface,
-          assetId: assetId || null,
-          outputMode: asset ? "asset" : currentSurface.outputMode
-        }));
+        updateSurfaceRecord(surfaceKey, (currentSurface) => {
+          const base = {
+            ...currentSurface,
+            assetId: assetId || null
+          };
+          const existing = getSurfaceAppearanceLayers(base).filter((layer) => layer.kind !== "asset");
+          const nextLayers = asset
+            ? [createAppearanceLayer("asset", { id: `${surfaceKey}-asset`, assetId, visible: true }), ...existing]
+            : existing;
+          return syncSurfaceLegacyAppearance(base, nextLayers);
+        });
       }
 
       function assignImportedAssetToTarget(assetId, target = pendingImportedAssetTarget) {
@@ -7744,6 +8448,7 @@
           fillColor: "#ffffff",
           patternColor: "#7bd0ff",
           patternScale: 48,
+          appearanceLayers: [],
           assetFitMode: "warp",
           assetAspectLocked: true,
           assetOffsetX: 0,
@@ -8240,14 +8945,24 @@
           const contentType = getContentTypeInfo(content);
           const isSurfaceActive = isFocused("surface", surface.key);
           const isContentActive = content ? isFocused("content", content.id) : false;
+          const visibilityLabel = surface.visible !== false ? "Hide surface" : "Show surface";
+          const visibilityStateIcon = surface.visible !== false ? "eye" : "eye-off";
+          const visibilityActionIcon = surface.visible !== false ? "eye-off" : "eye";
+          const lockLabel = surface.locked ? "Unlock surface" : "Lock surface";
+          const lockStateIcon = surface.locked ? "lock" : "unlock";
+          const lockActionIcon = surface.locked ? "unlock" : "lock";
           return `
             <div class="pk-tree-item is-child is-technical" style="--pk-tree-level:1">
-              <article class="pk-tree-row${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "surface" && state.ui.treeDrag.id === surface.key ? " is-drag-source" : ""}${getTreeDropClass("surface", surface.key)}${getTreeHoverClass("surface", surface.key)}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
+              <article class="pk-tree-row has-rail${(surface.visible === false || surface.locked) ? " has-persistent-actions" : ""}${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "surface" && state.ui.treeDrag.id === surface.key ? " is-drag-source" : ""}${getTreeDropClass("surface", surface.key)}${getTreeHoverClass("surface", surface.key)}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
                 <div class="pk-tree-row-icon" title="${surfaceType.label}" aria-label="${surfaceType.label}">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
                 <div class="pk-tree-row-main">
                   <div class="pk-tree-row-line pk-item-line">
                     ${renderEditableTitle("surface", surface.key, surface.listTitle)}
                   </div>
+                </div>
+                <div class="pk-tree-row-actions">
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.visible === false ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-surface-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-surface-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
               </article>
               <div class="pk-tree-children"${content ? "" : " hidden"}>
@@ -8329,14 +9044,24 @@
           const content = getContentForSurface(surface, null);
           const contentType = getContentTypeInfo(content);
           const isContentActive = content ? isFocused("content", content.id) : false;
+          const visibilityLabel = surface.visible !== false ? "Hide surface" : "Show surface";
+          const visibilityStateIcon = surface.visible !== false ? "eye" : "eye-off";
+          const visibilityActionIcon = surface.visible !== false ? "eye-off" : "eye";
+          const lockLabel = surface.locked ? "Unlock surface" : "Lock surface";
+          const lockStateIcon = surface.locked ? "lock" : "unlock";
+          const lockActionIcon = surface.locked ? "unlock" : "lock";
           return `
             <div class="pk-tree-item is-technical">
-              <article class="pk-tree-row${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "surface" && state.ui.treeDrag.id === surface.key ? " is-drag-source" : ""}${getTreeDropClass("surface", surface.key)}${getTreeHoverClass("surface", surface.key)}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
+              <article class="pk-tree-row has-rail${(surface.visible === false || surface.locked) ? " has-persistent-actions" : ""}${isSurfaceActive ? " is-active" : ""}${isModeDisabled ? " is-mode-disabled" : ""}${state.ui.treeDrag?.type === "surface" && state.ui.treeDrag.id === surface.key ? " is-drag-source" : ""}${getTreeDropClass("surface", surface.key)}${getTreeHoverClass("surface", surface.key)}" data-surface-key="${surface.key}" data-context-target="workspace-row" data-entity-type="surface" data-entity-id="${surface.key}" draggable="true">
                 <div class="pk-tree-row-icon" title="${surfaceType.label}" aria-label="${surfaceType.label}">${iconMarkup(surfaceType.icon, surfaceType.label)}</div>
                 <div class="pk-tree-row-main">
                   <div class="pk-tree-row-line pk-item-line">
                     ${renderEditableTitle("surface", surface.key, surface.listTitle)}
                   </div>
+                </div>
+                <div class="pk-tree-row-actions">
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.visible === false ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-surface-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-surface-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
               </article>
               <div class="pk-tree-children"${content ? "" : " hidden"}>
@@ -8407,13 +9132,16 @@
         const isDragging = editingEnabled && surfaceNode.dataset.surfaceKey === state.ui.dragSurfaceKey;
         const isHovered = editingEnabled && surfaceNode.dataset.surfaceKey === state.ui.hoverSurfaceKey;
         const contentNode = surfaceNode.querySelector("[data-surface-content]");
-        const mediaNode = surfaceNode.querySelector("[data-stage-media]");
+        const appearanceStackNode = surfaceNode.querySelector("[data-stage-appearance]");
         const surfaceGridNode = surfaceNode.querySelector("[data-surface-grid]");
         const outlineNode = surfaceNode.querySelector("[data-surface-outline]");
         const polygonNode = surfaceNode.querySelector("[data-surface-polygon]");
         const assetFrameNode = surfaceNode.querySelector("[data-asset-frame]");
         const asset = isReferenceSurface ? getCalibrationReferenceAsset() : getSurfaceAsset(sourceSurface);
         const assetTransform = isReferenceSurface ? getCalibrationReferenceTransform() : getSurfaceAssetTransform(sourceSurface);
+        const appearanceLayers = isReferenceSurface
+          ? (asset ? [createAppearanceLayer("asset", { id: `${surface.key}-reference-asset`, assetId: asset.id })] : [])
+          : getSurfaceVisibleAppearanceLayers(sourceSurface);
         const isAssetCrop = !isReferenceSurface && interactionState.assetCrop && Boolean(asset);
         const assetBox = !isReferenceSurface && asset ? getSurfaceAssetDisplayBox(surface, asset, assetTransform) : null;
         const assetQuad = isAssetCrop && assetBox ? getRotatedRectQuad(assetBox, assetTransform.rotation || 0, "center") : null;
@@ -8435,6 +9163,24 @@
           contentNode.style.clipPath = isAssetCrop ? "none" : getQuadClipPath(surface);
           contentNode.style.overflow = isAssetCrop ? "visible" : "hidden";
           contentNode.style.filter = `saturate(${0.72 + surface.opacity / 100}) brightness(${0.72 + surface.opacity / 200})`;
+        }
+        if (appearanceStackNode) {
+          appearanceStackNode.style.opacity = `${Math.max(0.08, (isReferenceSurface ? getCalibrationReference().opacity : (ownerLayer?.opacity ?? 100)) / 100)}`;
+          const appearanceNodes = syncSurfaceAppearanceNodes(appearanceStackNode, appearanceLayers);
+          appearanceNodes.forEach((node) => {
+            const appearanceKey = node.dataset.appearanceKey;
+            const appearanceLayer = appearanceLayers.find((layer) => (layer.kind === "asset" ? `asset:${layer.id}` : layer.id) === appearanceKey);
+            if (!appearanceLayer) {
+              node.remove();
+              return;
+            }
+            renderSurfaceAppearanceNode(node, sourceSurface, appearanceLayer, assetTransform, {
+              assetBox,
+              isReferenceSurface,
+              referenceOpacity: getCalibrationReference().opacity / 100,
+              ownerLayer
+            });
+          });
         }
         if (outlineNode && polygonNode) {
           outlineNode.setAttribute("viewBox", `0 0 ${Math.max(1, surface.w)} ${Math.max(1, surface.h)}`);
@@ -8495,70 +9241,9 @@
             || isCropMuted;
         });
 
-        if (mediaNode) {
-          const outputMode = isReferenceSurface ? "asset" : getSurfaceOutputMode(sourceSurface);
-          const isRenderable = outputMode === "asset" && Boolean(asset?.sourceUrl);
-          const surfaceVisual = getSurfaceOutputVisual(sourceSurface);
-          mediaNode.style.opacity = `${Math.max(0.08, (isReferenceSurface ? getCalibrationReference().opacity : (ownerLayer?.opacity ?? 100)) / 100)}`;
-          mediaNode.style.transformOrigin = normalizeAssetFitMode(assetTransform?.fitMode) === "warp" ? "top left" : "center";
-
-          if (!isRenderable) {
-            mediaNode.innerHTML = "";
-            mediaNode.style.backgroundImage = surfaceVisual.backgroundImage;
-            mediaNode.style.backgroundColor = surfaceVisual.backgroundColor;
-            mediaNode.style.backgroundSize = surfaceVisual.backgroundSize;
-            mediaNode.style.backgroundPosition = surfaceVisual.backgroundPosition;
-            mediaNode.style.backgroundRepeat = surfaceVisual.backgroundRepeat;
-            mediaNode.style.transform = "";
-          } else if (asset.kind === "Video") {
-            let videoNode = mediaNode.querySelector("video");
-            if (!videoNode) {
-              mediaNode.innerHTML = '<video muted playsinline loop></video>';
-              videoNode = mediaNode.querySelector("video");
-            }
-            mediaNode.style.backgroundImage = "";
-            mediaNode.style.backgroundColor = "transparent";
-            mediaNode.style.backgroundSize = "100% 100%";
-            mediaNode.style.backgroundPosition = "center";
-            mediaNode.style.backgroundRepeat = "no-repeat";
-            if (videoNode.dataset.sourceUrl !== asset.sourceUrl) {
-              videoNode.src = asset.sourceUrl;
-              videoNode.dataset.sourceUrl = asset.sourceUrl;
-            }
-            if (state.ui.playbackRunning && ownerLayer.playing !== false) {
-              if (videoNode.paused) {
-                videoNode.play().catch(() => {});
-              }
-            } else if (!videoNode.paused) {
-              videoNode.pause();
-            }
-          } else {
-            mediaNode.innerHTML = "";
-            mediaNode.style.backgroundImage = `url("${asset.sourceUrl}")`;
-            mediaNode.style.backgroundColor = "transparent";
-            mediaNode.style.backgroundSize = "100% 100%";
-            mediaNode.style.backgroundPosition = "center";
-            mediaNode.style.backgroundRepeat = "no-repeat";
-          }
-
-          if (!isReferenceSurface && normalizeAssetFitMode(assetTransform?.fitMode) !== "warp" && assetBox) {
-            mediaNode.style.width = `${(assetBox.w / Math.max(1, surface.w)) * 100}%`;
-            mediaNode.style.height = `${(assetBox.h / Math.max(1, surface.h)) * 100}%`;
-            mediaNode.style.left = `${(assetBox.x / Math.max(1, surface.w)) * 100}%`;
-            mediaNode.style.top = `${(assetBox.y / Math.max(1, surface.h)) * 100}%`;
-            mediaNode.style.transform = `rotate(${assetTransform.rotation}deg)`;
-          } else {
-            mediaNode.style.width = "100%";
-            mediaNode.style.height = "100%";
-            mediaNode.style.left = "0";
-            mediaNode.style.top = "0";
-            mediaNode.style.transform = "";
-          }
-        }
-
         if (surfaceGridNode) {
-          surfaceGridNode.style.opacity = surface.gridEnabled && !isPresentationPreviewActive() ? "1" : "0";
-          surfaceGridNode.style.backgroundSize = `${Math.max(16, surface.gridDensity)}px ${Math.max(16, surface.gridDensity)}px`;
+          surfaceGridNode.style.opacity = "0";
+          surfaceGridNode.style.backgroundSize = `${Math.max(16, surface.gridDensity || 96)}px ${Math.max(16, surface.gridDensity || 96)}px`;
         }
 
         surfaceNode.classList.toggle("is-active", editingEnabled && isActive);
@@ -8596,6 +9281,7 @@
         stageCalibration.style.top = `${(rect.y / stageViewport.height) * 100}%`;
         stageCalibration.style.width = `${(rect.w / stageViewport.width) * 100}%`;
         stageCalibration.style.height = `${(rect.h / stageViewport.height) * 100}%`;
+        stageCalibration.style.opacity = String(Math.max(0, Math.min(100, Number(state.calibration.opacity ?? 100))) / 100);
         stageCalibration.style.pointerEvents = state.ui.focus.type === "calibration" ? "auto" : "none";
         stageCalibration.classList.toggle("is-editable", canEditOverlay);
         stageCalibration.classList.toggle("is-active", canEditOverlay);
@@ -8827,6 +9513,17 @@
           calibrationShowFrame.checked = Boolean(state.calibrationTemplate.showFrame);
           calibrationShowMatrixLabels.checked = Boolean(state.calibrationTemplate.showMatrixLabels);
           calibrationOutsideFill.value = state.calibrationTemplate.outsideFill || "#000000";
+          const calibrationVisibilityLabel = state.calibration.visible === false ? "Show calibration" : "Hide calibration";
+          const calibrationLockLabel = state.calibration.locked ? "Unlock calibration" : "Lock calibration";
+          calibrationOpacity.value = String(Math.round(state.calibration.opacity ?? 100));
+          calibrationVisibleBtn.classList.toggle("is-active", state.calibration.visible === false);
+          calibrationVisibleBtn.title = calibrationVisibilityLabel;
+          calibrationVisibleBtn.setAttribute("aria-label", calibrationVisibilityLabel);
+          calibrationVisibleBtn.innerHTML = iconMarkup(state.calibration.visible === false ? "eye-off" : "eye", calibrationVisibilityLabel);
+          calibrationLockedBtn.classList.toggle("is-active", state.calibration.locked);
+          calibrationLockedBtn.title = calibrationLockLabel;
+          calibrationLockedBtn.setAttribute("aria-label", calibrationLockLabel);
+          calibrationLockedBtn.innerHTML = iconMarkup(state.calibration.locked ? "lock" : "unlock", calibrationLockLabel);
           syncProjectSettingsInputs();
           setInspectorInputsDisabled([
             calibrationGridType,
@@ -8835,7 +9532,11 @@
             calibrationColumns,
             calibrationShowFrame,
             calibrationShowMatrixLabels,
-            calibrationOutsideFill
+            calibrationOutsideFill,
+            calibrationOpacity,
+            calibrationVisibleBtn,
+            calibrationLockedBtn,
+            ...Array.from(document.querySelectorAll("#calibrationTemplateCard [data-scrub-target]"))
           ], calibrationEditingDisabled);
           return;
         }
@@ -8844,7 +9545,7 @@
         const assignableAssets = state.assets.filter((asset) => asset.kind !== "Guide");
         const referenceAssets = state.assets.filter((asset) => asset.kind !== "Guide" && asset.kind !== "Video");
         const assetTransform = getSurfaceAssetTransform(rawSelectedSurface);
-        const surfaceOutputModeValue = getSurfaceOutputMode(rawSelectedSurface);
+        const surfaceAppearanceLayers = getSurfaceAppearanceLayers(rawSelectedSurface);
         const interactionState = rawSelectedSurface ? getSurfaceInteractionState(rawSelectedSurface.key) : null;
         const assetCropActive = Boolean(interactionState?.assetCrop);
         const selectedRole = selectedLayer ? getLayerRole(selectedLayer) : null;
@@ -8853,6 +9554,11 @@
         const showSurfaceGeometryControls = showSurfaceControls && !assetCropActive;
         const showAssetControls = focusType === "content" || (showSurfaceControls && assetCropActive);
         const showReferenceControls = calibrationReferenceSelected;
+        if (state.ui.selectedAppearanceLayerId && !surfaceAppearanceLayers.some((layer) => layer.id === state.ui.selectedAppearanceLayerId)) {
+          state.ui.selectedAppearanceLayerId = surfaceAppearanceLayers[0]?.id || "";
+        }
+        const selectedAppearanceLayer = surfaceAppearanceLayers.find((layer) => layer.id === state.ui.selectedAppearanceLayerId) || null;
+        const isSurfacePatternOutput = ["pattern-grid", "pattern-hatch"].includes(selectedAppearanceLayer?.kind);
         if (state.ui.focus.type === "content") {
           inspectorTitle.textContent = focused.name;
         } else if (state.ui.focus.type === "asset-library") {
@@ -8877,6 +9583,7 @@
         layerStateCard.hidden = !showLayerControls;
         referenceLayerCard.hidden = !showReferenceControls;
         surfaceTransformCard.hidden = !showSurfaceGeometryControls;
+        if (surfacePatternFields) surfacePatternFields.hidden = !showSurfaceGeometryControls || !isSurfacePatternOutput;
         inspectorTags.hidden = false;
         if (focusType === "asset-library") {
           inspectorTags.innerHTML = `
@@ -8888,6 +9595,43 @@
         }
         inspectorLayerMeta.hidden = true;
         inspectorLayerMeta.innerHTML = "";
+        if (surfaceAppearanceList) {
+          surfaceAppearanceList.innerHTML = surfaceAppearanceLayers.map((layer) => `
+          <div class="pk-appearance-row${layer.id === state.ui.selectedAppearanceLayerId ? " is-active" : ""}${layer.visible === false ? " is-hidden" : ""}${state.ui.appearanceDragId === layer.id ? " is-drag-source" : ""}${state.ui.appearanceDropTargetId === layer.id ? " is-drop-target" : ""}" data-appearance-layer-id="${layer.id}" draggable="true">
+            <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-appearance-action="toggle-mode" data-appearance-layer-id="${layer.id}" title="${layer.kind === "asset" ? "Switch to fill" : "Switch to asset"}" aria-label="${layer.kind === "asset" ? "Switch to fill" : "Switch to asset"}">${iconMarkup(layer.kind === "asset" ? "image" : "surface", layer.kind === "asset" ? "Asset fill" : "Fill")}</button>
+            <div class="pk-appearance-type">
+              ${layer.kind === "asset"
+                ? `<select class="ds-select" data-appearance-prop="propertySelect" data-appearance-layer-id="${layer.id}" aria-label="Fill asset">
+                    <option value="" ${!(layer.assetId || rawSelectedSurface?.assetId) ? "selected" : ""}>Asset</option>
+                    <option value="${IMPORT_ASSET_OPTION_VALUE}">Import...</option>
+                    ${assignableAssets.map((asset) => `<option value="${asset.id}" ${(layer.assetId || rawSelectedSurface?.assetId) === asset.id ? "selected" : ""}>${asset.name}</option>`).join("")}
+                  </select>`
+                : `<select class="ds-select" data-appearance-prop="propertySelect" data-appearance-layer-id="${layer.id}" aria-label="Fill style">
+                    <option value="fill" ${layer.kind === "fill" ? "selected" : ""}>Solid</option>
+                    <option value="pattern-grid" ${layer.kind === "pattern-grid" ? "selected" : ""}>Grid</option>
+                    <option value="pattern-hatch" ${layer.kind === "pattern-hatch" ? "selected" : ""}>Pattern</option>
+                  </select>`
+              }
+            </div>
+            <div class="pk-appearance-inline">
+              ${layer.kind === "asset"
+                ? ``
+                : `<input class="ds-input" data-appearance-prop="${layer.kind === "fill" ? "fillColor" : "patternColor"}" data-appearance-layer-id="${layer.id}" type="color" value="${layer.kind === "fill" ? (layer.fillColor || "#ffffff") : (layer.patternColor || "#7bd0ff")}" aria-label="${layer.kind === "fill" ? "Fill color" : "Pattern color"}">`
+              }
+              <div class="pk-scrub-control">
+                <input class="ds-input pk-appearance-opacity-input" data-appearance-prop="opacityText" data-appearance-layer-id="${layer.id}" type="text" inputmode="numeric" value="${Math.round((layer.opacity ?? 1) * 100)}" aria-label="Fill opacity">
+                <button class="pk-scrub-handle" type="button" data-appearance-scrub="opacity" data-appearance-layer-id="${layer.id}" title="Scrub opacity" aria-label="Scrub opacity">${iconMarkup("scrub-horizontal", "Scrub opacity")}</button>
+              </div>
+            </div>
+            <div class="pk-appearance-actions">
+              <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${layer.visible === false ? " is-active" : ""}" type="button" data-appearance-action="visible" data-appearance-layer-id="${layer.id}" title="${layer.visible === false ? "Show fill" : "Hide fill"}" aria-label="${layer.visible === false ? "Show fill" : "Hide fill"}">${stateToggleIconMarkup(layer.visible === false ? "eye-off" : "eye", layer.visible === false ? "eye" : "eye-off", layer.visible === false ? "Show fill" : "Hide fill")}</button>
+              <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action" type="button" data-appearance-action="remove" data-appearance-layer-id="${layer.id}" title="Remove fill" aria-label="Remove fill">${iconMarkup("trash", "Remove fill")}</button>
+            </div>
+            ${layer.id === state.ui.selectedAppearanceLayerId && (layer.kind === "pattern-grid" || layer.kind === "pattern-hatch") ? `<div class="pk-appearance-detail" data-appearance-detail="${layer.id}"></div>` : ``}
+          </div>
+        `).join("");
+        }
+        if (surfaceAddFillBtn) surfaceAddFillBtn.hidden = !showSurfaceGeometryControls;
         if (selectedLayer) {
           const layerVisibilityLabel = selectedLayer.visible ? "Hide layer" : "Show layer";
           const layerLockLabel = selectedLayer.locked ? "Unlock layer" : "Lock layer";
@@ -8901,16 +9645,7 @@
           layerLockedBtn.innerHTML = iconMarkup("lock", layerLockLabel);
           inspectorLinkBtn.classList.toggle("is-active", state.ui.calibrationLinkEnabled);
           layerOpacity.value = String(Math.round(selectedLayer.opacity));
-          layerOpacityValue.textContent = `${Math.round(selectedLayer.opacity)}%`;
         }
-        surfaceAssetSelect.innerHTML = [
-          `<option value="" ${!rawSelectedSurface?.assetId ? "selected" : ""}>No Asset</option>`,
-          `<option value="${IMPORT_ASSET_OPTION_VALUE}">Import Asset...</option>`,
-          ...assignableAssets.map((asset) => `
-            <option value="${asset.id}" ${asset.id === rawSelectedSurface?.assetId ? "selected" : ""}>${asset.name}</option>
-          `)
-        ].join("");
-        surfaceAssetSelect.disabled = !rawSelectedSurface;
         referenceAssetSelect.innerHTML = [
           `<option value="" ${!calibrationReference.assetId ? "selected" : ""}>No Reference Source</option>`,
           `<option value="${IMPORT_ASSET_OPTION_VALUE}">Import Asset...</option>`,
@@ -8921,10 +9656,27 @@
         referenceFitMode.value = calibrationReference.fitMode || referenceTransform?.fitMode || "surface";
         referenceVisibilityMode.value = calibrationReference.visibilityMode || "both";
         referenceOpacity.value = String(Math.round(calibrationReference.opacity ?? 100));
-        referenceOpacityValue.textContent = `${Math.round(calibrationReference.opacity ?? 100)}%`;
-        referenceLockBtn.classList.toggle("is-active", calibrationReference.locked);
-        referenceLockBtn.textContent = calibrationReference.locked ? "Unlock Reference" : "Lock Reference";
-        referenceLockBtn.title = calibrationReference.locked ? "Unlock reference interaction" : "Lock reference interaction";
+        const referenceVisibilityLabel = calibrationReference.visible === false ? "Show reference" : "Hide reference";
+        const referenceLockLabel = calibrationReference.locked ? "Unlock reference" : "Lock reference";
+        referenceVisibleBtn.classList.toggle("is-active", calibrationReference.visible === false);
+        referenceVisibleBtn.title = referenceVisibilityLabel;
+        referenceVisibleBtn.setAttribute("aria-label", referenceVisibilityLabel);
+        referenceVisibleBtn.innerHTML = iconMarkup(calibrationReference.visible === false ? "eye-off" : "eye", referenceVisibilityLabel);
+        referenceLockedBtn.classList.toggle("is-active", calibrationReference.locked);
+        referenceLockedBtn.title = referenceLockLabel;
+        referenceLockedBtn.setAttribute("aria-label", referenceLockLabel);
+        referenceLockedBtn.innerHTML = iconMarkup(calibrationReference.locked ? "lock" : "unlock", referenceLockLabel);
+        const calibrationVisibilityLabel = state.calibration.visible === false ? "Show calibration" : "Hide calibration";
+        const calibrationLockLabel = state.calibration.locked ? "Unlock calibration" : "Lock calibration";
+        calibrationOpacity.value = String(Math.round(state.calibration.opacity ?? 100));
+        calibrationVisibleBtn.classList.toggle("is-active", state.calibration.visible === false);
+        calibrationVisibleBtn.title = calibrationVisibilityLabel;
+        calibrationVisibleBtn.setAttribute("aria-label", calibrationVisibilityLabel);
+        calibrationVisibleBtn.innerHTML = iconMarkup(state.calibration.visible === false ? "eye-off" : "eye", calibrationVisibilityLabel);
+        calibrationLockedBtn.classList.toggle("is-active", state.calibration.locked);
+        calibrationLockedBtn.title = calibrationLockLabel;
+        calibrationLockedBtn.setAttribute("aria-label", calibrationLockLabel);
+        calibrationLockedBtn.innerHTML = iconMarkup(state.calibration.locked ? "lock" : "unlock", calibrationLockLabel);
         assetTransformCard.hidden = !showAssetControls;
         assetFitMode.value = assetTransform.fitMode;
         assetRotation.value = String(Math.round(assetTransform.rotation));
@@ -8934,17 +9686,35 @@
         assetScaleY.value = formatInspectorNumber(assetTransform.scaleY);
         assetAspectLockBtn.classList.toggle("is-active", assetTransform.aspectLocked);
         if (selectedSurface) {
-          surfaceOutputMode.value = surfaceOutputModeValue;
-          surfacePatternScale.value = String(getSurfacePatternScale(rawSelectedSurface));
-          surfaceFillColor.value = getSurfaceFillColor(rawSelectedSurface);
-          surfacePatternColor.value = getSurfacePatternColor(rawSelectedSurface);
-          surfaceGridEnabled.value = selectedSurface.gridEnabled ? "on" : "off";
-          surfaceGridDensity.value = String(selectedSurface.gridDensity || 96);
+          if (surfacePatternScale) surfacePatternScale.value = String(getSurfacePatternScale(rawSelectedSurface));
+          if (surfacePatternColor) surfacePatternColor.value = getSurfacePatternColor(rawSelectedSurface);
+          if (selectedAppearanceLayer) {
+            if (surfacePatternScale) surfacePatternScale.value = String(selectedAppearanceLayer.patternScale || getSurfacePatternScale(rawSelectedSurface));
+            if (surfacePatternColor) surfacePatternColor.value = selectedAppearanceLayer.patternColor || getSurfacePatternColor(rawSelectedSurface);
+          }
           surfaceX.value = String(Math.round(selectedSurface.x));
           surfaceY.value = String(Math.round(selectedSurface.y));
           surfaceW.value = String(Math.round(selectedSurface.w));
           surfaceH.value = String(Math.round(selectedSurface.h));
           surfaceOpacity.value = String(Math.round(selectedSurface.opacity));
+          const surfaceVisibilityLabel = selectedSurface.visible === false ? "Show surface" : "Hide surface";
+          const surfaceLockLabel = selectedSurface.locked ? "Unlock surface" : "Lock surface";
+          surfaceVisibleBtn.classList.toggle("is-active", selectedSurface.visible === false);
+          surfaceVisibleBtn.title = surfaceVisibilityLabel;
+          surfaceVisibleBtn.setAttribute("aria-label", surfaceVisibilityLabel);
+          surfaceVisibleBtn.innerHTML = iconMarkup(selectedSurface.visible === false ? "eye-off" : "eye", surfaceVisibilityLabel);
+          surfaceLockedBtn.classList.toggle("is-active", selectedSurface.locked);
+          surfaceLockedBtn.title = surfaceLockLabel;
+          surfaceLockedBtn.setAttribute("aria-label", surfaceLockLabel);
+          surfaceLockedBtn.innerHTML = iconMarkup(selectedSurface.locked ? "lock" : "unlock", surfaceLockLabel);
+        }
+        if (surfaceAppearanceList && selectedAppearanceLayer && (selectedAppearanceLayer.kind === "pattern-grid" || selectedAppearanceLayer.kind === "pattern-hatch")) {
+          const detailMount = surfaceAppearanceList.querySelector(`[data-appearance-detail="${selectedAppearanceLayer.id}"]`);
+          [surfacePatternFields].forEach((node) => {
+            if (node && detailMount) {
+              detailMount.appendChild(node);
+            }
+          });
         }
         cropAssetBtn.classList.toggle("ds-btn-primary", assetCropActive);
         cropAssetBtn.textContent = assetCropActive ? "Exit Crop" : "Enter Crop";
@@ -8967,23 +9737,20 @@
           layerLockedBtn,
           inspectorLinkBtn,
           layerOpacity,
-          surfaceAssetSelect,
-          surfaceGridEnabled,
-          surfaceGridDensity,
           surfaceX,
           surfaceY,
           surfaceW,
           surfaceH,
           surfaceOpacity,
+          surfaceVisibleBtn,
+          surfaceLockedBtn,
           surfaceFitBtn,
           surfaceFillBtn,
           surfaceSnapGridBtn,
           surfaceSnapFrameBtn,
           surfaceStraightenTopBtn,
           surfaceStraightenLeftBtn,
-          surfaceOutputMode,
           surfacePatternScale,
-          surfaceFillColor,
           surfacePatternColor,
           cropAssetBtn,
           assetFitFrameBtn,
@@ -8997,7 +9764,8 @@
           assetOffsetY,
           assetScaleX,
           assetScaleY,
-          assetAspectLockBtn
+          assetAspectLockBtn,
+          ...Array.from(document.querySelectorAll("#layerStateCard [data-scrub-target], #surfaceTransformCard [data-scrub-target], #assetTransformCard [data-scrub-target], [data-appearance-scrub]"))
         ], mappedEditingDisabled);
         setInspectorInputsDisabled([
           calibrationGridType,
@@ -9010,10 +9778,15 @@
           referenceAssetSelect,
           referenceFitMode,
           referenceVisibilityMode,
+          referenceVisibleBtn,
+          referenceLockedBtn,
           referenceOpacity,
           referenceFitToCalibrationBtn,
           referenceResetFitBtn,
-          referenceLockBtn
+          calibrationOpacity,
+          calibrationVisibleBtn,
+          calibrationLockedBtn,
+          ...Array.from(document.querySelectorAll("#calibrationTemplateCard [data-scrub-target], #referenceLayerCard [data-scrub-target]"))
         ], calibrationEditingDisabled);
       }
 
@@ -9622,6 +10395,24 @@
           return;
         }
 
+        const surfaceAction = event.target.closest("[data-surface-action]");
+        if (surfaceAction) {
+          const surfaceKey = surfaceAction.closest("[data-surface-key]")?.dataset.surfaceKey;
+          if (!surfaceKey) {
+            return;
+          }
+          const action = surfaceAction.dataset.surfaceAction;
+          runWithHistory(action === "visible" ? "Toggle surface visibility" : "Toggle surface lock", () => {
+            if (action === "visible") {
+              toggleSurfaceFlag(surfaceKey, "visible");
+            } else if (action === "locked") {
+              toggleSurfaceFlag(surfaceKey, "locked");
+            }
+          });
+          render();
+          return;
+        }
+
         const layerItem = event.target.closest("[data-layer-id]");
         if (layerItem) {
           const layer = state.layers.find((item) => item.id === layerItem.dataset.layerId);
@@ -10115,6 +10906,28 @@
         render();
       });
 
+      surfaceVisibleBtn.addEventListener("click", () => {
+        const selectedSurface = getSelectedSurface();
+        if (!selectedSurface) {
+          return;
+        }
+        runWithHistory("Toggle surface visibility", () => {
+          toggleSurfaceFlag(selectedSurface.key, "visible");
+        });
+        render();
+      });
+
+      surfaceLockedBtn.addEventListener("click", () => {
+        const selectedSurface = getSelectedSurface();
+        if (!selectedSurface) {
+          return;
+        }
+        runWithHistory("Toggle surface lock", () => {
+          toggleSurfaceFlag(selectedSurface.key, "locked");
+        });
+        render();
+      });
+
       cropAssetBtn.addEventListener("click", () => {
         const selectedSurface = getSelectedSurface();
         if (!selectedSurface || !selectedSurface.assetId) {
@@ -10192,77 +11005,380 @@
         render();
       });
 
-      surfaceAssetSelect.addEventListener("change", (event) => {
-        const selectedSurface = getSelectedSurface();
-        if (!selectedSurface) {
+      document.addEventListener("pointerdown", (event) => {
+        const scrubHandle = event.target.closest("[data-scrub-target]");
+        if (!scrubHandle) {
           return;
         }
-        if (event.target.value === IMPORT_ASSET_OPTION_VALUE) {
-          openAssetImportPicker({ kind: "surface", surfaceKey: selectedSurface.key });
+        const input = document.getElementById(scrubHandle.dataset.scrubTarget);
+        if (!input) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        const rawMin = input.getAttribute("min");
+        const rawMax = input.getAttribute("max");
+        const rawStep = input.getAttribute("step");
+        const parsedStep = Number(rawStep);
+        numericScrubState = {
+          pointerId: event.pointerId,
+          handle: scrubHandle,
+          input,
+          startX: event.clientX,
+          startValue: Number(input.value) || 0,
+          step: Number.isFinite(parsedStep) && parsedStep > 0 ? parsedStep : 1,
+          min: rawMin !== null && rawMin !== "" && Number.isFinite(Number(rawMin)) ? Number(rawMin) : -Infinity,
+          max: rawMax !== null && rawMax !== "" && Number.isFinite(Number(rawMax)) ? Number(rawMax) : Infinity,
+          didScrub: false
+        };
+        scrubHandle.classList.add("is-active");
+      });
+
+      surfaceAppearanceList?.addEventListener("pointerdown", (event) => {
+        const layerId = event.target.closest("[data-appearance-layer-id]")?.dataset.appearanceLayerId;
+        const selectedSurface = getSelectedSurface();
+        if (!selectedSurface || !layerId) {
+          return;
+        }
+        state.ui.selectedAppearanceLayerId = layerId;
+        const scrubHandle = event.target.closest('[data-appearance-scrub="opacity"]');
+        if (!scrubHandle) {
+          return;
+        }
+        const opacityInput = scrubHandle.parentElement?.querySelector('[data-appearance-prop="opacityText"]');
+        if (!opacityInput) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        appearanceOpacityScrubState = {
+          pointerId: event.pointerId,
+          surfaceKey: selectedSurface.key,
+          layerId,
+          startX: event.clientX,
+          startValue: clampAppearanceOpacityPercent(opacityInput.value),
+          didScrub: false,
+          beforeSnapshot: buildHistorySnapshot()
+        };
+      });
+
+      document.addEventListener("pointermove", (event) => {
+        if (numericScrubState && event.pointerId === numericScrubState.pointerId) {
+          const deltaX = event.clientX - numericScrubState.startX;
+          if (!numericScrubState.didScrub && Math.abs(deltaX) < 4) {
+            return;
+          }
+          event.preventDefault();
+          numericScrubState.didScrub = true;
+          const deltaValue = deltaX * numericScrubState.step;
+          const nextRaw = numericScrubState.startValue + deltaValue;
+          const nextValue = Math.max(numericScrubState.min, Math.min(numericScrubState.max, nextRaw));
+          numericScrubState.input.value = formatNumericScrubValue(nextValue, numericScrubState.step);
+          numericScrubState.input.dispatchEvent(new Event("input", { bubbles: true }));
+          return;
+        }
+        if (!appearanceOpacityScrubState || event.pointerId !== appearanceOpacityScrubState.pointerId) {
+          return;
+        }
+        const deltaX = event.clientX - appearanceOpacityScrubState.startX;
+        if (!appearanceOpacityScrubState.didScrub && Math.abs(deltaX) < 6) {
+          return;
+        }
+        event.preventDefault();
+        appearanceOpacityScrubState.didScrub = true;
+        const nextValue = clampAppearanceOpacityPercent(appearanceOpacityScrubState.startValue + (deltaX * 0.5));
+        setAppearanceLayerOpacity(appearanceOpacityScrubState.surfaceKey, appearanceOpacityScrubState.layerId, nextValue);
+        const activeOpacityInput = surfaceAppearanceList?.querySelector(`[data-appearance-prop="opacityText"][data-appearance-layer-id="${appearanceOpacityScrubState.layerId}"]`);
+        if (activeOpacityInput) {
+          activeOpacityInput.value = String(nextValue);
+        }
+        renderStage();
+        renderProjectionFrame();
+      });
+
+      ["pointerup", "pointercancel"].forEach((eventName) => {
+        document.addEventListener(eventName, (event) => {
+          if (numericScrubState && event.pointerId === numericScrubState.pointerId) {
+            const scrubState = numericScrubState;
+            numericScrubState = null;
+            scrubState.handle?.classList.remove("is-active");
+            if (scrubState.didScrub) {
+              scrubState.input.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+            return;
+          }
+          if (!appearanceOpacityScrubState || event.pointerId !== appearanceOpacityScrubState.pointerId) {
+            return;
+          }
+          const scrubState = appearanceOpacityScrubState;
+          appearanceOpacityScrubState = null;
+          if (!scrubState.didScrub) {
+            return;
+          }
+          commitHistory("Update fill opacity", scrubState.beforeSnapshot);
+          render();
+        });
+      });
+
+      surfaceAppearanceList?.addEventListener("click", (event) => {
+        const layerId = event.target.closest("[data-appearance-layer-id]")?.dataset.appearanceLayerId;
+        const selectedSurface = getSelectedSurface();
+        if (!selectedSurface || !layerId) {
+          return;
+        }
+        const action = event.target.closest("[data-appearance-action]")?.dataset.appearanceAction;
+        if (!action && isAppearanceInteractiveTarget(event.target)) {
+          return;
+        }
+        state.ui.selectedAppearanceLayerId = layerId;
+        if (!action) {
           render();
           return;
         }
-        runWithHistory("Assign asset", () => {
-          assignAssetToSurface(selectedSurface.key, event.target.value || null);
-        });
-        if (!event.target.value && isAssetCropActive(selectedSurface.key)) {
+        const currentLayer = getSurfaceAppearanceLayers(selectedSurface).find((layer) => layer.id === layerId) || null;
+        runWithHistory(
+          action === "remove"
+            ? "Remove fill"
+            : action === "visible"
+              ? "Toggle fill visibility"
+              : action === "toggle-mode"
+                ? "Switch fill mode"
+                : "Update fill",
+          () => {
+            if (action === "remove") {
+              updateSurfaceAppearance(selectedSurface.key, (layers) => layers.filter((layer) => layer.id !== layerId));
+              return;
+            }
+            if (action === "toggle-mode") {
+              setAppearanceLayerKind(selectedSurface.key, layerId, currentLayer?.kind === "asset" ? "fill" : "asset");
+              return;
+            }
+            updateSurfaceAppearance(selectedSurface.key, (layers) => layers.map((layer) => layer.id === layerId
+              ? { ...layer, visible: layer.visible === false }
+              : layer));
+          });
+        if (action === "remove" && currentLayer?.kind === "asset" && isAssetCropActive(selectedSurface.key)) {
           clearStageEditTarget();
+        }
+        if (action === "remove" && state.ui.selectedAppearanceLayerId === layerId) {
+          state.ui.selectedAppearanceLayerId = "";
         }
         render();
       });
 
-      surfaceOutputMode.addEventListener("change", (event) => {
+      surfaceAppearanceList?.addEventListener("change", (event) => {
+        const control = event.target.closest("[data-appearance-prop]");
         const selectedSurface = getSelectedSurface();
-        if (!selectedSurface) {
+        if (!control || !selectedSurface) {
           return;
         }
-        runWithHistory("Update surface output", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            outputMode: event.target.value
+        const layerId = control.dataset.appearanceLayerId;
+        const prop = control.dataset.appearanceProp;
+        if (!layerId || !prop) {
+          return;
+        }
+        state.ui.selectedAppearanceLayerId = layerId;
+        if (prop === "propertySelect") {
+          const currentLayer = getSurfaceAppearanceLayers(selectedSurface).find((layer) => layer.id === layerId);
+          if (!currentLayer) {
+            return;
+          }
+          if (currentLayer.kind === "asset") {
+            if (control.value === IMPORT_ASSET_OPTION_VALUE) {
+              openAssetImportPicker({ kind: "surface", surfaceKey: selectedSurface.key });
+              render();
+              return;
+            }
+            runWithHistory("Assign fill asset", () => {
+              updateSurfaceAppearance(selectedSurface.key, (layers) => layers.map((layer) => layer.id === layerId
+                ? { ...layer, assetId: control.value || null }
+                : layer));
+            });
+            if (!control.value && isAssetCropActive(selectedSurface.key)) {
+              clearStageEditTarget();
+            }
+            render();
+            return;
+          }
+          const nextKind = control.value;
+          runWithHistory("Change fill type", () => {
+            setAppearanceLayerKind(selectedSurface.key, layerId, nextKind);
+          });
+          render();
+          return;
+        }
+        if (prop === "opacityText") {
+          const nextValue = clampAppearanceOpacityPercent(control.value);
+          control.value = String(nextValue);
+          runWithHistory("Update fill opacity", () => {
+            setAppearanceLayerOpacity(selectedSurface.key, layerId, nextValue);
+          });
+          renderStage();
+          renderProjectionFrame();
+          return;
+        }
+      });
+
+      surfaceAppearanceList?.addEventListener("input", (event) => {
+        const control = event.target.closest("[data-appearance-prop]");
+        const selectedSurface = getSelectedSurface();
+        if (!control || !selectedSurface) {
+          return;
+        }
+        const layerId = control.dataset.appearanceLayerId;
+        const prop = control.dataset.appearanceProp;
+        if (!layerId || !prop) {
+          return;
+        }
+        state.ui.selectedAppearanceLayerId = layerId;
+        if (!["fillColor", "patternColor"].includes(prop)) {
+          return;
+        }
+        runWithHistory("Update fill style", () => {
+          updateSurfaceAppearance(selectedSurface.key, (layers) => layers.map((layer) => {
+            if (layer.id !== layerId) {
+              return layer;
+            }
+            return { ...layer, [prop]: control.value };
           }));
         });
         render();
       });
 
-      surfacePatternScale.addEventListener("change", (event) => {
+      surfaceAppearanceList?.addEventListener("keydown", (event) => {
+        const control = event.target.closest('[data-appearance-prop="opacityText"]');
+        if (!control) {
+          return;
+        }
+        if (event.key === "Enter") {
+          event.preventDefault();
+          control.blur();
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          const selectedSurface = getSelectedSurface();
+          const layerId = control.dataset.appearanceLayerId;
+          const currentLayer = selectedSurface && layerId
+            ? getSurfaceAppearanceLayers(selectedSurface).find((layer) => layer.id === layerId)
+            : null;
+          control.value = String(Math.round((currentLayer?.opacity ?? 1) * 100));
+          control.blur();
+        }
+      });
+
+      surfaceAppearanceList?.addEventListener("dragstart", (event) => {
+        if (appearanceOpacityScrubState) {
+          event.preventDefault();
+          return;
+        }
+        if (isAppearanceInteractiveTarget(event.target)) {
+          event.preventDefault();
+          return;
+        }
+        const row = event.target.closest("[data-appearance-layer-id]");
+        if (!row || !event.dataTransfer) {
+          return;
+        }
+        state.ui.appearanceDragId = row.dataset.appearanceLayerId || "";
+        state.ui.appearanceDropTargetId = "";
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", state.ui.appearanceDragId);
+        event.dataTransfer.setData("text/projektik-appearance", state.ui.appearanceDragId);
+        row.classList.add("is-drag-source");
+      });
+
+      surfaceAppearanceList?.addEventListener("dragover", (event) => {
+        const row = event.target.closest("[data-appearance-layer-id]");
+        if (!row || !state.ui.appearanceDragId || row.dataset.appearanceLayerId === state.ui.appearanceDragId) {
+          return;
+        }
+        event.preventDefault();
+        const nextDropTargetId = row.dataset.appearanceLayerId || "";
+        if (state.ui.appearanceDropTargetId === nextDropTargetId) {
+          return;
+        }
+        if (state.ui.appearanceDropTargetId) {
+          const previousRow = surfaceAppearanceList?.querySelector(`[data-appearance-layer-id="${state.ui.appearanceDropTargetId}"]`);
+          previousRow?.classList.remove("is-drop-target");
+        }
+        state.ui.appearanceDropTargetId = nextDropTargetId;
+        row.classList.add("is-drop-target");
+        if (event.dataTransfer) {
+          event.dataTransfer.dropEffect = "move";
+        }
+      });
+
+      surfaceAppearanceList?.addEventListener("drop", (event) => {
+        const row = event.target.closest("[data-appearance-layer-id]");
+        const selectedSurface = getSelectedSurface();
+        if (!row || !selectedSurface || !state.ui.appearanceDragId) {
+          return;
+        }
+        event.preventDefault();
+        const fromId = state.ui.appearanceDragId;
+        const toId = row.dataset.appearanceLayerId;
+        if (!toId || fromId === toId) {
+          state.ui.appearanceDragId = "";
+          state.ui.appearanceDropTargetId = "";
+          surfaceAppearanceList?.querySelectorAll(".pk-appearance-row.is-drop-target, .pk-appearance-row.is-drag-source")
+            .forEach((node) => node.classList.remove("is-drop-target", "is-drag-source"));
+          render();
+          return;
+        }
+        runWithHistory("Reorder fills", () => {
+          updateSurfaceAppearance(selectedSurface.key, (layers) => reorderCollection(layers, fromId, toId, (layer) => layer.id));
+        });
+        state.ui.selectedAppearanceLayerId = fromId;
+        state.ui.appearanceDragId = "";
+        state.ui.appearanceDropTargetId = "";
+        surfaceAppearanceList?.querySelectorAll(".pk-appearance-row.is-drop-target, .pk-appearance-row.is-drag-source")
+          .forEach((node) => node.classList.remove("is-drop-target", "is-drag-source"));
+        render();
+      });
+
+      surfaceAppearanceList?.addEventListener("dragend", () => {
+        state.ui.appearanceDragId = "";
+        state.ui.appearanceDropTargetId = "";
+        surfaceAppearanceList?.querySelectorAll(".pk-appearance-row.is-drop-target, .pk-appearance-row.is-drag-source")
+          .forEach((node) => node.classList.remove("is-drop-target", "is-drag-source"));
+        render();
+      });
+
+      surfaceAddFillBtn?.addEventListener("click", () => {
+        const selectedSurface = getSelectedSurface();
+        if (!selectedSurface) {
+          return;
+        }
+        const nextLayer = createAppearanceLayer("fill");
+        runWithHistory("Add fill", () => {
+          updateSurfaceAppearance(selectedSurface.key, (layers) => [...layers, nextLayer]);
+        });
+        state.ui.selectedAppearanceLayerId = nextLayer.id;
+        render();
+      });
+
+      surfacePatternScale?.addEventListener("change", (event) => {
         const selectedSurface = getSelectedSurface();
         if (!selectedSurface) {
           return;
         }
         runWithHistory("Update pattern size", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            patternScale: Math.max(8, Math.min(320, Number(event.target.value) || getSurfacePatternScale(surface)))
-          }));
+          updateSurfaceAppearance(selectedSurface.key, (layers) => layers.map((layer) => layer.id === state.ui.selectedAppearanceLayerId
+            ? { ...layer, patternScale: Math.max(8, Math.min(320, Number(event.target.value) || layer.patternScale || 48)) }
+            : layer));
         });
         render();
       });
 
-      surfaceFillColor.addEventListener("input", (event) => {
-        const selectedSurface = getSelectedSurface();
-        if (!selectedSurface) {
-          return;
-        }
-        runWithHistory("Update fill color", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            fillColor: event.target.value
-          }));
-        });
-        render();
-      });
-
-      surfacePatternColor.addEventListener("input", (event) => {
+      surfacePatternColor?.addEventListener("input", (event) => {
         const selectedSurface = getSelectedSurface();
         if (!selectedSurface) {
           return;
         }
         runWithHistory("Update pattern color", () => {
-          updateSurfaceRecord(selectedSurface.key, (surface) => ({
-            ...surface,
-            patternColor: event.target.value
-          }));
+          updateSurfaceAppearance(selectedSurface.key, (layers) => layers.map((layer) => layer.id === state.ui.selectedAppearanceLayerId
+            ? { ...layer, patternColor: event.target.value }
+            : layer));
         });
         render();
       });
@@ -10306,7 +11422,7 @@
 
       referenceOpacity.addEventListener("input", (event) => {
         runWithHistory("Update reference opacity", () => {
-          const nextOpacity = Number(event.target.value);
+          const nextOpacity = Math.max(0, Math.min(100, Number(event.target.value) || 0));
           state.calibrationReference.opacity = nextOpacity;
           state.calibrationTemplate.referenceOpacity = nextOpacity;
         });
@@ -10327,27 +11443,38 @@
         render();
       });
 
-      referenceLockBtn.addEventListener("click", () => {
+      referenceVisibleBtn.addEventListener("click", () => {
+        runWithHistory("Toggle reference visibility", () => {
+          state.calibrationReference.visible = !state.calibrationReference.visible;
+          state.ui.showReferenceLayer = state.calibrationReference.visible;
+        });
+        render();
+      });
+
+      referenceLockedBtn.addEventListener("click", () => {
         runWithHistory("Toggle reference lock", () => {
           state.calibrationReference.locked = !state.calibrationReference.locked;
         });
         render();
       });
 
-      surfaceGridEnabled.addEventListener("change", (event) => {
-        runWithHistory("Toggle surface grid", () => {
-          updateSurfaceAlignment(getSelectedSurface().key, {
-            gridEnabled: event.target.value === "on"
-          });
+      calibrationOpacity.addEventListener("input", (event) => {
+        runWithHistory("Update calibration opacity", () => {
+          state.calibration.opacity = Math.max(0, Math.min(100, Number(event.target.value) || 0));
         });
         render();
       });
 
-      surfaceGridDensity.addEventListener("input", (event) => {
-        runWithHistory("Update surface grid density", () => {
-          updateSurfaceAlignment(getSelectedSurface().key, {
-            gridDensity: Math.max(24, Math.min(480, Number(event.target.value) || 96))
-          });
+      calibrationVisibleBtn.addEventListener("click", () => {
+        runWithHistory("Toggle calibration visibility", () => {
+          state.calibration.visible = !state.calibration.visible;
+        });
+        render();
+      });
+
+      calibrationLockedBtn.addEventListener("click", () => {
+        runWithHistory("Toggle calibration lock", () => {
+          state.calibration.locked = !state.calibration.locked;
         });
         render();
       });
@@ -10614,6 +11741,13 @@
         if (key === "escape" && isPresentationPreviewActive()) {
           event.preventDefault();
           togglePresentationPreview(false);
+          return;
+        }
+
+        if (key === "escape" && state.ui.selectedAppearanceLayerId && state.ui.focus.type === "surface") {
+          event.preventDefault();
+          state.ui.selectedAppearanceLayerId = "";
+          render();
           return;
         }
 

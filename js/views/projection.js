@@ -64,7 +64,7 @@
           node.dataset.surfaceKey = surface.key;
           node.innerHTML = `
             <div class="pk-projection-surface-content" data-surface-content>
-              <div class="pk-projection-stage-media" data-stage-media></div>
+              <div class="pk-projection-appearance-stack" data-stage-appearance></div>
               <div class="pk-projection-surface-grid" data-surface-grid></div>
             </div>
             <svg class="pk-projection-surface-outline" preserveAspectRatio="none" data-surface-outline>
@@ -78,6 +78,191 @@
 
       existing.forEach((node) => node.remove());
       return Array.from(surfaceLayer.querySelectorAll(".pk-projection-surface[data-surface-key]"));
+    }
+
+    function createAppearanceLayer(kind, overrides = {}) {
+      return {
+        id: overrides.id || `${kind}-${Math.random().toString(36).slice(2, 10)}`,
+        kind,
+        visible: overrides.visible !== false,
+        opacity: Math.max(0, Math.min(1, Number(overrides.opacity) || 1)),
+        fillColor: overrides.fillColor || "#ffffff",
+        patternColor: overrides.patternColor || "#ffffff",
+        patternScale: Math.max(8, Math.min(320, Number(overrides.patternScale) || 48)),
+        assetId: overrides.assetId || null
+      };
+    }
+
+    function getSurfaceAppearanceLayers(surface) {
+      if (!surface) {
+        return [];
+      }
+      const source = Array.isArray(surface.appearanceLayers) && surface.appearanceLayers.length
+        ? surface.appearanceLayers
+        : (() => {
+            const legacyLayers = [];
+            const outputMode = surface.outputMode || (surface.asset?.sourceUrl ? "asset" : "transparent");
+            if (surface.asset?.sourceUrl) {
+              legacyLayers.push(createAppearanceLayer("asset", {
+                id: `${surface.key}-asset`,
+                visible: outputMode === "asset",
+                assetId: surface.asset?.id || surface.assetId || null
+              }));
+            }
+            if (outputMode === "fill" || outputMode === "mask") {
+              legacyLayers.push(createAppearanceLayer("fill", {
+                id: `${surface.key}-fill`,
+                fillColor: surface.fillColor || "#ffffff"
+              }));
+            } else if (outputMode === "pattern-grid" || outputMode === "pattern-hatch") {
+              legacyLayers.push(createAppearanceLayer(outputMode, {
+                id: `${surface.key}-${outputMode}`,
+                fillColor: surface.fillColor || "#ffffff",
+                patternColor: surface.patternColor || "#ffffff",
+                patternScale: surface.patternScale || 48
+              }));
+            }
+            return legacyLayers;
+          })();
+      return source
+        .map((layer) => createAppearanceLayer(layer.kind, layer))
+        .filter((layer) => layer.visible !== false);
+    }
+
+    function getAppearanceLayerVisual(layer) {
+      const fillColor = layer?.fillColor || "#ffffff";
+      const patternColor = layer?.patternColor || "#ffffff";
+      const patternScale = Math.max(8, Math.min(320, Number(layer?.patternScale) || 48));
+
+      if (layer?.kind === "fill" || layer?.kind === "mask") {
+        return {
+          backgroundColor: fillColor,
+          backgroundImage: "",
+          backgroundSize: "",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat"
+        };
+      }
+
+      if (layer?.kind === "pattern-grid") {
+        return {
+          backgroundColor: fillColor,
+          backgroundImage: `
+            linear-gradient(to right, ${patternColor} 1px, transparent 1px),
+            linear-gradient(to bottom, ${patternColor} 1px, transparent 1px)
+          `,
+          backgroundSize: `${patternScale}px ${patternScale}px`,
+          backgroundPosition: "center",
+          backgroundRepeat: "repeat"
+        };
+      }
+
+      if (layer?.kind === "pattern-hatch") {
+        return {
+          backgroundColor: fillColor,
+          backgroundImage: `repeating-linear-gradient(135deg, ${patternColor} 0 2px, transparent 2px ${Math.max(8, Math.round(patternScale / 2))}px)`,
+          backgroundSize: `${patternScale}px ${patternScale}px`,
+          backgroundPosition: "center",
+          backgroundRepeat: "repeat"
+        };
+      }
+
+      return {
+        backgroundColor: "transparent",
+        backgroundImage: "",
+        backgroundSize: "",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      };
+    }
+
+    function syncSurfaceAppearanceNodes(container, appearanceLayers) {
+      const existing = new Map(
+        Array.from(container.querySelectorAll("[data-appearance-key]"))
+          .map((node) => [node.dataset.appearanceKey, node])
+      );
+
+      appearanceLayers.forEach((layer) => {
+        const appearanceKey = layer.kind === "asset" ? `asset:${layer.id}` : layer.id;
+        let node = existing.get(appearanceKey);
+        if (!node) {
+          node = document.createElement("div");
+          node.dataset.appearanceKey = appearanceKey;
+          if (layer.kind === "asset") {
+            node.className = "pk-projection-stage-media";
+            node.dataset.stageMedia = "";
+          } else {
+            node.className = "pk-projection-appearance-layer";
+          }
+        }
+        container.append(node);
+        existing.delete(appearanceKey);
+      });
+
+      existing.forEach((node) => node.remove());
+      return Array.from(container.querySelectorAll("[data-appearance-key]"));
+    }
+
+    function renderSurfaceAppearanceNode(node, surface, appearanceLayer) {
+      if (appearanceLayer.kind === "asset") {
+        node.style.opacity = `${Math.max(0, Math.min(1, appearanceLayer.opacity ?? 1))}`;
+        if (surface.asset?.kind === "Video") {
+          let video = node.querySelector("video");
+          if (!video) {
+            node.innerHTML = "<video muted playsinline loop></video>";
+            video = node.querySelector("video");
+          }
+          node.style.backgroundImage = "";
+          node.style.backgroundColor = "transparent";
+          node.style.backgroundSize = "";
+          node.style.backgroundPosition = "center";
+          node.style.backgroundRepeat = "no-repeat";
+          if (video.dataset.sourceUrl !== surface.asset?.sourceUrl) {
+            video.src = surface.asset?.sourceUrl || "";
+            video.dataset.sourceUrl = surface.asset?.sourceUrl || "";
+          }
+          video.play().catch(() => {});
+        } else {
+          node.innerHTML = "";
+          node.style.backgroundImage = surface.asset?.sourceUrl ? `url("${surface.asset.sourceUrl}")` : "";
+          node.style.backgroundColor = "transparent";
+          node.style.backgroundSize = "100% 100%";
+          node.style.backgroundPosition = "center";
+          node.style.backgroundRepeat = "no-repeat";
+        }
+
+        const fitMode = normalizeAssetFitMode(surface.assetTransform?.fitMode);
+        const assetBox = surface.asset ? getSurfaceAssetDisplayBox(surface, surface.asset, surface.assetTransform) : null;
+        node.style.transformOrigin = fitMode === "warp" ? "top left" : "center";
+        if (fitMode !== "warp" && assetBox) {
+          node.style.width = `${assetBox.w}px`;
+          node.style.height = `${assetBox.h}px`;
+          node.style.left = `${assetBox.x}px`;
+          node.style.top = `${assetBox.y}px`;
+          node.style.transform = `rotate(${surface.assetTransform.rotation}deg)`;
+        } else {
+          node.style.width = "100%";
+          node.style.height = "100%";
+          node.style.left = "0";
+          node.style.top = "0";
+          node.style.transform = "";
+        }
+        return;
+      }
+
+      const visual = getAppearanceLayerVisual(appearanceLayer);
+      node.innerHTML = "";
+      node.style.opacity = `${Math.max(0, Math.min(1, appearanceLayer.opacity ?? 1))}`;
+      node.style.left = "0";
+      node.style.top = "0";
+      node.style.width = "100%";
+      node.style.height = "100%";
+      node.style.transform = "";
+      node.style.backgroundImage = visual.backgroundImage;
+      node.style.backgroundColor = visual.backgroundColor;
+      node.style.backgroundSize = visual.backgroundSize;
+      node.style.backgroundPosition = visual.backgroundPosition;
+      node.style.backgroundRepeat = visual.backgroundRepeat;
     }
 
     function renderCalibration(snapshot) {
@@ -222,7 +407,7 @@
       node.style.zIndex = String(surface.zIndex);
 
       const content = node.querySelector("[data-surface-content]");
-      const media = node.querySelector("[data-stage-media]");
+      const appearanceStack = node.querySelector("[data-stage-appearance]");
       const grid = node.querySelector("[data-surface-grid]");
       const outline = node.querySelector("[data-surface-outline]");
       const polygon = node.querySelector("[data-surface-polygon]");
@@ -232,86 +417,15 @@
       grid.style.opacity = surface.gridVisible ? "1" : "0";
       grid.style.backgroundSize = `${Math.max(16, surface.gridDensity)}px ${Math.max(16, surface.gridDensity)}px`;
       outline.style.opacity = projectionView?.showGuides && surface.gridVisible ? "1" : "0";
-
-      const outputMode = surface.outputMode || (surface.asset?.sourceUrl ? "asset" : "transparent");
-      const fillColor = surface.fillColor || "#ffffff";
-      const patternColor = surface.patternColor || "#ffffff";
-      const patternScale = Math.max(8, Math.min(320, Number(surface.patternScale) || 48));
-
-      if (outputMode === "asset" && surface.asset?.sourceUrl) {
-        if (surface.asset.kind === "Video") {
-          let video = media.querySelector("video");
-          if (!video) {
-            media.innerHTML = "<video muted playsinline loop></video>";
-            video = media.querySelector("video");
-          }
-          media.style.backgroundImage = "";
-          media.style.backgroundColor = "transparent";
-          media.style.backgroundSize = "";
-          media.style.backgroundPosition = "center";
-          media.style.backgroundRepeat = "no-repeat";
-          if (video.dataset.sourceUrl !== surface.asset.sourceUrl) {
-            video.src = surface.asset.sourceUrl;
-            video.dataset.sourceUrl = surface.asset.sourceUrl;
-          }
-          video.play().catch(() => {});
-        } else {
-          media.innerHTML = "";
-          media.style.backgroundImage = `url("${surface.asset.sourceUrl}")`;
-          media.style.backgroundColor = "transparent";
-          media.style.backgroundSize = "cover";
-          media.style.backgroundPosition = "center";
-          media.style.backgroundRepeat = "no-repeat";
+      const appearanceLayers = getSurfaceAppearanceLayers(surface);
+      appearanceStack.style.opacity = String(surface.opacity);
+      syncSurfaceAppearanceNodes(appearanceStack, appearanceLayers).forEach((appearanceNode) => {
+        const appearanceKey = appearanceNode.dataset.appearanceKey;
+        const appearanceLayer = appearanceLayers.find((layer) => (layer.kind === "asset" ? `asset:${layer.id}` : layer.id) === appearanceKey);
+        if (appearanceLayer) {
+          renderSurfaceAppearanceNode(appearanceNode, surface, appearanceLayer);
         }
-      } else {
-        media.innerHTML = "";
-        if (outputMode === "fill" || outputMode === "mask") {
-          media.style.backgroundImage = "";
-          media.style.backgroundColor = fillColor;
-          media.style.backgroundSize = "";
-          media.style.backgroundPosition = "center";
-          media.style.backgroundRepeat = "no-repeat";
-        } else if (outputMode === "pattern-grid") {
-          media.style.backgroundImage = `
-            linear-gradient(to right, ${patternColor} 1px, transparent 1px),
-            linear-gradient(to bottom, ${patternColor} 1px, transparent 1px)
-          `;
-          media.style.backgroundColor = fillColor;
-          media.style.backgroundSize = `${patternScale}px ${patternScale}px`;
-          media.style.backgroundPosition = "center";
-          media.style.backgroundRepeat = "repeat";
-        } else if (outputMode === "pattern-hatch") {
-          media.style.backgroundImage = `repeating-linear-gradient(135deg, ${patternColor} 0 2px, transparent 2px ${Math.max(8, Math.round(patternScale / 2))}px)`;
-          media.style.backgroundColor = fillColor;
-          media.style.backgroundSize = `${patternScale}px ${patternScale}px`;
-          media.style.backgroundPosition = "center";
-          media.style.backgroundRepeat = "repeat";
-        } else {
-          media.style.backgroundImage = "";
-          media.style.backgroundColor = "transparent";
-          media.style.backgroundSize = "";
-          media.style.backgroundPosition = "center";
-          media.style.backgroundRepeat = "no-repeat";
-        }
-      }
-
-      media.style.opacity = String(surface.opacity);
-      const fitMode = normalizeAssetFitMode(surface.assetTransform?.fitMode);
-      const assetBox = surface.asset ? getSurfaceAssetDisplayBox(surface, surface.asset, surface.assetTransform) : null;
-      media.style.transformOrigin = fitMode === "warp" ? "top left" : "center";
-      if (fitMode !== "warp" && assetBox) {
-        media.style.width = `${assetBox.w}px`;
-        media.style.height = `${assetBox.h}px`;
-        media.style.left = `${assetBox.x}px`;
-        media.style.top = `${assetBox.y}px`;
-        media.style.transform = `rotate(${surface.assetTransform.rotation}deg)`;
-      } else {
-        media.style.width = "100%";
-        media.style.height = "100%";
-        media.style.left = "0";
-        media.style.top = "0";
-        media.style.transform = "";
-      }
+      });
     }
 
     function renderSnapshot(snapshot) {
