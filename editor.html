@@ -2780,14 +2780,32 @@
     }
 
     .pk-app input[type="number"]::-webkit-outer-spin-button,
-    .pk-app input[type="number"]::-webkit-inner-spin-button {
+    .pk-app input[type="number"]::-webkit-inner-spin-button,
+    .pk-app .ds-input[type="number"]::-webkit-outer-spin-button,
+    .pk-app .ds-input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    .pk-app input[type="number"],
+    .pk-app .ds-input[type="number"] {
+      appearance: textfield;
+      -webkit-appearance: none;
+      -moz-appearance: textfield;
+      padding-right: var(--ds-space-3);
+      padding-inline-end: var(--ds-space-3);
       margin: 0;
     }
 
-    .pk-app input[type="number"] {
-      appearance: textfield;
-      -moz-appearance: textfield;
+    .pk-app .pk-scrub-control .ds-input[type="number"] {
+      padding-right: 8px;
+      padding-inline-end: 8px;
     }
   </style>
 </head>
