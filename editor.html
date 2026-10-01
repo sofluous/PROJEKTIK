@@ -27,15 +27,15 @@
       --pk-shell-banner-bg: color-mix(in oklab, var(--ds-bg-raised) 82%, var(--ds-card-bg) 18%);
       --pk-stage-base-bg: #05070b;
       --pk-stage-viewport-bg: #06080d;
-      --pk-overlay-panel-bg: color-mix(in oklab, rgba(7, 11, 17, 0.92) 90%, transparent);
-      --pk-overlay-panel-bg-soft: color-mix(in oklab, rgba(7, 11, 17, 0.88) 88%, transparent);
-      --pk-overlay-panel-bg-alt: color-mix(in oklab, rgba(7, 11, 17, 0.86) 88%, transparent);
-      --pk-overlay-panel-border: color-mix(in oklab, var(--ds-border) 78%, transparent);
-      --pk-overlay-divider: color-mix(in oklab, var(--ds-border) 72%, transparent);
+      --pk-overlay-panel-bg: color-mix(in oklab, var(--ds-bg-overlay) 86%, var(--ds-card-bg) 14%);
+      --pk-overlay-panel-bg-soft: color-mix(in oklab, var(--ds-control-surface-bg, var(--ds-card-bg)) 78%, var(--ds-bg-overlay) 22%);
+      --pk-overlay-panel-bg-alt: color-mix(in oklab, var(--ds-bg-overlay) 78%, var(--ds-card-bg) 22%);
+      --pk-overlay-panel-border: color-mix(in oklab, var(--ds-control-surface-border, var(--ds-card-border, var(--ds-border))) 82%, transparent);
+      --pk-overlay-divider: color-mix(in oklab, var(--ds-control-surface-border, var(--ds-border)) 76%, transparent);
       --pk-overlay-blur-md: blur(12px);
       --pk-overlay-blur-lg: blur(16px);
-      --pk-overlay-shadow-md: 0 18px 42px rgba(0, 0, 0, 0.34);
-      --pk-overlay-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.38);
+      --pk-overlay-shadow-md: var(--ds-card-shadow);
+      --pk-overlay-shadow-lg: var(--ds-card-shadow);
       --pk-stage-grid: rgba(125, 190, 255, 0.18);
       --pk-stage-safe: rgba(255, 162, 82, 0.24);
       --pk-stage-surface-a: rgba(87, 214, 255, 0.18);
@@ -67,10 +67,47 @@
       grid-template-columns: minmax(0, 1fr);
       padding: 0;
       height: 100dvh;
+      position: relative;
+    }
+
+    .pk-app.is-overlay-ui .pk-nav-rail,
+    .pk-app.is-overlay-ui .pk-panel-left {
+      position: absolute;
+      top: 12px;
+      bottom: 12px;
+      z-index: 10;
+      border: 1px solid var(--pk-overlay-panel-border);
+      background: var(--pk-overlay-panel-bg);
+      backdrop-filter: var(--pk-overlay-blur-lg);
+      box-shadow: var(--pk-overlay-shadow-lg);
+    }
+
+    .pk-app.is-overlay-ui .pk-nav-rail {
+      left: 12px;
+      width: 44px;
+      border-radius: 14px 0 0 14px;
+      border-right: 0;
     }
 
     .pk-app.is-overlay-ui .pk-panel-left {
-      display: none;
+      left: 56px;
+      width: min(286px, calc(100vw - 80px));
+      border-radius: 0 14px 14px 0;
+      transition:
+        opacity var(--ds-dur-fast) var(--ds-ease-standard),
+        transform var(--ds-dur-fast) var(--ds-ease-standard);
+    }
+
+    .pk-app.is-overlay-ui.is-left-panel-collapsed .pk-nav-rail {
+      border-radius: 14px;
+      border-right: 1px solid var(--pk-overlay-panel-border);
+    }
+
+    .pk-app.is-overlay-ui.is-left-panel-collapsed .pk-panel-left {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-8px);
+      visibility: hidden;
     }
 
     .pk-app.is-overlay-ui .pk-shell > .pk-panel-right {
@@ -83,6 +120,7 @@
       height: 100dvh;
     }
 
+    .pk-app.is-ui-hidden .pk-nav-rail,
     .pk-app.is-ui-hidden .pk-panel-left,
     .pk-app.is-ui-hidden .pk-panel-right,
     .pk-app.is-ui-hidden .pk-stage-header,
@@ -267,20 +305,86 @@
 
     .pk-shell {
       display: grid;
-      grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) minmax(280px, 360px);
-      gap: var(--ds-space-3);
-      padding: 10px 12px 12px;
+      grid-template-columns: 48px minmax(248px, 300px) minmax(0, 1fr) minmax(280px, 360px);
+      gap: 0;
+      padding: 0;
       min-height: 0;
       height: 100dvh;
+    }
+
+    .pk-nav-rail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 6px;
+      min-height: 0;
+      background: var(--pk-shell-surface);
+      border-right: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-border);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .pk-rail-logo,
+    .pk-rail-tab {
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ds-text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .pk-rail-logo {
+      color: var(--ds-text);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .pk-rail-divider {
+      width: 24px;
+      height: 1px;
+      background: var(--pk-shell-divider);
+      opacity: 0.9;
+    }
+
+    .pk-rail-tab .pk-glyph {
+      width: var(--pk-icon-lg);
+      height: var(--pk-icon-lg);
+      stroke-width: var(--pk-icon-stroke-md);
+    }
+
+    .pk-rail-tab:hover,
+    .pk-rail-tab:focus-visible,
+    .pk-rail-logo:hover,
+    .pk-rail-logo:focus-visible {
+      color: var(--ds-text);
+      background: color-mix(in oklab, var(--ds-bg-raised) 72%, transparent);
+      border-color: var(--ds-control-surface-border);
+    }
+
+    .pk-rail-tab.is-active {
+      color: var(--ds-btn-selected-text, var(--ds-text));
+      background: var(--ds-btn-selected-bg);
+      border-color: var(--ds-btn-selected-border);
+      box-shadow: var(--ds-btn-selected-shadow, none);
     }
 
     .pk-panel,
     .pk-stage-shell,
     .pk-mobile-sheet {
       background: var(--pk-shell-surface);
-      border: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-border);
-      border-radius: var(--ds-card-radius);
-      box-shadow: var(--pk-shell-shadow);
+      border: 0;
+      border-right: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-border);
+      border-radius: 0;
+      box-shadow: none;
       min-height: 0;
       overflow: hidden;
     }
@@ -291,10 +395,15 @@
 
     .pk-panel-left {
       grid-template-rows: auto minmax(0, 1fr) auto;
+      position: relative;
+      z-index: 2;
+      overflow: visible;
     }
 
     .pk-panel-right {
       grid-template-rows: auto auto minmax(0, 1fr);
+      border-left: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-border);
+      border-right: 0;
     }
 
     .pk-panel-header,
@@ -304,7 +413,7 @@
     .pk-panel-footer,
     .pk-panel-body,
     .pk-sheet-body {
-      padding: 10px 12px;
+      padding: 10px;
     }
 
     .pk-panel-header,
@@ -329,6 +438,12 @@
       background: var(--pk-shell-chrome-bg);
     }
 
+    .pk-panel-left .pk-panel-header {
+      position: relative;
+      z-index: 3;
+      border-radius: var(--ds-card-radius) var(--ds-card-radius) 0 0;
+    }
+
     .pk-panel-body,
     .pk-sheet-body {
       min-height: 0;
@@ -338,7 +453,7 @@
     }
 
     .pk-left-tabbar {
-      display: inline-flex;
+      display: none;
       align-items: center;
       gap: 3px;
       padding: 3px;
@@ -431,6 +546,25 @@
       margin-bottom: 8px;
     }
 
+    .pk-workspace-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 30px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: var(--ds-border-w) var(--ds-border-style) var(--pk-shell-divider);
+    }
+
+    .pk-workspace-toolbar .pk-icon-btn {
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      min-height: 28px;
+      border-radius: 7px;
+    }
+
     .pk-tree-group {
       display: grid;
       gap: 4px;
@@ -457,10 +591,10 @@
     .pk-tree-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      min-height: 32px;
+      gap: 7px;
+      min-height: 28px;
       padding-inline: 8px 8px;
-      padding-inline-start: calc(28px + (var(--pk-tree-level, 0) * 10px));
+      padding-inline-start: calc(26px + (var(--pk-tree-level, 0) * 10px));
       position: relative;
       border-radius: 6px;
       background: transparent;
@@ -486,7 +620,7 @@
     }
 
     .pk-tree-row.has-rail {
-      padding-right: 56px;
+      padding-right: 50px;
     }
 
     .pk-tree-item.is-child .pk-tree-row {
@@ -516,10 +650,10 @@
     }
 
     .pk-tree-item.is-child .pk-tree-row-icon {
-      min-width: 18px;
-      width: 18px;
-      min-height: 18px;
-      height: 18px;
+      min-width: 17px;
+      width: 17px;
+      min-height: 17px;
+      height: 17px;
       font-size: 10px;
     }
 
@@ -529,13 +663,13 @@
 
     .pk-tree-toggle {
       position: absolute;
-      left: calc(8px + (var(--pk-tree-level, 0) * 10px));
+      left: calc(7px + (var(--pk-tree-level, 0) * 10px));
       top: 50%;
       transform: translateY(-50%);
-      min-width: 16px;
-      width: 16px;
-      min-height: 16px;
-      height: 16px;
+      min-width: 18px;
+      width: 18px;
+      min-height: 18px;
+      height: 18px;
       padding: 0;
       border: 0;
       border-radius: 50%;
@@ -616,12 +750,13 @@
 
     .pk-stage-shell {
       position: relative;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: 1fr;
       min-height: 0;
+      background: var(--pk-stage-base-bg);
     }
 
     .pk-stage-header {
-      display: grid;
+      display: none;
       grid-template-columns: minmax(0, 1fr);
       gap: var(--ds-space-2);
       align-items: center;
@@ -692,42 +827,91 @@
 
     .pk-overlay-controls {
       position: absolute;
-      top: 12px;
+      top: auto;
+      bottom: 14px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      padding: 6px;
-      border-radius: 18px;
+      padding: 8px 10px;
+      border-radius: 12px;
       background: var(--pk-overlay-panel-bg-soft);
       border: 1px solid var(--pk-overlay-panel-border);
-      backdrop-filter: blur(10px);
+      backdrop-filter: var(--pk-overlay-blur-md);
+      box-shadow: var(--pk-overlay-shadow-md);
       max-width: calc(100% - 24px);
     }
 
     .pk-overlay-control-group {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
+    .pk-overlay-control-label,
+    .pk-projection-strip-label {
+      display: none;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 2px;
+      color: var(--ds-control-surface-text-muted);
+      font-size: var(--ds-fs-1);
+      letter-spacing: var(--ds-status-pill-spacing);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
     .pk-overlay-control-group-run {
-      padding-left: 8px;
+      padding-left: 10px;
       border-left: 1px solid var(--pk-overlay-divider);
     }
 
     .pk-toolbar-toggle {
       justify-self: auto;
-      gap: 6px;
-      min-height: 32px;
-      padding: 0 12px;
-      border-radius: 999px;
+      gap: 0;
+      min-width: 36px;
+      min-height: 36px;
+      width: 36px;
+      padding: 0;
+      border-radius: 8px;
       line-height: 1;
       white-space: nowrap;
+    }
+
+    .pk-toolbar-toggle span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .pk-toolbar-divider {
+      width: 1px;
+      align-self: stretch;
+      min-height: 24px;
+      background: var(--pk-overlay-divider);
+    }
+
+    .pk-overlay-controls .pk-icon-btn {
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+      border-radius: 8px;
+    }
+
+    .pk-overlay-controls .pk-glyph {
+      width: var(--pk-icon-lg);
+      height: var(--pk-icon-lg);
     }
 
     .pk-toolbar-toggle span {
@@ -735,6 +919,13 @@
     }
 
     .pk-toolbar-toggle[aria-pressed="true"] {
+      background: var(--ds-btn-selected-bg);
+      border-color: var(--ds-btn-selected-border);
+      box-shadow: var(--ds-btn-selected-shadow, var(--ds-btn-shadow-hover));
+      color: var(--ds-btn-selected-text, var(--ds-text-inverse));
+    }
+
+    .pk-toolbar-toggle.is-active {
       background: var(--ds-btn-selected-bg);
       border-color: var(--ds-btn-selected-border);
       box-shadow: var(--ds-btn-selected-shadow, var(--ds-btn-shadow-hover));
@@ -769,19 +960,43 @@
 
     .pk-stage-hotspot {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 52px;
-      height: 52px;
+      top: 12px;
+      right: 12px;
+      left: auto;
+      width: auto;
+      max-width: min(360px, calc(100vw - 24px));
+      height: 40px;
       z-index: 10;
-      border: 0;
-      background: transparent;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid var(--pk-overlay-panel-border);
+      border-radius: 12px;
+      background: var(--pk-overlay-panel-bg);
+      color: var(--ds-text);
+      box-shadow: var(--pk-overlay-shadow-md);
+      backdrop-filter: var(--pk-overlay-blur-md);
       opacity: 0;
       pointer-events: none;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
     }
 
     .pk-app.is-ui-hidden .pk-stage-hotspot {
+      display: inline-flex;
+      opacity: 1;
       pointer-events: auto;
+    }
+
+    .pk-stage-hotspot::after {
+      content: "Show UI";
+      color: var(--ds-text-muted);
+      font-size: var(--ds-fs-1);
+      letter-spacing: var(--ds-status-pill-spacing);
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .pk-overlay-drawer {
@@ -792,7 +1007,7 @@
       width: min(320px, calc(100vw - 24px));
       display: none;
       grid-template-rows: auto minmax(0, 1fr);
-      border-radius: 18px;
+      border-radius: 14px;
       border: 1px solid var(--pk-overlay-panel-border);
       background: var(--pk-overlay-panel-bg);
       backdrop-filter: var(--pk-overlay-blur-lg);
@@ -810,8 +1025,7 @@
 
     .pk-overlay-drawer.is-right {
       right: 12px;
-      bottom: 74px;
-      max-height: calc(100dvh - 86px);
+      width: min(320px, calc(100vw - 24px));
     }
 
     .pk-overlay-drawer-header,
@@ -829,8 +1043,13 @@
       min-height: 0;
       overflow: auto;
       display: grid;
-      gap: 8px;
+      gap: 0;
       align-content: start;
+    }
+
+    .pk-overlay-drawer.is-right .pk-overlay-drawer-body {
+      padding: 0;
+      align-content: stretch;
     }
 
     .pk-overlay-drawer-body > .pk-panel-right {
@@ -1851,6 +2070,25 @@
       cursor: pointer;
     }
 
+    .pk-icon-btn,
+    .pk-mini-btn,
+    .pk-info-btn,
+    .pk-scrub-handle {
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .pk-mini-btn,
+    .pk-info-btn {
+      width: var(--ds-icon-action-size);
+      min-width: var(--ds-icon-action-size);
+      height: var(--ds-icon-action-size);
+      min-height: var(--ds-icon-action-size);
+    }
+
     .pk-context-menu-btn .pk-glyph {
       width: var(--pk-icon-sm);
       height: var(--pk-icon-sm);
@@ -1883,10 +2121,10 @@
     }
 
     .pk-tree-row-actions .pk-mini-btn {
-      min-width: 20px;
-      width: 20px;
-      min-height: 20px;
-      height: 20px;
+      min-width: 22px;
+      width: 22px;
+      min-height: 22px;
+      height: 22px;
       border-radius: 6px;
       font-size: 10px;
     }
@@ -2102,7 +2340,7 @@
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      z-index: calc(var(--ds-z-sticky) + 2);
+      z-index: var(--ds-z-drawer);
       min-width: 170px;
       padding: 8px;
       display: grid;
@@ -2139,6 +2377,7 @@
     .pk-field input,
     .pk-field select {
       width: 100%;
+      min-width: 0;
     }
 
     .pk-grid-2 .pk-field,
@@ -2153,8 +2392,8 @@
     #settingsPanel .pk-grid-2,
     #settingsPanel .pk-grid-4,
     #settingsPanel .pk-inspector-grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 8px 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 8px;
     }
 
     .pk-panel-right .pk-grid-2 .pk-field,
@@ -2162,9 +2401,9 @@
     .pk-panel-right .pk-inspector-grid .pk-field,
     #settingsPanel .pk-field {
       display: grid;
-      grid-template-columns: 104px minmax(0, 1fr);
-      align-items: center;
-      gap: 8px;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: stretch;
+      gap: 4px;
     }
 
     .pk-panel-right .pk-field label,
@@ -2175,6 +2414,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: 1.15;
     }
 
     .pk-panel-right .pk-field.pk-field-multiline,
@@ -2195,9 +2435,9 @@
 
     .pk-dimension-row {
       display: grid;
-      grid-template-columns: 104px minmax(0, 1fr);
-      align-items: center;
-      gap: 8px;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: stretch;
+      gap: 4px;
       min-width: 0;
     }
 
@@ -2227,9 +2467,17 @@
     .pk-inline-metric > span {
       font-size: 11px;
       color: var(--ds-text-muted);
-      width: 10px;
-      flex: 0 0 10px;
+      width: 14px;
+      flex: 0 0 14px;
       text-align: center;
+    }
+
+    .pk-inline-metric > .pk-unit {
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 18px;
+      text-align: left;
+      opacity: 0.78;
     }
 
     .pk-inline-metric > .ds-input,
@@ -2248,6 +2496,21 @@
     .pk-inspector-grid .ds-select {
       min-height: 30px;
       padding: 0 8px;
+    }
+
+    .pk-panel-right .ds-select,
+    #settingsPanel .ds-select,
+    .pk-appearance-row .ds-select,
+    .pk-projection-select {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pk-panel-right .ds-select,
+    #settingsPanel .ds-select {
+      min-inline-size: min(100%, 128px);
     }
 
     .pk-inspector-card .pk-item-line {
@@ -2275,6 +2538,10 @@
     .pk-inspector-card .pk-stack-inline,
     .pk-inspector-card .pk-item-tags {
       gap: var(--ds-space-2);
+    }
+
+    .pk-inspector-actions-row {
+      justify-content: flex-end;
     }
 
     .pk-stage-header.is-minimal .pk-stage-head-top {
@@ -2369,6 +2636,12 @@
       flex: 1 1 auto;
     }
 
+    .pk-project-menu .pk-more-menu-list {
+      left: 0;
+      right: auto;
+      width: min(280px, calc(100vw - 32px));
+    }
+
     .pk-project-menu > summary {
       display: inline-flex;
       align-items: center;
@@ -2457,6 +2730,14 @@
       margin-top: 0;
       padding-top: 10px;
       border-top: 1px solid color-mix(in oklab, var(--ds-border) 56%, transparent);
+    }
+
+    .pk-panel-right .pk-panel-section:has(> #inspectorActions[hidden] + #inspectorTags[hidden]) {
+      display: none;
+    }
+
+    .pk-panel-right .pk-item-line:has(> [hidden]:only-child) {
+      display: none;
     }
 
     .pk-prop-section-head {
@@ -2647,6 +2928,21 @@
       color: var(--ds-icon-action-fg-active);
     }
 
+    .pk-scrub-control.is-percent {
+      display: inline-grid;
+      grid-template-columns: minmax(42px, 52px) 28px auto;
+      align-items: center;
+      gap: 0;
+    }
+
+    .pk-scrub-control.is-percent::after {
+      content: "%";
+      padding-inline: 0 8px;
+      color: var(--ds-text-muted);
+      font-size: 11px;
+      line-height: 1;
+    }
+
     .pk-scrub-handle .pk-glyph {
       width: var(--pk-icon-sm);
       height: var(--pk-icon-sm);
@@ -2762,6 +3058,11 @@
 
       .pk-stage-shell {
         min-height: calc(100dvh - 188px);
+      }
+
+      .pk-overlay-control-label,
+      .pk-projection-strip-label {
+        display: none;
       }
 
       .pk-stage {
@@ -2988,32 +3289,30 @@
   </svg>
   <div class="pk-app">
     <main class="pk-shell">
+      <nav class="pk-nav-rail" aria-label="Primary editor navigation">
+        <button class="pk-rail-logo" id="homeDashboardBtn" type="button" title="Return to gallery" aria-label="Return to gallery">P</button>
+        <div class="pk-rail-divider" aria-hidden="true"></div>
+        <button class="pk-rail-tab pk-left-tab is-active" id="workspaceTabBtn" type="button" data-left-tab="workspace" title="Workspace" aria-label="Workspace" aria-pressed="true"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg></button>
+        <button class="pk-rail-tab pk-left-tab" id="assetsTabBtn" type="button" data-left-tab="assets" title="Assets" aria-label="Assets" aria-pressed="false"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-image"></use></svg></button>
+        <button class="pk-rail-tab pk-left-tab" id="settingsTabBtn" type="button" data-left-tab="settings" title="Settings" aria-label="Settings" aria-pressed="false"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
+      </nav>
       <aside class="pk-panel pk-panel-left">
         <div class="pk-panel-header">
           <div class="pk-section-head pk-titlebar">
             <div class="pk-titlebar-main">
-              <button class="pk-panel-title pk-title-button pk-titlebar-home" id="homeDashboardBtn" type="button" title="Return to dashboard">PROJEKTIK</button>
-              <span class="pk-titlebar-divider" aria-hidden="true"></span>
               <details class="pk-more-menu pk-project-menu ds-popover-wrap">
-              <summary class="pk-panel-title pk-title-button pk-titlebar-project" id="projectTitle" aria-label="Project actions"><span class="pk-title-text">Venue Setup A</span></summary>
-              <div class="pk-more-menu-list ds-popover ds-popover-static">
-                <button class="ds-btn ds-btn-primary" id="saveProjectBtn" type="button">Save</button>
-                <button class="ds-btn" id="saveAsProjectBtn" type="button">Save Copy</button>
-                <button class="ds-btn" id="exportProjectBtn" type="button">Export</button>
-                <button class="ds-btn" id="renameProjectBtn" type="button">Rename Project</button>
-              </div>
+                <summary class="pk-panel-title pk-title-button pk-titlebar-project" id="projectTitle" aria-label="Project actions"><span class="pk-title-text">Venue Setup A</span></summary>
+                <div class="pk-more-menu-list ds-popover ds-popover-static">
+                  <button class="ds-btn ds-btn-primary" id="saveProjectBtn" type="button">Save</button>
+                  <button class="ds-btn" id="saveAsProjectBtn" type="button">Save Copy</button>
+                  <button class="ds-btn" id="exportProjectBtn" type="button">Export</button>
+                  <button class="ds-btn" id="renameProjectBtn" type="button">Rename Project</button>
+                </div>
               </details>
             </div>
           </div>
           <div class="pk-section-head pk-global-statusbar">
             <span class="pk-chip ds-chip" id="projectStatusChip">Saved</span>
-          </div>
-          <div class="pk-section-head">
-            <div class="pk-left-tabbar" aria-label="Project navigation">
-              <button class="pk-left-tab is-active" id="workspaceTabBtn" type="button" data-left-tab="workspace" title="Organize calibration, layers, surfaces, and assigned content.">Workspace</button>
-              <button class="pk-left-tab" id="assetsTabBtn" type="button" data-left-tab="assets" title="Browse imported media, preview it, and drag it onto surfaces.">Assets</button>
-              <button class="pk-left-tab" id="settingsTabBtn" type="button" data-left-tab="settings" title="Theme and low-frequency interface options.">Settings</button>
-            </div>
           </div>
           <input id="assetFileInput" type="file" accept="image/*,video/*" multiple hidden>
           <input id="overlayFileInput" type="file" accept="image/*" hidden>
@@ -3023,6 +3322,12 @@
           <section class="pk-list" id="workspacePanel">
             <div class="pk-workspace-modes">
               <div class="pk-mode-strip is-workspace" id="workspaceModeTabs" aria-label="Workspace workflow modes"></div>
+            </div>
+            <div class="pk-workspace-toolbar">
+              <span class="pk-eyebrow">Layers</span>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="addLayerBtn" type="button" title="New layer" aria-label="New layer">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-add"></use></svg>
+              </button>
             </div>
             <div class="pk-workspace-tree" id="workspaceTree" data-context-target="workspace-empty" data-entity-type="workspace"></div>
           </section>
@@ -3047,17 +3352,7 @@
             </div>
           </section>
         </div>
-        <div class="pk-panel-footer">
-          <div class="pk-context-actions" id="workspaceActions">
-            <button class="ds-btn" id="addLayerBtn" type="button">New Layer</button>
-            <button class="ds-btn" id="addSurfaceBtn" type="button">Draw Surface</button>
-          </div>
-          <div class="pk-context-actions" id="assetActions" hidden>
-            <button class="ds-btn" id="loadOverlayBtn" type="button">Import Reference</button>
-          </div>
-          <div class="pk-context-actions" id="settingsActions" hidden>
-          </div>
-        </div>
+        <button class="ds-btn" id="loadOverlayBtn" type="button" hidden>Import Reference</button>
       </aside>
 
       <section class="pk-stage-shell">
@@ -3070,20 +3365,20 @@
             <div class="pk-stage-head-bottom">
               <div class="pk-stage-head-controls">
                 <div class="pk-projection-status" id="projectionStatusChip">Projection Closed</div>
-                <div class="pk-projection-strip" aria-label="Projection controls">
+                <div class="pk-projection-strip" aria-label="Projection detail controls">
+                  <span class="pk-projection-strip-label">Output</span>
                   <div class="pk-projection-strip-main">
-                  <button class="ds-btn ds-btn-primary" id="openProjectionBtn" type="button">Open Projection</button>
-                  <button class="ds-btn" id="projectionFullscreenBtn" type="button">Focus Window</button>
-                  <select class="pk-projection-select" id="projectionPresetSelect" aria-label="Projection preset">
-                    <option value="live-output">Final Output</option>
-                    <option value="reference-only">Reference Match</option>
-                    <option value="grid-only">Grid Align</option>
-                    <option value="mask-paint">Paint Mask</option>
-                    <option value="surface-isolation">Surface Solo</option>
-                    <option value="guided-composite">Guide Composite</option>
-                  </select>
-                  <button class="ds-btn" id="pinProjectionLayerBtn" type="button">Pin Layer</button>
-                  <button class="ds-btn" id="pinProjectionSurfaceBtn" type="button">Pin Surface</button>
+                    <button class="ds-btn" id="projectionFullscreenBtn" type="button">Focus Window</button>
+                    <select class="pk-projection-select" id="projectionPresetSelect" aria-label="Projection preset">
+                      <option value="live-output">Final Output</option>
+                      <option value="reference-only">Reference Match</option>
+                      <option value="grid-only">Grid Align</option>
+                      <option value="mask-paint">Paint Mask</option>
+                      <option value="surface-isolation">Surface Solo</option>
+                      <option value="guided-composite">Guide Composite</option>
+                    </select>
+                    <button class="ds-btn" id="pinProjectionLayerBtn" type="button">Pin Layer</button>
+                    <button class="ds-btn" id="pinProjectionSurfaceBtn" type="button">Pin Surface</button>
                     <button class="ds-btn" id="clearProjectionPinBtn" type="button">Clear</button>
                     <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
                     <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
@@ -3120,26 +3415,36 @@
               <span class="pk-chip ds-chip">Edge Frame</span>
             </div>
           </div>
-          <div class="pk-overlay-controls" id="overlayControls" aria-label="Overlay controls">
-            <div class="pk-overlay-control-group" aria-label="Edit tools">
+          <div class="pk-overlay-controls" id="overlayControls" aria-label="Canvas controls">
+            <div class="pk-overlay-control-group" aria-label="Panel controls">
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="guideToggle" type="button" title="Toggle guides" aria-label="Toggle guides" hidden><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="referenceToggle" type="button" title="Toggle calibration reference" aria-label="Toggle calibration reference" hidden><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="linkToggle" type="button" title="Toggle calibration link" aria-label="Toggle calibration link" hidden><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-link"></use></svg></button>
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="overlayLayersToggle" type="button" title="Toggle layers drawer" aria-label="Toggle layers drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-panel-left"></use></svg></button>
               <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="overlayToolsToggle" type="button" title="Toggle inspector drawer" aria-label="Toggle inspector drawer"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
             </div>
-            <div class="pk-overlay-control-group pk-overlay-control-group-run" aria-label="View and run controls">
-              <button class="pk-toolbar-toggle ds-btn" id="outputToggle" type="button" title="Enable preview" aria-label="Enable preview">
-                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
-                <span>Preview</span>
+            <div class="pk-overlay-control-group pk-overlay-control-group-run" aria-label="Output controls">
+              <button class="pk-toolbar-toggle ds-btn" id="addSurfaceBtn" type="button" title="Draw surface" aria-label="Draw surface" aria-pressed="false">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-surface"></use></svg>
+                <span>Surface</span>
               </button>
+              <span class="pk-toolbar-divider" aria-hidden="true"></span>
               <button class="pk-toolbar-toggle ds-btn" id="overlayFullscreenToggle" type="button" title="Toggle fullscreen" aria-label="Toggle fullscreen">
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg>
                 <span>Fullscreen</span>
               </button>
+              <button class="pk-toolbar-toggle ds-btn" id="outputToggle" type="button" title="Enable preview" aria-label="Enable preview">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
+                <span>Preview</span>
+              </button>
+              <span class="pk-toolbar-divider" aria-hidden="true"></span>
+              <button class="pk-toolbar-toggle ds-btn" id="openProjectionBtn" type="button" title="Open projection window" aria-label="Open projection window">
+                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
+                <span>Projection</span>
+              </button>
               <button class="pk-toolbar-toggle ds-btn" id="playbackToggle" type="button" title="Start live output" aria-label="Start live output">
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-play"></use></svg>
-                <span>Live</span>
+                <span>Play</span>
               </button>
             </div>
           </div>
@@ -3180,7 +3485,7 @@
         <div class="pk-panel-body">
           <section class="pk-inspector-card ds-card ds-card-secondary" id="projectSettingsCard" hidden>
             <div class="pk-section-head">
-              <div class="pk-eyebrow">Project Settings</div>
+              <div class="pk-eyebrow">Settings</div>
               <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Project-wide metadata and projector output settings. Select the project title to edit these.">i</button>
             </div>
             <div class="pk-grid-2">
@@ -3241,11 +3546,11 @@
           <section class="pk-inspector-card ds-card ds-card-secondary" id="calibrationTemplateCard" hidden>
             <div class="pk-section-head pk-section-head-inline">
               <div class="pk-section-head-title">
-                <div class="pk-eyebrow">Calibration</div>
+                <span class="pk-hidden-label">Calibration controls</span>
                 <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Calibration defines the shared frame, grid, and reference system for mapped output.">i</button>
               </div>
               <div class="pk-section-head-controls">
-                <div class="pk-scrub-control">
+                <div class="pk-scrub-control is-percent">
                   <input class="ds-input pk-surface-opacity-input" id="calibrationOpacity" type="number" min="0" max="100" step="1" value="100" aria-label="Calibration opacity" data-no-scrub="true">
                   <button class="pk-scrub-handle" type="button" data-scrub-target="calibrationOpacity" title="Scrub calibration opacity" aria-label="Scrub calibration opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
                 </div>
@@ -3299,11 +3604,11 @@
           <section class="pk-inspector-card ds-card ds-card-secondary" id="layerStateCard">
             <div class="pk-section-head pk-section-head-inline">
               <div class="pk-section-head-title">
-                <div class="pk-eyebrow">Layer</div>
+                <span class="pk-hidden-label">Layer controls</span>
                 <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Layer controls affect the selected layer only.">i</button>
               </div>
               <div class="pk-section-head-controls">
-                <div class="pk-scrub-control">
+                <div class="pk-scrub-control is-percent">
                   <input class="ds-input pk-surface-opacity-input" id="layerOpacity" type="number" min="0" max="100" step="1" value="100" aria-label="Layer opacity" data-no-scrub="true">
                   <button class="pk-scrub-handle" type="button" data-scrub-target="layerOpacity" title="Scrub layer opacity" aria-label="Scrub layer opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
                 </div>
@@ -3325,11 +3630,11 @@
           <section class="pk-inspector-card ds-card ds-card-secondary" id="referenceLayerCard" hidden>
             <div class="pk-section-head pk-section-head-inline">
               <div class="pk-section-head-title">
-                <div class="pk-eyebrow">Reference</div>
+                <span class="pk-hidden-label">Reference controls</span>
                 <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Reference is a calibration aid rendered through its assigned surface.">i</button>
               </div>
               <div class="pk-section-head-controls">
-                <div class="pk-scrub-control">
+                <div class="pk-scrub-control is-percent">
                   <input class="ds-input pk-surface-opacity-input" id="referenceOpacity" type="number" min="0" max="100" step="1" value="100" aria-label="Reference opacity" data-no-scrub="true">
                   <button class="pk-scrub-handle" type="button" data-scrub-target="referenceOpacity" title="Scrub reference opacity" aria-label="Scrub reference opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
                 </div>
@@ -3338,12 +3643,12 @@
               </div>
             </div>
             <div class="pk-field">
-              <label for="referenceAssetSelect">Reference Source</label>
+              <label for="referenceAssetSelect">Source</label>
               <select class="ds-select" id="referenceAssetSelect" aria-label="Reference source"></select>
             </div>
             <div class="pk-grid-2">
               <div class="pk-field">
-                <label for="referenceFitMode">Reference Fit</label>
+                <label for="referenceFitMode">Fit</label>
                 <select class="ds-select" id="referenceFitMode" aria-label="Reference fit mode">
                   <option value="surface">Scaled</option>
                   <option value="anchored">Pinned</option>
@@ -3367,11 +3672,11 @@
           <section class="pk-inspector-card ds-card ds-card-secondary" id="surfaceTransformCard">
             <div class="pk-section-head pk-section-head-inline">
               <div class="pk-section-head-title">
-                <div class="pk-eyebrow">Surface</div>
+                <span class="pk-hidden-label">Surface controls</span>
                 <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Surface controls organize frame, visibility, and stacked fills.">i</button>
               </div>
               <div class="pk-section-head-controls">
-                <div class="pk-scrub-control">
+                <div class="pk-scrub-control is-percent">
                   <input class="ds-input pk-surface-opacity-input" id="surfaceOpacity" type="number" min="0" max="100" step="1" value="42" aria-label="Surface opacity" data-no-scrub="true">
                   <button class="pk-scrub-handle" type="button" data-scrub-target="surfaceOpacity" title="Scrub surface opacity" aria-label="Scrub surface opacity"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-scrub-horizontal"></use></svg></button>
                 </div>
@@ -3379,7 +3684,7 @@
                 <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle" id="surfaceLockedBtn" type="button" title="Lock surface" aria-label="Lock surface"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-lock"></use></svg></button>
               </div>
             </div>
-            <div class="pk-prop-section-head">Position and Size</div>
+            <div class="pk-prop-section-head">Geometry</div>
             <div class="pk-dimension-stack">
               <div class="pk-dimension-row">
                 <div class="pk-dimension-row-label">Position</div>
@@ -3448,21 +3753,19 @@
 
           <section class="pk-inspector-card ds-card ds-card-secondary" id="assetTransformCard">
             <div class="pk-section-head">
-              <div class="pk-eyebrow">Asset Placement</div>
+              <span class="pk-hidden-label">Asset placement controls</span>
               <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Asset placement controls how media fits, crops, and moves inside the selected surface mask.">i</button>
             </div>
             <div class="pk-prop-section-head">Mapping</div>
+            <div class="pk-stack-inline pk-inspector-actions-row">
+              <button class="ds-btn ds-btn-primary" id="cropAssetBtn" type="button">Enter Crop</button>
+              <button class="ds-btn" id="assetFitFrameBtn" type="button">Fit to Frame</button>
+              <button class="ds-btn" id="assetWarpFrameBtn" type="button">Warp to Frame</button>
+              <button class="ds-btn" id="assetResetBtn" type="button">Reset Placement</button>
+            </div>
             <div class="pk-inspector-grid">
-              <div class="pk-field" style="grid-column: 1 / -1;">
-                <div class="pk-stack-inline">
-                  <button class="ds-btn ds-btn-primary" id="cropAssetBtn" type="button">Enter Crop</button>
-                  <button class="ds-btn" id="assetFitFrameBtn" type="button">Fit to Frame</button>
-                  <button class="ds-btn" id="assetWarpFrameBtn" type="button">Warp to Frame</button>
-                  <button class="ds-btn" id="assetResetBtn" type="button">Reset Placement</button>
-                </div>
-              </div>
               <div class="pk-field">
-                <label for="assetFitMode">Map Mode</label>
+                <label for="assetFitMode">Mode</label>
                 <select class="ds-select" id="assetFitMode" aria-label="Asset fit mode">
                   <option value="crop">Manual Crop</option>
                   <option value="fit">Fit to Frame</option>
@@ -3471,26 +3774,26 @@
               </div>
             </div>
             <div class="pk-prop-section-head">Transform</div>
-            <div class="pk-inspector-grid">
-              <div class="pk-field">
-                <label for="assetRotation">Rotation</label>
-                <input class="ds-input" id="assetRotation" type="number" value="0">
+            <div class="pk-dimension-stack">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Offset</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="assetOffsetX"><span>X</span><input class="ds-input" id="assetOffsetX" type="number" value="0"></label>
+                  <label class="pk-inline-metric" for="assetOffsetY"><span>Y</span><input class="ds-input" id="assetOffsetY" type="number" value="0"></label>
+                </div>
               </div>
-              <div class="pk-field">
-                <label for="assetOffsetX">Offset X</label>
-                <input class="ds-input" id="assetOffsetX" type="number" value="0">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Scale</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="assetScaleX"><span>X</span><input class="ds-input" id="assetScaleX" type="number" step="0.05" value="1"></label>
+                  <label class="pk-inline-metric" for="assetScaleY"><span>Y</span><input class="ds-input" id="assetScaleY" type="number" step="0.05" value="1"></label>
+                </div>
               </div>
-              <div class="pk-field">
-                <label for="assetOffsetY">Offset Y</label>
-                <input class="ds-input" id="assetOffsetY" type="number" value="0">
-              </div>
-              <div class="pk-field">
-                <label for="assetScaleX">Scale X</label>
-                <input class="ds-input" id="assetScaleX" type="number" step="0.05" value="1">
-              </div>
-              <div class="pk-field">
-                <label for="assetScaleY">Scale Y</label>
-                <input class="ds-input" id="assetScaleY" type="number" step="0.05" value="1">
+              <div class="pk-dimension-row">
+                <div class="pk-dimension-row-label">Rotation</div>
+                <div class="pk-dimension-row-pair">
+                  <label class="pk-inline-metric" for="assetRotation"><span>R</span><input class="ds-input" id="assetRotation" type="number" value="0"><span class="pk-unit">deg</span></label>
+                </div>
               </div>
             </div>
             <div class="pk-item-line">
@@ -3575,9 +3878,6 @@
       const workspacePanel = document.getElementById("workspacePanel");
       const assetsPanel = document.getElementById("assetsPanel");
       const settingsPanel = document.getElementById("settingsPanel");
-      const workspaceActions = document.getElementById("workspaceActions");
-      const assetActions = document.getElementById("assetActions");
-      const settingsActions = document.getElementById("settingsActions");
       const addLayerBtn = document.getElementById("addLayerBtn");
       const addSurfaceBtn = document.getElementById("addSurfaceBtn");
       const importAssetBtn = document.getElementById("importAssetBtn");
@@ -6429,7 +6729,14 @@
         const presetLabel = getProjectionPresetMeta(view.preset).label;
         const pinLabel = getProjectionPinnedLabel(view);
         const flagsLabel = getProjectionViewFlagsLabel(view);
-        return `${presetLabel} · ${pinLabel} · ${flagsLabel}`;
+        return `${presetLabel} - ${pinLabel} - ${flagsLabel}`;
+      }
+
+      function getProjectionStatusText(windowOpen, summaryLabel) {
+        if (!windowOpen) {
+          return "Projection Closed";
+        }
+        return `Projection Linked - ${projectionNotice || summaryLabel}`;
       }
 
       function getProjectionPresetDefaults(preset = state.projectionView.preset) {
@@ -6706,8 +7013,11 @@
         const summaryLabel = getProjectionOperatorSummary();
 
         projectionPresetSelect.value = state.projectionView.preset;
-        openProjectionBtn.textContent = windowOpen ? "Reconnect" : "Open Projection";
+        openProjectionBtn.innerHTML = `${iconMarkup("screen", windowOpen ? "Reconnect projection window" : "Open projection window")}<span>Projection</span>`;
         openProjectionBtn.title = windowOpen ? "Reconnect the projection window" : "Open the projection window";
+        openProjectionBtn.setAttribute("aria-label", windowOpen ? "Reconnect projection window" : "Open projection window");
+        openProjectionBtn.classList.toggle("is-active", windowOpen);
+        openProjectionBtn.setAttribute("aria-pressed", String(windowOpen));
         projectionFullscreenBtn.disabled = !windowOpen;
         pinProjectionLayerBtn.disabled = !selectedLayer;
         pinProjectionSurfaceBtn.disabled = !selectedSurface;
@@ -6732,9 +7042,7 @@
         projectionReferenceToggle.title = state.projectionView.showReference ? "Hide projection reference" : "Show projection reference";
         projectionCalibrationToggle.title = state.projectionView.showCalibration ? "Hide projection calibration" : "Show projection calibration";
         projectionStatusChip.classList.toggle("is-active", windowOpen);
-        projectionStatusChip.textContent = windowOpen
-          ? `${windowOpen ? "Linked" : "Closed"} · ${projectionNotice || summaryLabel}`
-          : "Projection Closed";
+        projectionStatusChip.textContent = getProjectionStatusText(windowOpen, summaryLabel);
         projectionStatusChip.title = projectionNotice || summaryLabel;
       }
 
@@ -6917,6 +7225,9 @@
           return;
         }
         state.ui.leftPanelTab = tab;
+        if (isFloatingUI()) {
+          state.ui.overlayLayersOpen = true;
+        }
       }
 
       function canMutateStructure() {
@@ -9452,9 +9763,9 @@
         overlayFullscreenToggle.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
         overlayFullscreenToggle.title = document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen";
         overlayFullscreenToggle.innerHTML = `${iconMarkup("expand", "Fullscreen")}<span>Fullscreen</span>`;
-        playbackToggle.innerHTML = `${iconMarkup(runState.liveActive ? "pause" : "play", runState.liveActive ? "Stop live output" : "Start live output")}<span>Live</span>`;
-        playbackToggle.setAttribute("aria-label", runState.liveActive ? "Stop live output" : "Start live output");
-        playbackToggle.title = runState.liveActive ? "Stop live output" : "Start live output";
+        playbackToggle.innerHTML = `${iconMarkup(runState.liveActive ? "pause" : "play", runState.liveActive ? "Stop output" : "Play output")}<span>${runState.liveActive ? "Stop" : "Play"}</span>`;
+        playbackToggle.setAttribute("aria-label", runState.liveActive ? "Stop output" : "Play output");
+        playbackToggle.title = runState.liveActive ? "Stop output" : "Play output";
         guideToggle.hidden = true;
         referenceToggle.hidden = true;
         linkToggle.hidden = true;
@@ -9462,12 +9773,15 @@
         overlayToolsToggle.hidden = isConsoleUI() || isUiHidden();
         outputToggle.hidden = isUiHidden();
         overlayFullscreenToggle.hidden = isUiHidden();
-        playbackToggle.hidden = false;
-        overlayControls.hidden = false;
+        playbackToggle.hidden = isUiHidden();
+        openProjectionBtn.hidden = isUiHidden();
+        overlayControls.hidden = isUiHidden();
+        presentationRestoreHotspot.textContent = state.project.name || "PROJEKTIK";
         stageCanvas.classList.toggle("is-guides-off", !state.ui.guidesEnabled || runState.previewActive);
         stageCanvas.classList.toggle("is-presentation-preview", runState.previewActive);
         stageCanvas.classList.toggle("is-paused", !runState.liveActive);
         appShell.classList.toggle("is-overlay-ui", isFloatingUI());
+        appShell.classList.toggle("is-left-panel-collapsed", isFloatingUI() && !state.ui.overlayLayersOpen);
         appShell.classList.toggle("is-ui-hidden", isUiHidden());
         appShell.classList.toggle("is-editing-surface", Boolean(state.ui.dragMode || state.ui.surfaceCreateStart));
       }
@@ -9636,7 +9950,7 @@
                 ? ``
                 : `<input class="ds-input" data-appearance-prop="${layer.kind === "fill" ? "fillColor" : "patternColor"}" data-appearance-layer-id="${layer.id}" type="color" value="${layer.kind === "fill" ? (layer.fillColor || "#ffffff") : (layer.patternColor || "#7bd0ff")}" aria-label="${layer.kind === "fill" ? "Fill color" : "Pattern color"}">`
               }
-              <div class="pk-scrub-control">
+              <div class="pk-scrub-control is-percent">
                 <input class="ds-input pk-appearance-opacity-input" data-appearance-prop="opacityText" data-appearance-layer-id="${layer.id}" type="text" inputmode="numeric" value="${Math.round((layer.opacity ?? 1) * 100)}" aria-label="Fill opacity">
                 <button class="pk-scrub-handle" type="button" data-appearance-scrub="opacity" data-appearance-layer-id="${layer.id}" title="Scrub opacity" aria-label="Scrub opacity">${iconMarkup("scrub-horizontal", "Scrub opacity")}</button>
               </div>
@@ -9832,10 +10146,13 @@
       function renderOverlayDrawers() {
         const showDrawers = isFloatingUI() && !isUiHidden();
         syncInspectorPanelMount();
-        overlayLayersDrawer.classList.toggle("is-open", showDrawers && state.ui.overlayLayersOpen);
+        overlayLayersDrawer.classList.remove("is-open");
+        overlayLayersDrawer.hidden = true;
         overlayToolsDrawer.classList.toggle("is-open", showDrawers && state.ui.overlayToolsOpen);
         overlayLayersToggle.classList.toggle("is-active", showDrawers && state.ui.overlayLayersOpen);
         overlayToolsToggle.classList.toggle("is-active", showDrawers && state.ui.overlayToolsOpen);
+        overlayLayersToggle.setAttribute("aria-pressed", String(showDrawers && state.ui.overlayLayersOpen));
+        overlayToolsToggle.setAttribute("aria-pressed", String(showDrawers && state.ui.overlayToolsOpen));
         overlayToolsDrawer.hidden = !isFloatingUI();
         renderContextMenu();
       }
@@ -9849,15 +10166,15 @@
         workspaceTabBtn.classList.toggle("is-active", isWorkspace);
         assetsTabBtn.classList.toggle("is-active", isAssets);
         settingsTabBtn.classList.toggle("is-active", isSettings);
+        workspaceTabBtn.setAttribute("aria-pressed", String(isWorkspace));
+        assetsTabBtn.setAttribute("aria-pressed", String(isAssets));
+        settingsTabBtn.setAttribute("aria-pressed", String(isSettings));
         workspacePanel.hidden = !isWorkspace;
         assetsPanel.hidden = !isAssets;
         settingsPanel.hidden = !isSettings;
-        workspaceActions.hidden = !isWorkspace || !isConsoleUI();
-        assetActions.hidden = true;
-        settingsActions.hidden = true;
         addLayerBtn.disabled = structureLocked;
         addSurfaceBtn.disabled = structureLocked;
-        addSurfaceBtn.classList.toggle("ds-btn-primary", state.ui.surfaceCreateActive && !structureLocked);
+        addSurfaceBtn.classList.toggle("is-active", state.ui.surfaceCreateActive && !structureLocked);
         addSurfaceBtn.setAttribute("aria-pressed", String(state.ui.surfaceCreateActive && !structureLocked));
       }
 
@@ -10166,8 +10483,10 @@
         });
       });
 
-      openProjectionBtn.addEventListener("click", () => {
+      openProjectionBtn.addEventListener("click", async () => {
         openProjectionWindow();
+        await requestProjectionWindowFullscreen();
+        render();
       });
 
       projectionFullscreenBtn.addEventListener("click", async () => {
@@ -11840,6 +12159,9 @@
           state.ui.controlsHidden = false;
           state.ui.overlayLayersOpen = false;
           state.ui.overlayToolsOpen = false;
+        } else if (!state.ui.controlsHidden) {
+          state.ui.overlayLayersOpen = true;
+          state.ui.overlayToolsOpen = true;
         }
         queueLayoutRefresh();
       });

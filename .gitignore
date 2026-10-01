@@ -1,3 +1,7 @@
 _archive/
 _docs/
 _private/
+node_modules/
+test-results/
+playwright-report/
+debug.log

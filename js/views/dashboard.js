@@ -5,10 +5,39 @@
 
     const gallery = document.getElementById("projectGallery");
     const projectCountLabel = document.getElementById("projectCountLabel");
+    const dashboardStatus = document.getElementById("dashboardStatus");
     const createProjectBtn = document.getElementById("createProjectBtn");
     const importProjectBtn = document.getElementById("importProjectBtn");
     const importProjectInput = document.getElementById("importProjectInput");
     let selectedProjectId = "";
+    const PROJECT_STORAGE_KEY_PREFIXES = [
+      "projektik.projects.",
+      "projektik.project."
+    ];
+
+    function isProjectStorageKey(key) {
+      return !key || PROJECT_STORAGE_KEY_PREFIXES.some((prefix) => key.startsWith(prefix));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeCssUrl(value) {
+      return String(value ?? "")
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"')
+        .replace(/[\n\r\f]/g, "");
+    }
+
+    function isSafeThumbnailDataUrl(value) {
+      return typeof value === "string" && /^data:image\//i.test(value);
+    }
 
     function formatDate(value) {
       if (!value) {
@@ -33,6 +62,26 @@
 
     function createProject() {
       global.location.href = "./editor.html?new=1";
+    }
+
+    function getProjectImportErrorMessage(error) {
+      if (error instanceof SyntaxError) {
+        return "Project import failed: the selected file is not valid JSON.";
+      }
+      if (String(error?.message || "").includes("Invalid project payload")) {
+        return "Project import failed: the selected JSON is not a recognized PROJEKTIK project.";
+      }
+      return "Project import failed. Please check the JSON file and try again.";
+    }
+
+    function setDashboardStatus(message = "", tone = "") {
+      if (!dashboardStatus) {
+        return;
+      }
+      dashboardStatus.textContent = message;
+      dashboardStatus.classList.toggle("is-error", tone === "error");
+      dashboardStatus.classList.toggle("is-success", tone === "success");
+      dashboardStatus.hidden = !message;
     }
 
     function renderEmptyState() {
@@ -60,9 +109,14 @@
 
       gallery.innerHTML = projects
         .map((project) => {
-          const thumbnailStyle = project.thumbnailDataUrl
-            ? ` style="background-image:url('${project.thumbnailDataUrl.replace(/'/g, "%27")}');"`
+          const hasThumbnail = isSafeThumbnailDataUrl(project.thumbnailDataUrl);
+          const thumbnailStyle = hasThumbnail
+            ? ` style="background-image:url(&quot;${escapeCssUrl(project.thumbnailDataUrl)}&quot;);"`
             : "";
+          const projectName = escapeHtml(project.name);
+          const outputWidth = escapeHtml(project.outputWidth);
+          const outputHeight = escapeHtml(project.outputHeight);
+          const projectorModel = escapeHtml(project.projectorModel);
           return `
             <article class="pk-card${selectedProjectId === project.id ? " is-selected" : ""}" data-project-id="${project.id}" tabindex="0" role="button" aria-pressed="${selectedProjectId === project.id ? "true" : "false"}">
               <details class="pk-card-menu ds-popover-wrap">
@@ -76,13 +130,13 @@
               <div class="pk-card-open">
                 <button class="ds-btn ds-btn-primary" type="button" data-card-action="open">Open Project</button>
               </div>
-              <div class="pk-card-thumb${project.thumbnailDataUrl ? " has-image" : ""}"${thumbnailStyle}></div>
+              <div class="pk-card-thumb${hasThumbnail ? " has-image" : ""}"${thumbnailStyle}></div>
               <div class="pk-card-body">
-                <div class="pk-card-kicker">Updated ${formatDate(project.updatedAt)}</div>
-                <h3 class="pk-card-title">${project.name}</h3>
+                <div class="pk-card-kicker">Updated ${escapeHtml(formatDate(project.updatedAt))}</div>
+                <h3 class="pk-card-title">${projectName}</h3>
                 <div class="pk-card-meta">
-                  <span class="pk-tag ds-chip">${project.outputWidth}x${project.outputHeight}</span>
-                  ${project.projectorModel ? `<span class="pk-tag ds-chip">${project.projectorModel}</span>` : ""}
+                  <span class="pk-tag ds-chip">${outputWidth}x${outputHeight}</span>
+                  ${project.projectorModel ? `<span class="pk-tag ds-chip">${projectorModel}</span>` : ""}
                 </div>
               </div>
             </article>
@@ -92,13 +146,14 @@
     }
 
     global.addEventListener("storage", (event) => {
-      if (!event.key || event.key.startsWith("projektik:")) {
+      if (isProjectStorageKey(event.key)) {
         renderProjects();
       }
     });
 
     createProjectBtn.addEventListener("click", createProject);
     importProjectBtn.addEventListener("click", () => {
+      setDashboardStatus("");
       importProjectInput.click();
     });
 
@@ -110,10 +165,11 @@
       }
       try {
         const projectId = await store.importProjectFile(file);
+        setDashboardStatus("Project imported. Opening editor...", "success");
         renderProjects();
         openProject(projectId);
       } catch (error) {
-        global.alert("Project import failed. Please check the JSON file and try again.");
+        setDashboardStatus(getProjectImportErrorMessage(error), "error");
       }
     });
 
@@ -123,6 +179,7 @@
         if (emptyAction.dataset.emptyAction === "new") {
           createProject();
         } else {
+          setDashboardStatus("");
           importProjectInput.click();
         }
         return;

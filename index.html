@@ -86,9 +86,11 @@
       }
 
       .pk-topbar {
+        display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         gap: var(--ds-space-3);
         padding: var(--ds-space-3);
+        align-items: start;
       }
 
       .pk-brand {
@@ -118,15 +120,15 @@
       }
 
       .pk-actions {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: minmax(160px, 220px) auto auto;
         gap: 8px;
-        align-items: center;
+        align-items: end;
         justify-self: end;
       }
 
       .pk-theme-field {
-        min-width: min(220px, 100%);
+        min-width: 0;
       }
 
       .pk-theme-field .ds-label {
@@ -135,7 +137,7 @@
 
       .pk-main {
         display: grid;
-        gap: var(--ds-space-4);
+        gap: var(--ds-space-3);
         grid-template-rows: auto 1fr;
         min-height: 0;
       }
@@ -166,6 +168,7 @@
 
       .pk-card {
         cursor: pointer;
+        grid-template-rows: auto minmax(0, 1fr);
         transition:
           border-color var(--ds-dur-fast, 160ms) ease,
           background var(--ds-dur-fast, 160ms) ease,
@@ -312,6 +315,7 @@
       .pk-card-metadata {
         display: grid;
         gap: 8px;
+        align-content: start;
       }
 
       .pk-card-meta {
@@ -345,7 +349,46 @@
         display: none !important;
       }
 
+      .pk-status-line {
+        grid-column: 1 / -1;
+        justify-self: stretch;
+        min-height: 0;
+        padding: 0;
+        color: var(--ds-text-muted);
+        font-size: var(--ds-fs-1);
+        line-height: 1.35;
+      }
+
+      .pk-status-line:not(:empty) {
+        min-height: 30px;
+        padding: 7px 10px;
+        border: 1px solid color-mix(in oklab, var(--ds-border) 76%, transparent);
+        border-radius: var(--ds-radius-2);
+        background: color-mix(in oklab, var(--ds-bg-elevated) 82%, transparent);
+      }
+
+      .pk-status-line.is-error {
+        color: var(--ds-danger, #ff8f8f);
+        border-color: color-mix(in oklab, var(--ds-danger, #ff8f8f) 42%, var(--ds-border));
+        background: color-mix(in oklab, var(--ds-danger, #ff8f8f) 10%, var(--ds-bg-elevated));
+      }
+
+      .pk-status-line.is-success {
+        color: var(--ds-success, #9be7b2);
+        border-color: color-mix(in oklab, var(--ds-success, #9be7b2) 38%, var(--ds-border));
+      }
+
       @media (max-width: 720px) {
+        .pk-topbar,
+        .pk-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .pk-actions {
+          justify-self: stretch;
+          align-items: stretch;
+        }
+
         .pk-gallery {
           grid-template-columns: 1fr;
         }
@@ -391,6 +434,13 @@
             type="file"
             accept="application/json,.json"
           />
+          <div
+            class="pk-status-line"
+            id="dashboardStatus"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
         </div>
       </header>
 
