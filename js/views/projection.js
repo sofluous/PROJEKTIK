@@ -452,6 +452,8 @@
       pinChip.textContent = snapshot.projectionView?.pinnedLabel || "Full Project";
       outputChip.textContent = `${snapshot.output.width} x ${snapshot.output.height}`;
       statusText.textContent = snapshot.updatedAt ? `Linked ${new Date(snapshot.updatedAt).toLocaleTimeString()}` : "Linked";
+      app.classList.toggle("is-hud-hidden", Boolean(snapshot.projectionView?.hudHidden));
+      hudToggleBtn.textContent = app.classList.contains("is-hud-hidden") ? "Show HUD" : "Hide HUD";
       flagsChip.textContent = [
         snapshot.projectionView?.showGuides ? "Guides" : "",
         snapshot.projectionView?.showReference ? "Reference" : "",

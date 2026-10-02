@@ -36,6 +36,8 @@
       --pk-overlay-blur-lg: blur(16px);
       --pk-overlay-shadow-md: var(--ds-card-shadow);
       --pk-overlay-shadow-lg: var(--ds-card-shadow);
+      --pk-overlay-left-w: min(286px, calc(100vw - 80px));
+      --pk-overlay-right-w: min(320px, calc(100vw - 24px));
       --pk-stage-grid: rgba(125, 190, 255, 0.18);
       --pk-stage-safe: rgba(255, 162, 82, 0.24);
       --pk-stage-surface-a: rgba(87, 214, 255, 0.18);
@@ -85,28 +87,45 @@
     .pk-app.is-overlay-ui .pk-nav-rail {
       left: 12px;
       width: 44px;
+      align-items: center;
+      padding-inline: 4px;
       border-radius: 14px 0 0 14px;
       border-right: 0;
+      box-shadow: none;
     }
 
     .pk-app.is-overlay-ui .pk-panel-left {
-      left: 56px;
-      width: min(286px, calc(100vw - 80px));
+      left: calc(12px + 44px);
+      width: var(--pk-overlay-left-w);
       border-radius: 0 14px 14px 0;
+      border-left: 0;
       transition:
         opacity var(--ds-dur-fast) var(--ds-ease-standard),
         transform var(--ds-dur-fast) var(--ds-ease-standard);
     }
 
+    .pk-app.is-overlay-ui .pk-rail-logo,
+    .pk-app.is-overlay-ui .pk-rail-tab {
+      margin-inline: auto;
+    }
+
     .pk-app.is-overlay-ui.is-left-panel-collapsed .pk-nav-rail {
       border-radius: 14px;
       border-right: 1px solid var(--pk-overlay-panel-border);
+      box-shadow: var(--pk-overlay-shadow-lg);
     }
 
     .pk-app.is-overlay-ui.is-left-panel-collapsed .pk-panel-left {
       opacity: 0;
       pointer-events: none;
       transform: translateX(-8px);
+      visibility: hidden;
+    }
+
+    .pk-app.is-overlay-ui.is-right-panel-collapsed .pk-overlay-drawer.is-right {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(8px);
       visibility: hidden;
     }
 
@@ -560,7 +579,7 @@
     .pk-workspace-toolbar .pk-icon-btn {
       width: 28px;
       min-width: 28px;
-      height: 28px;
+      height: 30px;
       min-height: 28px;
       border-radius: 7px;
     }
@@ -834,8 +853,8 @@
       z-index: 9;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 8px;
+      flex-wrap: nowrap;
       padding: 8px 10px;
       border-radius: 12px;
       background: var(--pk-overlay-panel-bg-soft);
@@ -843,13 +862,19 @@
       backdrop-filter: var(--pk-overlay-blur-md);
       box-shadow: var(--pk-overlay-shadow-md);
       max-width: calc(100% - 24px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .pk-overlay-controls::-webkit-scrollbar {
+      display: none;
     }
 
     .pk-overlay-control-group {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 6px;
+      flex-wrap: nowrap;
     }
 
     .pk-overlay-control-label,
@@ -1004,7 +1029,7 @@
       top: 12px;
       bottom: 12px;
       z-index: 8;
-      width: min(320px, calc(100vw - 24px));
+      width: var(--pk-overlay-right-w);
       display: none;
       grid-template-rows: auto minmax(0, 1fr);
       border-radius: 14px;
@@ -1013,6 +1038,9 @@
       backdrop-filter: var(--pk-overlay-blur-lg);
       box-shadow: var(--pk-overlay-shadow-lg);
       overflow: hidden;
+      transition:
+        opacity var(--ds-dur-fast) var(--ds-ease-standard),
+        transform var(--ds-dur-fast) var(--ds-ease-standard);
     }
 
     .pk-overlay-drawer.is-open {
@@ -1025,7 +1053,7 @@
 
     .pk-overlay-drawer.is-right {
       right: 12px;
-      width: min(320px, calc(100vw - 24px));
+      width: var(--pk-overlay-right-w);
     }
 
     .pk-overlay-drawer-header,
@@ -1048,7 +1076,7 @@
     }
 
     .pk-overlay-drawer.is-right .pk-overlay-drawer-body {
-      padding: 0;
+      padding: 10px 12px;
       align-content: stretch;
     }
 
@@ -2279,6 +2307,158 @@
       padding: 0;
     }
 
+    .pk-projection-console {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .pk-projection-console > * {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .pk-projection-console-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .pk-projection-console .ds-btn,
+    .pk-projection-console .ds-select,
+    .pk-projection-console .pk-projection-select {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .pk-projection-console-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .pk-projection-console-row .pk-icon-btn {
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+    }
+
+    .pk-projection-mini-preview {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      min-height: 112px;
+      max-width: 100%;
+      border: 1px solid var(--pk-shell-divider);
+      border-radius: 8px;
+      overflow: hidden;
+      background:
+        linear-gradient(to right, color-mix(in oklab, var(--ds-text) 10%, transparent) 1px, transparent 1px),
+        linear-gradient(to bottom, color-mix(in oklab, var(--ds-text) 10%, transparent) 1px, transparent 1px),
+        var(--pk-stage-viewport-bg);
+      background-size: 28px 28px;
+    }
+
+    .pk-projection-play-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: color-mix(in oklab, black 48%, transparent);
+      color: var(--ds-text);
+      cursor: pointer;
+    }
+
+    .pk-projection-play-overlay .pk-glyph {
+      width: 38px;
+      height: 38px;
+      padding: 9px;
+      border-radius: 999px;
+      border: 1px solid var(--pk-overlay-panel-border);
+      background: var(--pk-overlay-panel-bg-soft);
+      box-shadow: var(--pk-overlay-shadow-md);
+    }
+
+    .pk-projection-play-overlay[hidden] {
+      display: none;
+    }
+
+    .pk-projection-window-chrome {
+      display: grid;
+      gap: 0;
+      min-width: 0;
+      max-width: 100%;
+      border: 1px solid var(--pk-shell-divider);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--pk-stage-viewport-bg);
+    }
+
+    .pk-projection-window-topbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 5px 6px;
+      border-bottom: 1px solid var(--pk-shell-divider);
+      background: color-mix(in oklab, var(--ds-bg-raised) 74%, transparent);
+    }
+
+    .pk-projection-window-address {
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ds-text-muted);
+      font-size: var(--ds-fs-1);
+    }
+
+    .pk-projection-console-note {
+      margin: 0;
+      color: var(--ds-text-muted);
+      font-size: var(--ds-fs-1);
+      line-height: 1.45;
+    }
+
+    .pk-projection-window-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      order: 2;
+    }
+
+    .pk-projection-window-actions .pk-icon-btn {
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      min-height: 24px;
+      border-radius: 6px;
+    }
+
+    .pk-projection-window-actions .pk-glyph {
+      width: var(--pk-icon-sm);
+      height: var(--pk-icon-sm);
+    }
+
+    .pk-projection-window-chrome .pk-projection-mini-preview {
+      border: 0;
+      border-radius: 0;
+      min-height: 118px;
+    }
+
+    .pk-projection-mini-frame {
+      position: absolute;
+      inset: 14%;
+      border: 1px solid color-mix(in oklab, var(--ds-focus) 62%, transparent);
+      background: color-mix(in oklab, var(--ds-accent) 18%, transparent);
+    }
+
     .pk-inspector-card > .pk-section-head {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -2898,10 +3078,10 @@
     }
 
     .pk-scrub-handle {
-      min-width: 28px;
-      width: 28px;
-      height: 28px;
-      min-height: 28px;
+      min-width: 32px;
+      width: 32px;
+      height: 30px;
+      min-height: 30px;
       padding: 0;
       border: 0;
       border-left: 1px solid color-mix(in oklab, var(--ds-border) 82%, transparent);
@@ -2912,7 +3092,7 @@
       user-select: none;
       -webkit-user-select: none;
       touch-action: none;
-      flex: 0 0 28px;
+      flex: 0 0 32px;
       display: grid;
       place-items: center;
     }
@@ -2930,23 +3110,30 @@
 
     .pk-scrub-control.is-percent {
       display: inline-grid;
-      grid-template-columns: minmax(42px, 52px) 28px auto;
+      grid-template-columns: minmax(42px, 1fr) auto 32px;
       align-items: center;
       gap: 0;
     }
 
     .pk-scrub-control.is-percent::after {
       content: "%";
-      padding-inline: 0 8px;
+      order: 2;
+      padding-inline: 6px 5px;
       color: var(--ds-text-muted);
       font-size: 11px;
       line-height: 1;
+      align-self: center;
+    }
+
+    .pk-scrub-control.is-percent .pk-scrub-handle {
+      order: 3;
+      border-left: 1px solid color-mix(in oklab, var(--ds-border) 82%, transparent);
     }
 
     .pk-scrub-handle .pk-glyph {
-      width: var(--pk-icon-sm);
-      height: var(--pk-icon-sm);
-      stroke-width: var(--pk-icon-stroke-sm);
+      width: var(--pk-icon-md);
+      height: var(--pk-icon-md);
+      stroke-width: var(--pk-icon-stroke-md);
       display: block;
     }
 
@@ -3127,6 +3314,13 @@
       <path d="M12 5v14"></path>
       <path d="M5 12h14"></path>
     </symbol>
+    <symbol id="pk-icon-minus" viewBox="0 0 24 24">
+      <path d="M5 12h14"></path>
+    </symbol>
+    <symbol id="pk-icon-close" viewBox="0 0 24 24">
+      <path d="M6 6l12 12"></path>
+      <path d="M18 6L6 18"></path>
+    </symbol>
     <symbol id="pk-icon-link" viewBox="0 0 24 24">
       <path d="M10 8l-2 2a3 3 0 004 4l2-2"></path>
       <path d="M14 16l2-2a3 3 0 00-4-4l-2 2"></path>
@@ -3162,6 +3356,12 @@
       <path d="M16 4h4v4"></path>
       <path d="M8 20H4v-4"></path>
       <path d="M16 20h4v-4"></path>
+    </symbol>
+    <symbol id="pk-icon-collapse" viewBox="0 0 24 24">
+      <path d="M9 4v5H4"></path>
+      <path d="M15 4v5h5"></path>
+      <path d="M9 20v-5H4"></path>
+      <path d="M15 20v-5h5"></path>
     </symbol>
     <symbol id="pk-icon-blackout" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="7"></circle>
@@ -3294,6 +3494,7 @@
         <div class="pk-rail-divider" aria-hidden="true"></div>
         <button class="pk-rail-tab pk-left-tab is-active" id="workspaceTabBtn" type="button" data-left-tab="workspace" title="Workspace" aria-label="Workspace" aria-pressed="true"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg></button>
         <button class="pk-rail-tab pk-left-tab" id="assetsTabBtn" type="button" data-left-tab="assets" title="Assets" aria-label="Assets" aria-pressed="false"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-image"></use></svg></button>
+        <button class="pk-rail-tab pk-left-tab" id="projectionTabBtn" type="button" data-left-tab="projection" title="Projection" aria-label="Projection" aria-pressed="false"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg></button>
         <button class="pk-rail-tab pk-left-tab" id="settingsTabBtn" type="button" data-left-tab="settings" title="Settings" aria-label="Settings" aria-pressed="false"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-sliders"></use></svg></button>
       </nav>
       <aside class="pk-panel pk-panel-left">
@@ -3343,6 +3544,53 @@
             <div class="pk-assets-library" id="assetsList"></div>
           </section>
 
+          <section class="pk-list pk-projection-console" id="projectionPanel" hidden>
+            <div class="pk-projection-window-chrome">
+              <div class="pk-projection-window-topbar">
+                <span class="pk-projection-window-address" id="projectionWindowLabel">Projection window</span>
+                <div class="pk-projection-window-actions" aria-label="Projection window controls">
+                  <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionFullscreenBtn" type="button" title="Fullscreen projection window" aria-label="Fullscreen projection window">
+                    <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg>
+                  </button>
+                  <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionHudToggleBtn" type="button" title="Hide projection HUD" aria-label="Hide projection HUD">
+                    <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-minus"></use></svg>
+                  </button>
+                  <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionWindowCloseBtn" type="button" title="Close projection window" aria-label="Close projection window">
+                    <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-close"></use></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="pk-projection-mini-preview" id="projectionMiniPreview" aria-label="Projection mini preview">
+                <div class="pk-projection-mini-frame" id="projectionMiniFrame"></div>
+                <button class="pk-projection-play-overlay" id="projectionPlayOverlayBtn" type="button" title="Open projection window" aria-label="Open projection window">
+                  <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-play"></use></svg>
+                </button>
+              </div>
+            </div>
+            <div class="pk-projection-console-row" aria-label="Projection display layers">
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
+              <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionCalibrationToggle" type="button" title="Toggle projection calibration" aria-label="Toggle projection calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
+            </div>
+            <div class="pk-field">
+              <label for="projectionPresetSelect">Preset</label>
+              <select class="pk-projection-select ds-select" id="projectionPresetSelect" aria-label="Projection preset">
+                <option value="live-output">Final Output</option>
+                <option value="reference-only">Reference Match</option>
+                <option value="grid-only">Grid Align</option>
+                <option value="mask-paint">Paint Mask</option>
+                <option value="surface-isolation">Surface Solo</option>
+                <option value="guided-composite">Guide Composite</option>
+              </select>
+            </div>
+            <div class="pk-projection-console-grid">
+              <button class="ds-btn" id="pinProjectionLayerBtn" type="button">Pin Layer</button>
+              <button class="ds-btn" id="pinProjectionSurfaceBtn" type="button">Pin Surface</button>
+              <button class="ds-btn" id="clearProjectionPinBtn" type="button">Clear Pin</button>
+            </div>
+            <p class="pk-projection-console-note" id="projectionConsoleNote">Projection controls affect the second screen. Use the play overlay to open or reconnect the viewer.</p>
+          </section>
+
           <section class="pk-list" id="settingsPanel" hidden>
             <div class="pk-inspector-card ds-card ds-card-secondary">
               <div class="pk-field">
@@ -3363,29 +3611,7 @@
             </div>
           </div>
             <div class="pk-stage-head-bottom">
-              <div class="pk-stage-head-controls">
-                <div class="pk-projection-status" id="projectionStatusChip">Projection Closed</div>
-                <div class="pk-projection-strip" aria-label="Projection detail controls">
-                  <span class="pk-projection-strip-label">Output</span>
-                  <div class="pk-projection-strip-main">
-                    <button class="ds-btn" id="projectionFullscreenBtn" type="button">Focus Window</button>
-                    <select class="pk-projection-select" id="projectionPresetSelect" aria-label="Projection preset">
-                      <option value="live-output">Final Output</option>
-                      <option value="reference-only">Reference Match</option>
-                      <option value="grid-only">Grid Align</option>
-                      <option value="mask-paint">Paint Mask</option>
-                      <option value="surface-isolation">Surface Solo</option>
-                      <option value="guided-composite">Guide Composite</option>
-                    </select>
-                    <button class="ds-btn" id="pinProjectionLayerBtn" type="button">Pin Layer</button>
-                    <button class="ds-btn" id="pinProjectionSurfaceBtn" type="button">Pin Surface</button>
-                    <button class="ds-btn" id="clearProjectionPinBtn" type="button">Clear</button>
-                    <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionGuidesToggle" type="button" title="Toggle projection guides" aria-label="Toggle projection guides"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-grid"></use></svg></button>
-                    <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionReferenceToggle" type="button" title="Toggle projection reference" aria-label="Toggle projection reference"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-reference"></use></svg></button>
-                    <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionCalibrationToggle" type="button" title="Toggle projection calibration" aria-label="Toggle projection calibration"><svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-frame"></use></svg></button>
-                  </div>
-                </div>
-              </div>
+              <div class="pk-stage-head-controls"></div>
             </div>
         </div>
 
@@ -3437,11 +3663,6 @@
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
                 <span>Preview</span>
               </button>
-              <span class="pk-toolbar-divider" aria-hidden="true"></span>
-              <button class="pk-toolbar-toggle ds-btn" id="openProjectionBtn" type="button" title="Open projection window" aria-label="Open projection window">
-                <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-screen"></use></svg>
-                <span>Projection</span>
-              </button>
               <button class="pk-toolbar-toggle ds-btn" id="playbackToggle" type="button" title="Start live output" aria-label="Start live output">
                 <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-play"></use></svg>
                 <span>Play</span>
@@ -3488,19 +3709,17 @@
               <div class="pk-eyebrow">Settings</div>
               <button class="pk-info-btn ds-btn ds-btn-icon ds-icon-action" type="button" title="Project-wide metadata and projector output settings. Select the project title to edit these.">i</button>
             </div>
+            <div class="pk-field">
+              <label for="projectNameInput">Project Name</label>
+              <input class="ds-input" id="projectNameInput" type="text" aria-label="Project name">
+            </div>
             <div class="pk-grid-2">
-              <div class="pk-field">
-                <label for="projectNameInput">Project Name</label>
-                <input class="ds-input" id="projectNameInput" type="text" aria-label="Project name">
-              </div>
               <div class="pk-field">
                 <label for="projectorModelInput">Projector Model</label>
                 <input class="ds-input" id="projectorModelInput" type="text" aria-label="Projector model">
               </div>
-            </div>
-            <div class="pk-grid-2">
               <div class="pk-field">
-                <label for="outputPresetSelect">Output Preset</label>
+                <label for="outputPresetSelect">Dimensions</label>
                 <select class="ds-select" id="outputPresetSelect" aria-label="Output preset">
                   <option value="1920x1080">1920 x 1080</option>
                   <option value="1280x720">1280 x 720</option>
@@ -3509,28 +3728,32 @@
                   <option value="custom">Custom</option>
                 </select>
               </div>
-              <div class="pk-field">
-                <label for="projectorDistanceInput">Projector Distance</label>
-                <input class="ds-input" id="projectorDistanceInput" type="text" aria-label="Surface to projector distance" placeholder="e.g. 4.2 m">
-              </div>
             </div>
+            <div class="pk-prop-section-head">Pixel dimensions</div>
             <div class="pk-dimension-stack">
               <div class="pk-dimension-row">
-                <div class="pk-dimension-row-label">Native</div>
+                <div class="pk-dimension-row-label">Projector Native</div>
                 <div class="pk-dimension-row-pair">
                   <label class="pk-inline-metric" for="projectorNativeWidthInput"><span>W</span><input class="ds-input" id="projectorNativeWidthInput" type="number" min="1" step="1" aria-label="Projector native width"></label>
                   <label class="pk-inline-metric" for="projectorNativeHeightInput"><span>H</span><input class="ds-input" id="projectorNativeHeightInput" type="number" min="1" step="1" aria-label="Projector native height"></label>
                 </div>
               </div>
               <div class="pk-dimension-row">
-                <div class="pk-dimension-row-label">Output</div>
+                <div class="pk-dimension-row-label">Canvas Output</div>
                 <div class="pk-dimension-row-pair">
                   <label class="pk-inline-metric" for="outputWidthInput"><span>W</span><input class="ds-input" id="outputWidthInput" type="number" min="1" step="1" aria-label="Output width"></label>
                   <label class="pk-inline-metric" for="outputHeightInput"><span>H</span><input class="ds-input" id="outputHeightInput" type="number" min="1" step="1" aria-label="Output height"></label>
                 </div>
               </div>
+            </div>
+            <div class="pk-prop-section-head">Real-world throw</div>
+            <div class="pk-field">
+              <label for="projectorDistanceInput">Projector Distance</label>
+              <input class="ds-input" id="projectorDistanceInput" type="text" aria-label="Surface to projector distance" placeholder="e.g. 4.2 m">
+            </div>
+            <div class="pk-dimension-stack">
               <div class="pk-dimension-row">
-                <div class="pk-dimension-row-label">Projection</div>
+                <div class="pk-dimension-row-label">Projected Size</div>
                 <div class="pk-dimension-row-pair">
                   <label class="pk-inline-metric" for="projectionWidthInput"><span>W</span><input class="ds-input" id="projectionWidthInput" type="text" aria-label="Projection width" placeholder="e.g. 6.5 m"></label>
                   <label class="pk-inline-metric" for="projectionHeightInput"><span>H</span><input class="ds-input" id="projectionHeightInput" type="text" aria-label="Projection height" placeholder="e.g. 3.4 m"></label>
@@ -3874,9 +4097,11 @@
       const mobilePanels = Array.from(document.querySelectorAll("[data-mobile-panel]"));
       const workspaceTabBtn = document.getElementById("workspaceTabBtn");
       const assetsTabBtn = document.getElementById("assetsTabBtn");
+      const projectionTabBtn = document.getElementById("projectionTabBtn");
       const settingsTabBtn = document.getElementById("settingsTabBtn");
       const workspacePanel = document.getElementById("workspacePanel");
       const assetsPanel = document.getElementById("assetsPanel");
+      const projectionPanel = document.getElementById("projectionPanel");
       const settingsPanel = document.getElementById("settingsPanel");
       const addLayerBtn = document.getElementById("addLayerBtn");
       const addSurfaceBtn = document.getElementById("addSurfaceBtn");
@@ -3914,7 +4139,7 @@
       const linkToggle = document.getElementById("linkToggle");
       const outputToggle = document.getElementById("outputToggle");
       const playbackToggle = document.getElementById("playbackToggle");
-      const openProjectionBtn = document.getElementById("openProjectionBtn");
+      const projectionPlayOverlayBtn = document.getElementById("projectionPlayOverlayBtn");
       const projectionFullscreenBtn = document.getElementById("projectionFullscreenBtn");
       const projectionPresetSelect = document.getElementById("projectionPresetSelect");
       const pinProjectionLayerBtn = document.getElementById("pinProjectionLayerBtn");
@@ -3923,7 +4148,9 @@
       const projectionGuidesToggle = document.getElementById("projectionGuidesToggle");
       const projectionReferenceToggle = document.getElementById("projectionReferenceToggle");
       const projectionCalibrationToggle = document.getElementById("projectionCalibrationToggle");
-      const projectionStatusChip = document.getElementById("projectionStatusChip");
+      const projectionHudToggleBtn = document.getElementById("projectionHudToggleBtn");
+      const projectionWindowCloseBtn = document.getElementById("projectionWindowCloseBtn");
+      const projectionWindowLabel = document.getElementById("projectionWindowLabel");
       const overlayControls = document.getElementById("overlayControls");
       const overlayLayersToggle = document.getElementById("overlayLayersToggle");
       const overlayToolsToggle = document.getElementById("overlayToolsToggle");
@@ -4138,7 +4365,9 @@
           pinnedSurfaceKey: null,
           showGuides: false,
           showReference: false,
-          showCalibration: false
+          showCalibration: false,
+          hudHidden: false,
+          fullscreenActive: false
         },
         calibrationTemplate: {
           gridType: "line",
@@ -4255,7 +4484,7 @@
       const KNOWN_ENVELOPE_KEYS = ["schemaVersion", "project", "ui", "projectionView", "calibration", "calibrationTemplate", "calibrationReference", "output", "assets", "layers", "surfaces"];
       const KNOWN_PROJECT_KEYS = ["id", "name", "createdAt", "updatedAt", "thumbnailDataUrl", "schemaVersion", "dirty", "settings"];
       const KNOWN_UI_KEYS = ["leftPanelTab", "expandedLayerIds", "calibrationEditActive", "presentationEnabled", "calibrationLinkEnabled", "guidesEnabled", "playbackRunning", "showReferenceLayer", "focus", "assetLibraryId"];
-      const KNOWN_PROJECTION_VIEW_KEYS = ["windowOpen", "preset", "pinnedLayerId", "pinnedSurfaceKey", "showGuides", "showReference", "showCalibration"];
+      const KNOWN_PROJECTION_VIEW_KEYS = ["windowOpen", "preset", "pinnedLayerId", "pinnedSurfaceKey", "showGuides", "showReference", "showCalibration", "hudHidden", "fullscreenActive"];
       const KNOWN_CALIBRATION_KEYS = ["x", "y", "scaleX", "scaleY", "rotation", "opacity", "visible", "locked"];
       const KNOWN_CALIBRATION_TEMPLATE_KEYS = ["gridType", "gridSize", "rows", "columns", "showFrame", "showMatrixLabels", "outsideFill", "referenceAssetId", "referenceOpacity"];
       const KNOWN_CALIBRATION_REFERENCE_KEYS = ["assetId", "surfaceKey", "visible", "visibilityMode", "fitMode", "opacity", "locked"];
@@ -6807,6 +7036,7 @@
           showGuides: Boolean(view.showGuides),
           showReference: Boolean(view.showReference),
           showCalibration: Boolean(view.showCalibration),
+          hudHidden: Boolean(view.hudHidden),
           pinnedLabel: getProjectionPinnedLabel(view)
         };
       }
@@ -7011,39 +7241,45 @@
         const selectedSurface = getSelectedSurface();
         const pinnedActive = Boolean(state.projectionView.pinnedLayerId || state.projectionView.pinnedSurfaceKey);
         const summaryLabel = getProjectionOperatorSummary();
+        const presetMeta = getProjectionPresetMeta();
 
         projectionPresetSelect.value = state.projectionView.preset;
-        openProjectionBtn.innerHTML = `${iconMarkup("screen", windowOpen ? "Reconnect projection window" : "Open projection window")}<span>Projection</span>`;
-        openProjectionBtn.title = windowOpen ? "Reconnect the projection window" : "Open the projection window";
-        openProjectionBtn.setAttribute("aria-label", windowOpen ? "Reconnect projection window" : "Open projection window");
-        openProjectionBtn.classList.toggle("is-active", windowOpen);
-        openProjectionBtn.setAttribute("aria-pressed", String(windowOpen));
+        projectionPlayOverlayBtn.hidden = windowOpen;
+        projectionPlayOverlayBtn.title = windowOpen ? "Projection window is open" : "Open projection window";
+        projectionPlayOverlayBtn.setAttribute("aria-label", windowOpen ? "Projection window is open" : "Open projection window");
         projectionFullscreenBtn.disabled = !windowOpen;
+        projectionHudToggleBtn.disabled = !windowOpen;
+        projectionWindowCloseBtn.disabled = !windowOpen;
         pinProjectionLayerBtn.disabled = !selectedLayer;
         pinProjectionSurfaceBtn.disabled = !selectedSurface;
         clearProjectionPinBtn.disabled = !pinnedActive;
-        projectionPresetSelect.hidden = !windowOpen;
-        projectionFullscreenBtn.hidden = !windowOpen;
-        pinProjectionLayerBtn.hidden = !windowOpen;
-        pinProjectionSurfaceBtn.hidden = !windowOpen;
-        clearProjectionPinBtn.hidden = !windowOpen;
-        projectionGuidesToggle.hidden = !windowOpen;
-        projectionReferenceToggle.hidden = !windowOpen;
-        projectionCalibrationToggle.hidden = !windowOpen;
-        document.querySelector(".pk-projection-strip")?.classList.toggle("is-compact", !windowOpen);
-        projectionFullscreenBtn.title = windowOpen ? "Focus the projection window and request fullscreen there" : "Open the projection window first";
+        projectionFullscreenBtn.title = windowOpen
+          ? (state.projectionView.fullscreenActive ? "Exit projection fullscreen" : "Fullscreen projection window")
+          : "Open the projection window first";
+        projectionFullscreenBtn.setAttribute("aria-label", windowOpen
+          ? (state.projectionView.fullscreenActive ? "Exit projection fullscreen" : "Fullscreen projection window")
+          : "Projection window closed");
+        projectionFullscreenBtn.innerHTML = iconMarkup(state.projectionView.fullscreenActive ? "collapse" : "expand", state.projectionView.fullscreenActive ? "Exit projection fullscreen" : "Fullscreen projection window");
+        projectionWindowCloseBtn.title = windowOpen ? "Close projection window" : "Projection window closed";
+        projectionWindowCloseBtn.setAttribute("aria-label", windowOpen ? "Close projection window" : "Projection window closed");
         pinProjectionLayerBtn.title = selectedLayer ? `Pin ${selectedLayer.name} to projection` : "Select a layer to pin";
         pinProjectionSurfaceBtn.title = selectedSurface ? `Pin ${selectedSurface.listTitle || selectedSurface.name} to projection` : "Select a surface to pin";
         clearProjectionPinBtn.title = pinnedActive ? "Clear the pinned projection target" : "No pinned projection target";
         projectionGuidesToggle.classList.toggle("is-active", state.projectionView.showGuides);
         projectionReferenceToggle.classList.toggle("is-active", state.projectionView.showReference);
         projectionCalibrationToggle.classList.toggle("is-active", state.projectionView.showCalibration);
+        projectionGuidesToggle.setAttribute("aria-pressed", String(state.projectionView.showGuides));
+        projectionReferenceToggle.setAttribute("aria-pressed", String(state.projectionView.showReference));
+        projectionCalibrationToggle.setAttribute("aria-pressed", String(state.projectionView.showCalibration));
         projectionGuidesToggle.title = state.projectionView.showGuides ? "Hide projection guides" : "Show projection guides";
         projectionReferenceToggle.title = state.projectionView.showReference ? "Hide projection reference" : "Show projection reference";
         projectionCalibrationToggle.title = state.projectionView.showCalibration ? "Hide projection calibration" : "Show projection calibration";
-        projectionStatusChip.classList.toggle("is-active", windowOpen);
-        projectionStatusChip.textContent = getProjectionStatusText(windowOpen, summaryLabel);
-        projectionStatusChip.title = projectionNotice || summaryLabel;
+        projectionHudToggleBtn.innerHTML = iconMarkup(state.projectionView.hudHidden ? "eye" : "minus", state.projectionView.hudHidden ? "Show projection HUD" : "Hide projection HUD");
+        projectionHudToggleBtn.setAttribute("aria-pressed", String(state.projectionView.hudHidden));
+        projectionHudToggleBtn.setAttribute("aria-label", state.projectionView.hudHidden ? "Show projection HUD" : "Hide projection HUD");
+        projectionHudToggleBtn.title = state.projectionView.hudHidden ? "Show projection HUD on second screen" : "Hide projection HUD on second screen";
+        projectionWindowLabel.textContent = windowOpen ? "Projection window" : "Projection closed";
+        projectionWindowLabel.title = windowOpen ? presetMeta.label : "Open projection from the toolbar";
       }
 
       function openProjectionWindow() {
@@ -7065,6 +7301,18 @@
         return projectionWindowRef;
       }
 
+      function closeProjectionWindow() {
+        if (projectionWindowRef && !projectionWindowRef.closed) {
+          projectionWindowRef.close();
+        }
+        projectionWindowRef = null;
+        state.projectionView.windowOpen = false;
+        state.projectionView.fullscreenActive = false;
+        projectionNotice = "";
+        publishProjectionSnapshot(true);
+        render();
+      }
+
       async function requestProjectionWindowFullscreen() {
         const targetWindow = openProjectionWindow();
         if (!targetWindow || targetWindow.closed) {
@@ -7074,9 +7322,14 @@
           projectionNotice = "";
           targetWindow.focus();
           const fullscreenTarget = targetWindow.document?.documentElement;
-          if (fullscreenTarget?.requestFullscreen) {
+          if (state.projectionView.fullscreenActive && targetWindow.document?.exitFullscreen) {
+            await targetWindow.document.exitFullscreen();
+            state.projectionView.fullscreenActive = false;
+          } else if (fullscreenTarget?.requestFullscreen) {
             await fullscreenTarget.requestFullscreen();
+            state.projectionView.fullscreenActive = true;
           }
+          render();
         } catch (error) {
           projectionNotice = "Use F in projection window";
           targetWindow.focus();
@@ -7221,10 +7474,13 @@
       }
 
       function setLeftPanelTab(tab) {
-        if (!["workspace", "assets", "settings"].includes(tab)) {
+        if (!["workspace", "assets", "projection", "settings"].includes(tab)) {
           return;
         }
         state.ui.leftPanelTab = tab;
+        if (tab === "settings") {
+          selectProject();
+        }
         if (isFloatingUI()) {
           state.ui.overlayLayersOpen = true;
         }
@@ -9774,7 +10030,6 @@
         outputToggle.hidden = isUiHidden();
         overlayFullscreenToggle.hidden = isUiHidden();
         playbackToggle.hidden = isUiHidden();
-        openProjectionBtn.hidden = isUiHidden();
         overlayControls.hidden = isUiHidden();
         presentationRestoreHotspot.textContent = state.project.name || "PROJEKTIK";
         stageCanvas.classList.toggle("is-guides-off", !state.ui.guidesEnabled || runState.previewActive);
@@ -9782,6 +10037,7 @@
         stageCanvas.classList.toggle("is-paused", !runState.liveActive);
         appShell.classList.toggle("is-overlay-ui", isFloatingUI());
         appShell.classList.toggle("is-left-panel-collapsed", isFloatingUI() && !state.ui.overlayLayersOpen);
+        appShell.classList.toggle("is-right-panel-collapsed", isFloatingUI() && !state.ui.overlayToolsOpen);
         appShell.classList.toggle("is-ui-hidden", isUiHidden());
         appShell.classList.toggle("is-editing-surface", Boolean(state.ui.dragMode || state.ui.surfaceCreateStart));
       }
@@ -9806,7 +10062,7 @@
         const showProjectControls = focusType === "project" || focusType === "stage";
 
         if (showProjectControls) {
-          inspectorTitle.textContent = state.project.name;
+          inspectorTitle.textContent = "Project Settings";
           inspectorActions.hidden = true;
           cropAssetBtn.hidden = true;
           resetWarpBtn.hidden = true;
@@ -9816,11 +10072,8 @@
           referenceLayerCard.hidden = true;
           surfaceTransformCard.hidden = true;
           assetTransformCard.hidden = true;
-          inspectorTags.hidden = false;
-          inspectorTags.innerHTML = `
-            <span class="pk-item-tag">Project</span>
-            <span class="pk-item-tag">${state.project.dirty ? "Unsaved" : "Saved"}</span>
-          `;
+          inspectorTags.hidden = true;
+          inspectorTags.innerHTML = "";
           syncProjectSettingsInputs();
           return;
         }
@@ -10153,6 +10406,10 @@
         overlayToolsToggle.classList.toggle("is-active", showDrawers && state.ui.overlayToolsOpen);
         overlayLayersToggle.setAttribute("aria-pressed", String(showDrawers && state.ui.overlayLayersOpen));
         overlayToolsToggle.setAttribute("aria-pressed", String(showDrawers && state.ui.overlayToolsOpen));
+        overlayLayersToggle.setAttribute("aria-label", showDrawers && state.ui.overlayLayersOpen ? "Hide layers panel" : "Show layers panel");
+        overlayToolsToggle.setAttribute("aria-label", showDrawers && state.ui.overlayToolsOpen ? "Hide inspector panel" : "Show inspector panel");
+        overlayLayersToggle.title = showDrawers && state.ui.overlayLayersOpen ? "Hide layers panel" : "Show layers panel";
+        overlayToolsToggle.title = showDrawers && state.ui.overlayToolsOpen ? "Hide inspector panel" : "Show inspector panel";
         overlayToolsDrawer.hidden = !isFloatingUI();
         renderContextMenu();
       }
@@ -10161,16 +10418,20 @@
         const activeTab = state.ui.leftPanelTab;
         const isWorkspace = activeTab === "workspace";
         const isAssets = activeTab === "assets";
+        const isProjection = activeTab === "projection";
         const isSettings = activeTab === "settings";
         const structureLocked = !canMutateStructure();
         workspaceTabBtn.classList.toggle("is-active", isWorkspace);
         assetsTabBtn.classList.toggle("is-active", isAssets);
+        projectionTabBtn.classList.toggle("is-active", isProjection);
         settingsTabBtn.classList.toggle("is-active", isSettings);
         workspaceTabBtn.setAttribute("aria-pressed", String(isWorkspace));
         assetsTabBtn.setAttribute("aria-pressed", String(isAssets));
+        projectionTabBtn.setAttribute("aria-pressed", String(isProjection));
         settingsTabBtn.setAttribute("aria-pressed", String(isSettings));
         workspacePanel.hidden = !isWorkspace;
         assetsPanel.hidden = !isAssets;
+        projectionPanel.hidden = !isProjection;
         settingsPanel.hidden = !isSettings;
         addLayerBtn.disabled = structureLocked;
         addSurfaceBtn.disabled = structureLocked;
@@ -10483,7 +10744,7 @@
         });
       });
 
-      openProjectionBtn.addEventListener("click", async () => {
+      projectionPlayOverlayBtn.addEventListener("click", async () => {
         openProjectionWindow();
         await requestProjectionWindowFullscreen();
         render();
@@ -10519,6 +10780,19 @@
       clearProjectionPinBtn.addEventListener("click", () => {
         pinProjectionTarget(null, null);
         render();
+      });
+
+      projectionHudToggleBtn.addEventListener("click", () => {
+        if (!syncProjectionWindowState()) {
+          render();
+          return;
+        }
+        state.projectionView.hudHidden = !state.projectionView.hudHidden;
+        render();
+      });
+
+      projectionWindowCloseBtn.addEventListener("click", () => {
+        closeProjectionWindow();
       });
 
       projectionGuidesToggle.addEventListener("click", () => {
