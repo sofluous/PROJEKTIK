@@ -1998,6 +1998,47 @@
       display: block;
     }
 
+    .pk-asset-recovery-notice {
+      display: grid;
+      gap: 4px;
+      padding: 8px 10px;
+      border: 1px solid var(--ds-border-warning, var(--ds-border));
+      border-radius: 6px;
+      background: var(--ds-bg-warning-subtle, var(--ds-bg-raised));
+      color: var(--ds-text);
+    }
+
+    .pk-asset-recovery-notice strong {
+      font-size: var(--ds-fs-2);
+    }
+
+    .pk-asset-recovery-notice span,
+    .pk-asset-missing-state p {
+      color: var(--ds-text-muted);
+      font-size: var(--ds-fs-1);
+      line-height: 1.4;
+    }
+
+    .pk-asset-recovery-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--ds-toolbar-compact-gap, 6px);
+      margin-top: 4px;
+    }
+
+    .pk-asset-missing-state {
+      display: grid;
+      justify-items: start;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .pk-asset-missing-state p {
+      margin: 0;
+    }
+
     .pk-item-line {
       display: flex;
       align-items: center;
@@ -2312,6 +2353,7 @@
       gap: 12px;
       min-width: 0;
       max-width: 100%;
+      overflow-x: hidden;
     }
 
     .pk-projection-console > * {
@@ -2347,10 +2389,19 @@
       min-height: 34px;
     }
 
+    .pk-field-note {
+      margin: 0;
+      color: var(--ds-text-muted);
+      font-size: var(--ds-fs-1);
+      line-height: 1.4;
+    }
+
     .pk-projection-mini-preview {
       position: relative;
       aspect-ratio: 16 / 9;
       min-height: 112px;
+      width: 100%;
+      min-width: 0;
       max-width: 100%;
       border: 1px solid var(--pk-shell-divider);
       border-radius: 8px;
@@ -2390,8 +2441,10 @@
 
     .pk-projection-window-chrome {
       display: grid;
+      grid-template-rows: 34px minmax(0, auto);
       gap: 0;
       min-width: 0;
+      width: 100%;
       max-width: 100%;
       border: 1px solid var(--pk-shell-divider);
       border-radius: 8px;
@@ -2399,14 +2452,26 @@
       background: var(--pk-stage-viewport-bg);
     }
 
+    .pk-projection-window-chrome.is-linked {
+      border-color: color-mix(in oklab, var(--ds-accent) 68%, var(--pk-shell-divider));
+    }
+
+    .pk-projection-window-chrome.is-fullscreen {
+      box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ds-focus) 42%, transparent);
+    }
+
     .pk-projection-window-topbar {
       display: flex;
       align-items: center;
       gap: 6px;
-      min-height: 30px;
+      height: 34px;
+      min-height: 34px;
       padding: 5px 6px;
       border-bottom: 1px solid var(--pk-shell-divider);
       background: color-mix(in oklab, var(--ds-bg-raised) 74%, transparent);
+      box-sizing: border-box;
+      flex-wrap: nowrap;
+      overflow: hidden;
     }
 
     .pk-projection-window-address {
@@ -2417,6 +2482,27 @@
       white-space: nowrap;
       color: var(--ds-text-muted);
       font-size: var(--ds-fs-1);
+    }
+
+    .pk-projection-window-state {
+      flex: 0 0 auto;
+      max-width: 86px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 1px solid var(--pk-shell-divider);
+      border-radius: 999px;
+      padding: 2px 6px;
+      color: var(--ds-text-muted);
+      font-size: var(--ds-fs-0);
+      line-height: 1.2;
+      text-transform: uppercase;
+      box-sizing: border-box;
+    }
+
+    .pk-projection-window-chrome.is-linked .pk-projection-window-state {
+      border-color: color-mix(in oklab, var(--ds-accent) 60%, var(--pk-shell-divider));
+      color: var(--ds-text);
     }
 
     .pk-projection-console-note {
@@ -2431,6 +2517,7 @@
       align-items: center;
       gap: 4px;
       order: 2;
+      flex: 0 0 auto;
     }
 
     .pk-projection-window-actions .pk-icon-btn {
@@ -2450,6 +2537,7 @@
       border: 0;
       border-radius: 0;
       min-height: 118px;
+      height: 118px;
     }
 
     .pk-projection-mini-frame {
@@ -3517,6 +3605,8 @@
           </div>
           <input id="assetFileInput" type="file" accept="image/*,video/*" multiple hidden>
           <input id="overlayFileInput" type="file" accept="image/*" hidden>
+          <input id="relinkAssetInput" type="file" accept="image/*,video/*" hidden>
+          <input id="relinkMissingInput" type="file" accept="image/*,video/*" multiple hidden>
         </div>
 
         <div class="pk-panel-body">
@@ -3539,15 +3629,17 @@
               <span class="pk-chip ds-chip" id="assetCountBadge">4 loaded</span>
               <button class="ds-btn ds-btn-primary" id="importAssetBtn" type="button">Import Asset</button>
               </div>
+              <div class="pk-asset-recovery-notice" id="assetRecoveryNotice" role="status" hidden></div>
               <div id="selectedAssetPreview"></div>
             </div>
             <div class="pk-assets-library" id="assetsList"></div>
           </section>
 
           <section class="pk-list pk-projection-console" id="projectionPanel" hidden>
-            <div class="pk-projection-window-chrome">
+            <div class="pk-projection-window-chrome" id="projectionWindowChrome">
               <div class="pk-projection-window-topbar">
                 <span class="pk-projection-window-address" id="projectionWindowLabel">Projection window</span>
+                <span class="pk-projection-window-state" id="projectionWindowState">Closed</span>
                 <div class="pk-projection-window-actions" aria-label="Projection window controls">
                   <button class="pk-icon-btn ds-btn ds-btn-icon ds-icon-action" id="projectionFullscreenBtn" type="button" title="Fullscreen projection window" aria-label="Fullscreen projection window">
                     <svg class="pk-glyph" aria-hidden="true"><use href="#pk-icon-expand"></use></svg>
@@ -3730,6 +3822,7 @@
               </div>
             </div>
             <div class="pk-prop-section-head">Pixel dimensions</div>
+            <p class="pk-field-note">Native describes the projector panel. Canvas output is the rendered browser frame sent to the projection window.</p>
             <div class="pk-dimension-stack">
               <div class="pk-dimension-row">
                 <div class="pk-dimension-row-label">Projector Native</div>
@@ -3747,6 +3840,7 @@
               </div>
             </div>
             <div class="pk-prop-section-head">Real-world throw</div>
+            <p class="pk-field-note">Distance and projected size are physical measurements for setup notes and alignment planning.</p>
             <div class="pk-field">
               <label for="projectorDistanceInput">Projector Distance</label>
               <input class="ds-input" id="projectorDistanceInput" type="text" aria-label="Surface to projector distance" placeholder="e.g. 4.2 m">
@@ -4109,6 +4203,8 @@
       const loadOverlayBtn = document.getElementById("loadOverlayBtn");
       const assetFileInput = document.getElementById("assetFileInput");
       const overlayFileInput = document.getElementById("overlayFileInput");
+      const relinkAssetInput = document.getElementById("relinkAssetInput");
+      const relinkMissingInput = document.getElementById("relinkMissingInput");
       const workspaceModeTabs = document.getElementById("workspaceModeTabs");
       const workspaceTree = document.getElementById("workspaceTree");
       const selectedAssetPreview = document.getElementById("selectedAssetPreview");
@@ -4117,6 +4213,7 @@
       const mobileWorkspaceTree = document.getElementById("mobileWorkspaceTree");
       const mobileAssetsList = document.getElementById("mobileAssetsList");
       const assetCountBadge = document.getElementById("assetCountBadge");
+      const assetRecoveryNotice = document.getElementById("assetRecoveryNotice");
       const mobileSheetKicker = document.getElementById("mobileSheetKicker");
       const mobileSheetTitle = document.getElementById("mobileSheetTitle");
       const mobileSheetInfo = document.getElementById("mobileSheetInfo");
@@ -4150,7 +4247,9 @@
       const projectionCalibrationToggle = document.getElementById("projectionCalibrationToggle");
       const projectionHudToggleBtn = document.getElementById("projectionHudToggleBtn");
       const projectionWindowCloseBtn = document.getElementById("projectionWindowCloseBtn");
+      const projectionWindowChrome = document.getElementById("projectionWindowChrome");
       const projectionWindowLabel = document.getElementById("projectionWindowLabel");
+      const projectionWindowState = document.getElementById("projectionWindowState");
       const overlayControls = document.getElementById("overlayControls");
       const overlayLayersToggle = document.getElementById("overlayLayersToggle");
       const overlayToolsToggle = document.getElementById("overlayToolsToggle");
@@ -4497,6 +4596,9 @@
       let lastProjectionSnapshotSignature = "";
       let projectionNotice = "";
       let pendingImportedAssetTarget = null;
+      let pendingRelinkAssetId = null;
+      let assetRecoveryMessage = "";
+      let assetRecoveryBusy = false;
       let persistedEnvelopeExtras = {
         envelope: {},
         project: {},
@@ -4861,13 +4963,63 @@
         if (nextAsset.embeddedDataUrl) {
           nextAsset.sourceUrl = nextAsset.embeddedDataUrl;
           nextAsset.missing = false;
+          nextAsset.missingReason = "";
         } else if (nextAsset.sourceUrl && /^data:/.test(nextAsset.sourceUrl)) {
           nextAsset.missing = false;
+          nextAsset.missingReason = "";
         } else {
           nextAsset.sourceUrl = "";
           nextAsset.missing = true;
+          nextAsset.missingReason = nextAsset.fileName
+            ? `Locate ${nextAsset.fileName} to restore this media.`
+            : "Locate the original media file to restore this asset.";
         }
         return nextAsset;
+      }
+
+      function ensureMissingAssetPlaceholders() {
+        const referencedIds = new Set();
+        const addReference = (assetId) => {
+          if (typeof assetId === "string" && assetId.trim()) {
+            referencedIds.add(assetId);
+          }
+        };
+
+        addReference(state.calibrationReference.assetId);
+        addReference(state.calibrationTemplate.referenceAssetId);
+        state.layers.forEach((layer) => addReference(layer.assetId));
+        state.surfaces.forEach((surface) => {
+          addReference(surface.assetId);
+          if (Array.isArray(surface.appearanceLayers)) {
+            surface.appearanceLayers.forEach((layer) => addReference(layer?.assetId));
+          }
+        });
+
+        const knownIds = new Set(state.assets.map((asset) => asset.id));
+        const placeholders = Array.from(referencedIds)
+          .filter((assetId) => !knownIds.has(assetId))
+          .map((assetId) => ({
+            id: assetId,
+            icon: "I",
+            name: "Missing media",
+            kind: "Image",
+            tags: ["Recovery required"],
+            actionLabels: [],
+            sourceUrl: "",
+            embeddedDataUrl: "",
+            fileName: "",
+            mimeType: "",
+            width: 0,
+            height: 0,
+            duration: 0,
+            importedAt: 0,
+            missing: true,
+            missingReason: "The project references media that was not included in the saved file."
+          }));
+
+        if (placeholders.length) {
+          state.assets = [...state.assets, ...placeholders];
+        }
       }
 
       function buildThumbnailProjectionView() {
@@ -5247,6 +5399,7 @@
         nextState.history = structuredClone(defaultState.history);
         replaceState(nextState);
         normalizeLayerSurfaceModel();
+        ensureMissingAssetPlaceholders();
         normalizeFocusState();
         const appliedTheme = setTheme(
           root.getAttribute("data-theme") || themeSelect?.value || "tech-grid"
@@ -5271,7 +5424,7 @@
         envelope.project.thumbnailDataUrl = "";
         envelope.ui.expandedLayerIds = [];
         envelope.ui.calibrationEditActive = false;
-        envelope.ui.focus = { type: "calibration", id: "calibration-parent" };
+        envelope.ui.focus = { type: "stage", id: "stage" };
         envelope.ui.assetLibraryId = "";
         envelope.ui.showReferenceLayer = false;
         envelope.projectionView = structuredClone(defaultState.projectionView);
@@ -5560,6 +5713,13 @@
       }
 
       function updateSurfaceAssetTransform(surfaceKey, patch = {}, options = {}) {
+        const surface = state.surfaces.find((item) => item.key === surfaceKey);
+        const canEditTransform = isCalibrationReferenceSurfaceKey(surfaceKey)
+          ? isCalibrationReferenceEditable()
+          : canEditSurfaceAsset(surface);
+        if (!canEditTransform) {
+          return;
+        }
         updateSurfaceRecord(surfaceKey, (surface) => ({
           ...surface,
           ...buildSurfaceAssetTransformPatch(surface, patch, options)
@@ -5764,6 +5924,10 @@
       }
 
       function updateSurfaceAppearance(surfaceKey, updater) {
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateSurface(targetSurface)) {
+          return;
+        }
         updateSurfaceRecord(surfaceKey, (surface) => {
           const currentLayers = getSurfaceAppearanceLayers(surface);
           const nextLayers = updater(currentLayers.map((layer) => ({ ...layer }))) || currentLayers;
@@ -6793,7 +6957,10 @@
             || isLivePlaybackActive();
         }
         if (entity.type === "layer") {
-          return entity.locked || !isLayerEditableInCurrentState(entity);
+          return entity.locked
+            || !isLayerEditableInCurrentState(entity)
+            || isPresentationPreviewActive()
+            || isLivePlaybackActive();
         }
         if (entity.type === "surface") {
           if (entity.locked) {
@@ -7242,6 +7409,9 @@
         const pinnedActive = Boolean(state.projectionView.pinnedLayerId || state.projectionView.pinnedSurfaceKey);
         const summaryLabel = getProjectionOperatorSummary();
         const presetMeta = getProjectionPresetMeta();
+        const windowStateLabel = windowOpen
+          ? (state.projectionView.fullscreenActive ? "Fullscreen" : "Linked")
+          : "Closed";
 
         projectionPresetSelect.value = state.projectionView.preset;
         projectionPlayOverlayBtn.hidden = windowOpen;
@@ -7253,6 +7423,9 @@
         pinProjectionLayerBtn.disabled = !selectedLayer;
         pinProjectionSurfaceBtn.disabled = !selectedSurface;
         clearProjectionPinBtn.disabled = !pinnedActive;
+        projectionWindowChrome.classList.toggle("is-linked", windowOpen);
+        projectionWindowChrome.classList.toggle("is-fullscreen", windowOpen && state.projectionView.fullscreenActive);
+        projectionWindowChrome.setAttribute("data-window-state", windowOpen ? (state.projectionView.fullscreenActive ? "fullscreen" : "linked") : "closed");
         projectionFullscreenBtn.title = windowOpen
           ? (state.projectionView.fullscreenActive ? "Exit projection fullscreen" : "Fullscreen projection window")
           : "Open the projection window first";
@@ -7278,8 +7451,10 @@
         projectionHudToggleBtn.setAttribute("aria-pressed", String(state.projectionView.hudHidden));
         projectionHudToggleBtn.setAttribute("aria-label", state.projectionView.hudHidden ? "Show projection HUD" : "Hide projection HUD");
         projectionHudToggleBtn.title = state.projectionView.hudHidden ? "Show projection HUD on second screen" : "Hide projection HUD on second screen";
-        projectionWindowLabel.textContent = windowOpen ? "Projection window" : "Projection closed";
-        projectionWindowLabel.title = windowOpen ? presetMeta.label : "Open projection from the toolbar";
+        projectionWindowLabel.textContent = windowOpen ? presetMeta.label : "Projection window";
+        projectionWindowLabel.title = windowOpen ? summaryLabel : "Use the play overlay to open the second-screen viewer";
+        projectionWindowState.textContent = windowStateLabel;
+        projectionWindowState.title = windowStateLabel;
       }
 
       function openProjectionWindow() {
@@ -7487,7 +7662,15 @@
       }
 
       function canMutateStructure() {
-        return !isCalibrationEditing();
+        return canEditMappedContent();
+      }
+
+      function canMutateLayer(layer = getSelectedLayer()) {
+        return Boolean(layer) && canEditMappedContent() && !layer.locked;
+      }
+
+      function canMutateSurface(surface = getSelectedSurface()) {
+        return Boolean(surface) && canEditStageSurface(surface);
       }
 
       function getUnmappedSurfaces() {
@@ -7541,6 +7724,12 @@
       }
 
       function beginTitleEdit(type, id) {
+        if (type === "layer" && !canMutateLayer(state.layers.find((layer) => layer.id === id))) {
+          return;
+        }
+        if (type === "surface" && !canMutateSurface(state.surfaces.find((surface) => surface.key === id))) {
+          return;
+        }
         state.ui.editingTitle = { type, id };
       }
 
@@ -7617,6 +7806,10 @@
       }
 
       function updateSurface(surfaceKey, patch) {
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateSurface(targetSurface)) {
+          return;
+        }
         const ownerLayer = getSurfaceOwnerLayer(surfaceKey);
         const offset = getCalibrationTransformForLayer(ownerLayer);
         const localPatch = {
@@ -7655,6 +7848,10 @@
       }
 
       function moveSurfaceQuad(surfaceKey, startQuad, dx, dy) {
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateSurface(targetSurface)) {
+          return;
+        }
         const ownerLayer = getSurfaceOwnerLayer(surfaceKey);
         const offset = getCalibrationTransformForLayer(ownerLayer);
         const localStartQuad = cloneQuad(startQuad);
@@ -7707,6 +7904,10 @@
       }
 
       function updateSurfaceQuadPoint(surfaceKey, handle, point) {
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateSurface(targetSurface)) {
+          return;
+        }
         const ownerLayer = getSurfaceOwnerLayer(surfaceKey);
         const offset = getCalibrationTransformForLayer(ownerLayer);
         state.surfaces = state.surfaces.map((surface) => {
@@ -7733,6 +7934,10 @@
       }
 
       function moveSurfaceEdge(surfaceKey, startQuad, handle, dx, dy, freeform = false) {
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateSurface(targetSurface)) {
+          return;
+        }
         const ownerLayer = getSurfaceOwnerLayer(surfaceKey);
         const offset = getCalibrationTransformForLayer(ownerLayer);
         const localStartQuad = cloneQuad(startQuad);
@@ -8836,6 +9041,113 @@
         return importedAssets;
       }
 
+      async function buildRelinkedAsset(currentAsset, file) {
+        const replacement = await createAssetFromFile(file, {
+          reference: currentAsset.kind === "Overlay"
+        });
+        return {
+          ...replacement,
+          id: currentAsset.id,
+          kind: currentAsset.kind === "Overlay" || currentAsset.kind === "Guide"
+            ? currentAsset.kind
+            : replacement.kind,
+          missing: false,
+          missingReason: ""
+        };
+      }
+
+      async function relinkAssetFile(assetId, file) {
+        const currentAsset = state.assets.find((asset) => asset.id === assetId);
+        if (!currentAsset || !file) {
+          return false;
+        }
+
+        const relinkedAsset = await buildRelinkedAsset(currentAsset, file);
+        runWithHistory("Relink media", () => {
+          state.assets = state.assets.map((asset) => asset.id === assetId
+            ? relinkedAsset
+            : asset);
+        });
+        if (currentAsset.sourceUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(currentAsset.sourceUrl);
+        }
+        assetRecoveryMessage = "";
+        state.ui.assetLibraryId = assetId;
+        setFocus("asset-library", assetId);
+        render();
+        return true;
+      }
+
+      function normalizeRecoveryFileName(fileName) {
+        return String(fileName || "")
+          .split(/[\\/]/)
+          .pop()
+          .trim()
+          .toLowerCase();
+      }
+
+      async function relinkMissingAssetFiles(fileList) {
+        const files = Array.from(fileList || []);
+        assetRecoveryBusy = true;
+        assetRecoveryMessage = "Matching selected files...";
+        render();
+        const missingAssets = state.assets.filter((asset) => asset.missing && asset.fileName);
+        const assetsByName = new Map();
+        const filesByName = new Map();
+
+        missingAssets.forEach((asset) => {
+          const key = normalizeRecoveryFileName(asset.fileName);
+          if (key) assetsByName.set(key, [...(assetsByName.get(key) || []), asset]);
+        });
+        files.forEach((file) => {
+          const key = normalizeRecoveryFileName(file.name);
+          if (key) filesByName.set(key, [...(filesByName.get(key) || []), file]);
+        });
+
+        const prepared = [];
+        let failedCount = 0;
+        for (const [fileName, matchedFiles] of filesByName) {
+          const matchedAssets = assetsByName.get(fileName) || [];
+          if (matchedFiles.length !== 1 || matchedAssets.length !== 1) {
+            continue;
+          }
+          try {
+            prepared.push({
+              currentAsset: matchedAssets[0],
+              relinkedAsset: await buildRelinkedAsset(matchedAssets[0], matchedFiles[0])
+            });
+          } catch (error) {
+            failedCount += 1;
+            console.error(`Media relink failed for ${matchedFiles[0].name}`, error);
+          }
+        }
+
+        if (prepared.length) {
+          const replacements = new Map(prepared.map((entry) => [entry.currentAsset.id, entry.relinkedAsset]));
+          runWithHistory("Relink missing media", () => {
+            state.assets = state.assets.map((asset) => replacements.get(asset.id) || asset);
+          });
+          prepared.forEach(({ currentAsset }) => {
+            if (currentAsset.sourceUrl?.startsWith("blob:")) {
+              URL.revokeObjectURL(currentAsset.sourceUrl);
+            }
+          });
+          state.ui.assetLibraryId = prepared[0].currentAsset.id;
+          setFocus("asset-library", prepared[0].currentAsset.id);
+        }
+
+        const unmatchedCount = Math.max(0, files.length - prepared.length - failedCount);
+        const remainingCount = state.assets.filter((asset) => asset.missing).length;
+        const messageParts = [`Recovered ${prepared.length} file${prepared.length === 1 ? "" : "s"}.`];
+        if (remainingCount) messageParts.push(`${remainingCount} still need${remainingCount === 1 ? "s" : ""} relinking.`);
+        if (unmatchedCount) messageParts.push(`${unmatchedCount} selected file${unmatchedCount === 1 ? "" : "s"} did not match.`);
+        if (failedCount) messageParts.push(`${failedCount} file${failedCount === 1 ? "" : "s"} could not be read.`);
+        assetRecoveryMessage = messageParts.join(" ");
+        assetRecoveryBusy = false;
+        render();
+        return { recoveredCount: prepared.length, remainingCount, unmatchedCount, failedCount };
+      }
+
       function resolveTargetLayerForAssignment() {
         if (state.ui.focus.type === "layer") {
           return getSelectedLayer();
@@ -8972,6 +9284,11 @@
       }
 
       function attachSurfaceToLayer(layerId, surfaceKey) {
+        const targetLayer = state.layers.find((layer) => layer.id === layerId);
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateLayer(targetLayer) || !canMutateSurface(targetSurface)) {
+          return;
+        }
         state.layers = state.layers.map((layer) => {
           const nextSurfaceKeys = getLayerSurfaceKeys(layer);
           if (layer.id === layerId) {
@@ -8993,6 +9310,11 @@
       }
 
       function detachSurfaceFromLayer(layerId, surfaceKey) {
+        const layer = state.layers.find((item) => item.id === layerId);
+        const surface = state.surfaces.find((item) => item.key === surfaceKey);
+        if (!canMutateLayer(layer) || !canMutateSurface(surface)) {
+          return;
+        }
         updateLayer(layerId, (layer) => ({
           ...layer,
           surfaceKeys: getLayerSurfaceKeys(layer).filter((key) => key !== surfaceKey),
@@ -9081,7 +9403,7 @@
 
       function deleteLayer(layerId) {
         const layer = state.layers.find((item) => item.id === layerId);
-        if (!layer) {
+        if (!canMutateLayer(layer)) {
           return;
         }
         state.layers = state.layers.filter((item) => item.id !== layerId);
@@ -9104,7 +9426,7 @@
 
       function deleteSurface(surfaceKey) {
         const surface = state.surfaces.find((item) => item.key === surfaceKey);
-        if (!surface) {
+        if (!canMutateSurface(surface)) {
           return;
         }
         if (isCalibrationReferenceSurfaceKey(surfaceKey)) {
@@ -9186,6 +9508,10 @@
       }
 
       function updateSurfaceAlignment(surfaceKey, patch) {
+        const surface = state.surfaces.find((item) => item.key === surfaceKey);
+        if (!canMutateSurface(surface)) {
+          return;
+        }
         updateSurfaceRecord(surfaceKey, (surface) => ({
           ...surface,
           ...patch
@@ -9255,6 +9581,10 @@
       }
 
       function updateSurfaceQuad(surfaceKey, quad) {
+        const targetSurface = state.surfaces.find((surface) => surface.key === surfaceKey);
+        if (!canMutateSurface(targetSurface)) {
+          return;
+        }
         const ownerLayer = getSurfaceOwnerLayer(surfaceKey);
         const offset = getCalibrationTransformForLayer(ownerLayer);
         state.surfaces = state.surfaces.map((surface) => {
@@ -9441,15 +9771,33 @@
         return `<div class="pk-item-title" data-title-display="${type}" data-title-id="${id}">${value}</div>`;
       }
 
+      function escapeMarkup(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
       // Render helpers.
       function renderSelectedAssetPreview() {
         const selectedAsset = state.assets.find((asset) => asset.id === state.ui.assetLibraryId);
         if (!selectedAsset) {
           return "";
         }
-        const previewMedia = selectedAsset.kind === "Video"
-          ? `<div class="pk-item-meta">Video preview</div>`
-          : `<img src="${selectedAsset.embeddedDataUrl || selectedAsset.sourceUrl}" alt="${selectedAsset.name} preview">`;
+        const previewMedia = selectedAsset.missing
+          ? `
+            <div class="pk-asset-missing-state">
+              ${iconMarkup("image", "Missing media")}
+              <strong>Media unavailable</strong>
+              <p>${escapeMarkup(selectedAsset.missingReason || "Locate the original media file to restore this asset.")}</p>
+              <button class="ds-btn ds-btn-primary" type="button" data-relink-asset-id="${escapeMarkup(selectedAsset.id)}">Relink Media</button>
+            </div>
+          `
+          : selectedAsset.kind === "Video"
+            ? `<div class="pk-item-meta">Video ready</div>`
+            : `<img src="${selectedAsset.embeddedDataUrl || selectedAsset.sourceUrl}" alt="${selectedAsset.name} preview">`;
         return `
           <section class="pk-asset-preview">
             <div class="pk-section-head">
@@ -9491,7 +9839,17 @@
       }
 
       function renderAssetsTab() {
-        assetCountBadge.textContent = `${state.assets.length} loaded`;
+        const missingAssets = state.assets.filter((asset) => asset.missing);
+        const filenameRecoveryCount = missingAssets.filter((asset) => normalizeRecoveryFileName(asset.fileName)).length;
+        assetCountBadge.textContent = `${state.assets.length} asset${state.assets.length === 1 ? "" : "s"}`;
+        assetRecoveryNotice.hidden = missingAssets.length === 0;
+        assetRecoveryNotice.innerHTML = missingAssets.length
+          ? `
+            <strong>${missingAssets.length} missing media file${missingAssets.length === 1 ? "" : "s"}</strong>
+            <span>${escapeMarkup(assetRecoveryMessage || "Select a missing asset below and relink its original or replacement file.")}</span>
+            ${filenameRecoveryCount > 0 ? `<div class="pk-asset-recovery-actions"><button class="ds-btn" type="button" data-relink-missing-files ${assetRecoveryBusy ? "disabled" : ""}>${assetRecoveryBusy ? "Matching..." : "Match Files"}</button></div>` : ""}
+          `
+          : "";
         const assetPreviewHtml = renderSelectedAssetPreview();
         const assetItemsHtml = renderAssetItems();
         selectedAssetPreview.innerHTML = assetPreviewHtml;
@@ -9503,6 +9861,7 @@
         const visibleLayers = getEffectiveVisibleLayers();
         const layerGroups = getLayerGroups();
         const unmappedSurfaces = getUnmappedSurfaces();
+        const treeMutationDisabled = !canMutateStructure();
         const getTreeDropClass = (type, id, action = "reorder") => {
           const target = state.ui.treeDropTarget;
           return target && target.type === type && target.id === id && target.action === action ? " is-drop-target" : "";
@@ -9546,8 +9905,8 @@
                   </div>
                 </div>
                 <div class="pk-tree-row-actions">
-                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.visible === false ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-surface-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
-                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-surface-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.visible === false ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-surface-action="visible" ${treeMutationDisabled ? "disabled" : ""}>${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-surface-action="locked" ${treeMutationDisabled ? "disabled" : ""}>${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
               </article>
               <div class="pk-tree-children"${content ? "" : " hidden"}>
@@ -9611,8 +9970,8 @@
                   </div>
                 </div>
                 <div class="pk-tree-row-actions">
-                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${!layer.visible ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-layer-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
-                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${layer.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-layer-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${!layer.visible ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-layer-action="visible" ${treeMutationDisabled ? "disabled" : ""}>${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${layer.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-layer-action="locked" ${treeMutationDisabled ? "disabled" : ""}>${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
               </article>
               <div class="pk-tree-children"${isLayerExpanded ? "" : " hidden"}>
@@ -9645,8 +10004,8 @@
                   </div>
                 </div>
                 <div class="pk-tree-row-actions">
-                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.visible === false ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-surface-action="visible">${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
-                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-surface-action="locked">${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.visible === false ? " is-active" : ""}" type="button" title="${visibilityLabel}" aria-label="${visibilityLabel}" data-surface-action="visible" ${treeMutationDisabled ? "disabled" : ""}>${stateToggleIconMarkup(visibilityStateIcon, visibilityActionIcon, visibilityLabel)}</button>
+                  <button class="pk-mini-btn ds-btn ds-btn-icon ds-icon-action pk-state-toggle${surface.locked ? " is-active" : ""}" type="button" title="${lockLabel}" aria-label="${lockLabel}" data-surface-action="locked" ${treeMutationDisabled ? "disabled" : ""}>${stateToggleIconMarkup(lockStateIcon, lockActionIcon, lockLabel)}</button>
                 </div>
               </article>
               <div class="pk-tree-children"${content ? "" : " hidden"}>
@@ -10127,6 +10486,8 @@
         }
         const rawSelectedSurface = getSelectedSurface();
         const selectedSurface = rawSelectedSurface ? getEffectiveSurfaceGeometry(rawSelectedSurface) : null;
+        const layerPropertyEditingDisabled = mappedEditingDisabled || !canMutateLayer(selectedLayer);
+        const surfacePropertyEditingDisabled = mappedEditingDisabled || !canMutateSurface(rawSelectedSurface);
         const assignableAssets = state.assets.filter((asset) => asset.kind !== "Guide");
         const referenceAssets = state.assets.filter((asset) => asset.kind !== "Guide" && asset.kind !== "Video");
         const assetTransform = getSurfaceAssetTransform(rawSelectedSurface);
@@ -10320,15 +10681,19 @@
         setInspectorInputsDisabled([
           layerVisibleBtn,
           layerLockedBtn,
+          surfaceVisibleBtn,
+          surfaceLockedBtn
+        ], mappedEditingDisabled);
+        setInspectorInputsDisabled([
           inspectorLinkBtn,
-          layerOpacity,
+          layerOpacity
+        ], layerPropertyEditingDisabled);
+        setInspectorInputsDisabled([
           surfaceX,
           surfaceY,
           surfaceW,
           surfaceH,
           surfaceOpacity,
-          surfaceVisibleBtn,
-          surfaceLockedBtn,
           surfaceFitBtn,
           surfaceFillBtn,
           surfaceSnapGridBtn,
@@ -10337,6 +10702,7 @@
           surfaceStraightenLeftBtn,
           surfacePatternScale,
           surfacePatternColor,
+          surfaceAddFillBtn,
           cropAssetBtn,
           assetFitFrameBtn,
           assetWarpFrameBtn,
@@ -10350,8 +10716,11 @@
           assetScaleX,
           assetScaleY,
           assetAspectLockBtn,
-          ...Array.from(document.querySelectorAll("#layerStateCard [data-scrub-target], #surfaceTransformCard [data-scrub-target], #assetTransformCard [data-scrub-target], [data-appearance-scrub]"))
-        ], mappedEditingDisabled);
+          ...Array.from(document.querySelectorAll("#surfaceTransformCard [data-scrub-target], #assetTransformCard [data-scrub-target], #surfaceTransformCard [data-appearance-layer-id]"))
+        ], surfacePropertyEditingDisabled);
+        setInspectorInputsDisabled([
+          ...Array.from(document.querySelectorAll("#layerStateCard [data-scrub-target]"))
+        ], layerPropertyEditingDisabled);
         setInspectorInputsDisabled([
           calibrationGridType,
           calibrationGridSize,
@@ -10731,6 +11100,48 @@
         event.target.value = "";
       });
 
+      [selectedAssetPreview, mobileAssetsList].forEach((container) => {
+        container.addEventListener("click", (event) => {
+          const relinkButton = event.target.closest("[data-relink-asset-id]");
+          if (!relinkButton) {
+            return;
+          }
+          pendingRelinkAssetId = relinkButton.dataset.relinkAssetId;
+          relinkAssetInput.click();
+        });
+      });
+
+      relinkAssetInput.addEventListener("change", async (event) => {
+        const [file] = Array.from(event.target.files || []);
+        const assetId = pendingRelinkAssetId;
+        pendingRelinkAssetId = null;
+        event.target.value = "";
+        if (!assetId || !file) {
+          return;
+        }
+        try {
+          await relinkAssetFile(assetId, file);
+        } catch (error) {
+          console.error("Media relink failed", error);
+        }
+      });
+
+      assetRecoveryNotice.addEventListener("click", (event) => {
+        if (!event.target.closest("[data-relink-missing-files]")) {
+          return;
+        }
+        relinkMissingInput.click();
+      });
+
+      relinkMissingInput.addEventListener("change", async (event) => {
+        const files = Array.from(event.target.files || []);
+        event.target.value = "";
+        if (!files.length) {
+          return;
+        }
+        await relinkMissingAssetFiles(files);
+      });
+
       modeButtons.forEach((button) => {
         button.addEventListener("click", () => {
           setMobileMode(button.dataset.mode);
@@ -11008,6 +11419,9 @@
 
         const surfaceAction = event.target.closest("[data-surface-action]");
         if (surfaceAction) {
+          if (!canMutateStructure()) {
+            return;
+          }
           const surfaceKey = surfaceAction.closest("[data-surface-key]")?.dataset.surfaceKey;
           if (!surfaceKey) {
             return;
@@ -11072,9 +11486,19 @@
             return;
           }
           if (dragRow.dataset.layerId) {
+            const layer = state.layers.find((item) => item.id === dragRow.dataset.layerId);
+            if (!canMutateLayer(layer)) {
+              event.preventDefault();
+              return;
+            }
             state.ui.treeDrag = { type: "layer", id: dragRow.dataset.layerId };
             event.dataTransfer.setData("text/projektik-tree", `layer:${dragRow.dataset.layerId}`);
           } else if (dragRow.dataset.surfaceKey) {
+            const surface = state.surfaces.find((item) => item.key === dragRow.dataset.surfaceKey);
+            if (!canMutateSurface(surface)) {
+              event.preventDefault();
+              return;
+            }
             state.ui.treeDrag = { type: "surface", id: dragRow.dataset.surfaceKey };
             event.dataTransfer.setData("text/projektik-tree", `surface:${dragRow.dataset.surfaceKey}`);
           }
@@ -11283,6 +11707,11 @@
           const surfaceTarget = event.target.closest("[data-surface-key]");
           const assetId = event.dataTransfer?.getData("text/projektik-asset");
           if (!surfaceTarget || !assetId) {
+            return;
+          }
+          const targetSurface = state.surfaces.find((surface) => surface.key === surfaceTarget.dataset.surfaceKey);
+          if (!canMutateSurface(targetSurface)) {
+            event.preventDefault();
             return;
           }
           event.preventDefault();
@@ -11600,6 +12029,9 @@
       });
 
       inspectorLinkBtn.addEventListener("click", () => {
+        if (!canMutateLayer()) {
+          return;
+        }
         runWithHistory("Toggle calibration link", () => {
           state.ui.calibrationLinkEnabled = !state.ui.calibrationLinkEnabled;
         });
@@ -11607,6 +12039,9 @@
       });
 
       layerOpacity.addEventListener("input", (event) => {
+        if (!canMutateLayer()) {
+          return;
+        }
         runWithHistory("Update layer opacity", () => {
           updateLayer(getSelectedLayer().id, (layer) => ({
             ...layer,
@@ -11878,6 +12313,10 @@
       });
 
       surfaceAppearanceList?.addEventListener("dragstart", (event) => {
+        if (!canMutateSurface()) {
+          event.preventDefault();
+          return;
+        }
         if (appearanceOpacityScrubState) {
           event.preventDefault();
           return;
@@ -11957,7 +12396,7 @@
 
       surfaceAddFillBtn?.addEventListener("click", () => {
         const selectedSurface = getSelectedSurface();
-        if (!selectedSurface) {
+        if (!canMutateSurface(selectedSurface)) {
           return;
         }
         const nextLayer = createAppearanceLayer("fill");

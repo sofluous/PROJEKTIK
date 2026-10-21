@@ -89,6 +89,8 @@ test.describe("PROJEKTIK browser smoke", () => {
     await expect(page.locator("#projectionMiniPreset")).toHaveCount(0);
     await expect(page.locator("#projectionMiniOutput")).toHaveCount(0);
     await expect(page.locator("#projectionPlayOverlayBtn")).toBeVisible();
+    await expect(page.locator("#projectionWindowChrome")).toHaveAttribute("data-window-state", "closed");
+    await expect(page.locator("#projectionWindowState")).toHaveText("Closed");
     await expect(page.locator("#projectionHudToggleBtn")).toBeDisabled();
     await expect(page.locator("#projectionFullscreenBtn")).toBeDisabled();
     await expect(page.locator("#projectionWindowCloseBtn")).toBeDisabled();
@@ -115,6 +117,8 @@ test.describe("PROJEKTIK browser smoke", () => {
     await expect(page.locator("#projectionFullscreenBtn")).toBeEnabled();
     await expect(page.locator("#projectionWindowCloseBtn")).toBeEnabled();
     await expect(page.locator("#projectionFullscreenBtn")).toHaveAttribute("aria-label", "Exit projection fullscreen");
+    await expect(page.locator("#projectionWindowChrome")).toHaveAttribute("data-window-state", "fullscreen");
+    await expect(page.locator("#projectionWindowState")).toHaveText("Fullscreen");
     const previewAfterOpen = await page.locator(".pk-projection-window-chrome").boundingBox();
     expect(Math.abs(previewAfterOpen.width - previewBeforeOpen.width)).toBeLessThanOrEqual(1);
     expect(Math.abs(previewAfterOpen.height - previewBeforeOpen.height)).toBeLessThanOrEqual(1);
@@ -129,13 +133,24 @@ test.describe("PROJEKTIK browser smoke", () => {
     expect(hudSnapshot).toBe(true);
     await page.locator("#projectionWindowCloseBtn").click();
     await expect(page.locator("#projectionPlayOverlayBtn")).toBeVisible();
+    await expect(page.locator("#projectionWindowChrome")).toHaveAttribute("data-window-state", "closed");
+    await expect(page.locator("#projectionWindowState")).toHaveText("Closed");
     await expect(page.locator("#projectionHudToggleBtn")).toBeDisabled();
+    const projectionPanelLayout = await page.evaluate(() => {
+      const panel = document.querySelector("#projectionPanel")?.getBoundingClientRect();
+      const chrome = document.querySelector("#projectionWindowChrome")?.getBoundingClientRect();
+      return {
+        chromeFitsPanel: Boolean(panel && chrome && chrome.width <= panel.width + 1)
+      };
+    });
+    expect(projectionPanelLayout).toEqual({ chromeFitsPanel: true });
     await page.locator("#workspaceTabBtn").click();
 
     await page.locator("#settingsTabBtn").click();
     await expect(page.locator("#inspectorTitle")).toHaveText("Project Settings");
     await expect(page.locator("#inspectorTags")).toBeHidden();
     await expect(page.locator("label[for='outputPresetSelect']")).toHaveText("Dimensions");
+    await expect(page.locator("#projectSettingsCard .pk-field-note").first()).toContainText("Native describes the projector panel");
     await expect(page.locator("#projectSettingsCard .pk-dimension-row-label")).toContainText([
       "Projector Native",
       "Canvas Output",
@@ -314,6 +329,56 @@ test.describe("PROJEKTIK browser smoke", () => {
     expect(errors).toEqual([]);
   });
 
+  test("locked selections and run states consistently block editing", async ({ page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto(appUrl("editor.html", "?new=1"));
+    await page.locator("#addLayerBtn").click();
+
+    await page.locator("#addSurfaceBtn").click();
+    const stageBox = await page.locator("#stageCanvas").boundingBox();
+    expect(stageBox).toBeTruthy();
+    await page.mouse.move(stageBox.x + 160, stageBox.y + 140);
+    await page.mouse.down();
+    await page.mouse.move(stageBox.x + 420, stageBox.y + 320);
+    await page.mouse.up();
+
+    const layerRow = page.locator("#workspaceTree article[data-layer-id]").first();
+    await layerRow.locator(".pk-tree-row-main").click();
+    await expect(page.locator("#layerOpacity")).toBeEnabled();
+
+    await page.locator("#layerLockedBtn").click();
+    await expect(page.locator("#layerOpacity")).toBeDisabled();
+    await expect(page.locator("#layerVisibleBtn")).toBeEnabled();
+    await expect(page.locator("#layerLockedBtn")).toBeEnabled();
+
+    await page.locator("#layerLockedBtn").click();
+    const surfaceRow = page.locator("#workspaceTree article[data-surface-key]").first();
+    await surfaceRow.locator(".pk-tree-row-main").click();
+    await expect(page.locator("#surfaceX")).toBeEnabled();
+
+    await page.locator("#surfaceLockedBtn").click();
+    await expect(page.locator("#surfaceX")).toBeDisabled();
+    await expect(page.locator("#surfaceOpacity")).toBeDisabled();
+    await expect(page.locator("#surfaceAddFillBtn")).toBeDisabled();
+    await expect(page.locator("#surfaceVisibleBtn")).toBeEnabled();
+    await expect(page.locator("#surfaceLockedBtn")).toBeEnabled();
+
+    await page.locator("#surfaceLockedBtn").click();
+    await page.locator("#outputToggle").click();
+    await expect(page.locator("#addLayerBtn")).toBeDisabled();
+    await expect(page.locator("#addSurfaceBtn")).toBeDisabled();
+    await expect(page.locator("#workspaceTree [data-layer-action='visible']").first()).toBeDisabled();
+    await expect(page.locator("#workspaceTree [data-surface-action='locked']").first()).toBeDisabled();
+    await expect(page.locator("#surfaceX")).toBeDisabled();
+
+    await page.locator("#outputToggle").click();
+    await expect(page.locator("#addLayerBtn")).toBeEnabled();
+    await expect(page.locator("#addSurfaceBtn")).toBeEnabled();
+    await expect(page.locator("#surfaceX")).toBeEnabled();
+    expect(errors).toEqual([]);
+  });
+
   test("project store persists dashboard-visible metadata in browser storage", async ({ page }) => {
     const errors = collectConsoleErrors(page);
 
@@ -340,6 +405,159 @@ test.describe("PROJEKTIK browser smoke", () => {
     await expect(page.getByText("Browser Smoke <Project>")).toBeVisible();
     await expect(page.getByText("1024x768")).toBeVisible();
     await expect(page.getByText("Smoke Projector")).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+
+  test("missing project media can be relinked without breaking assignments", async ({ page }) => {
+    const errors = collectConsoleErrors(page);
+    const projectId = "project-missing-media-smoke";
+    const assetId = "asset-missing-smoke";
+
+    await page.goto(appUrl("index.html"));
+    await page.evaluate(({ projectId: id, assetId: missingId }) => {
+      localStorage.clear();
+      window.ProjektikStore.saveProject({
+        schemaVersion: 1,
+        project: { id, name: "Missing Media Smoke" },
+        ui: {
+          leftPanelTab: "assets",
+          focus: { type: "asset-library", id: missingId },
+          assetLibraryId: missingId
+        },
+        output: { width: 1920, height: 1080 },
+        assets: [],
+        layers: [{
+          id: "layer-missing-smoke",
+          name: "Mapped Layer",
+          kind: "media",
+          visible: true,
+          locked: false,
+          opacity: 100,
+          surfaceKeys: ["surface-missing-smoke"]
+        }],
+        surfaces: [{
+          key: "surface-missing-smoke",
+          name: "Missing Surface",
+          listTitle: "Missing Surface",
+          x: 100,
+          y: 100,
+          w: 640,
+          h: 360,
+          opacity: 100,
+          visible: true,
+          locked: false,
+          assetId: missingId,
+          outputMode: "asset",
+          appearanceLayers: [{
+            id: "surface-missing-smoke-asset",
+            kind: "asset",
+            assetId: missingId,
+            visible: true,
+            opacity: 1
+          }],
+          quad: {
+            nw: { x: 100, y: 100 },
+            ne: { x: 740, y: 100 },
+            se: { x: 740, y: 460 },
+            sw: { x: 100, y: 460 }
+          }
+        }]
+      });
+    }, { projectId, assetId });
+
+    await page.goto(appUrl("editor.html", `?project=${projectId}`));
+    await page.locator("#assetsTabBtn").click();
+    await expect(page.locator("#assetRecoveryNotice")).toContainText("1 missing media file");
+    await expect(page.locator("#selectedAssetPreview [data-relink-asset-id]")).toBeVisible();
+    await expect(page.locator("#assetsList .pk-item-tag").filter({ hasText: "Missing" })).toBeVisible();
+
+    const fileChooserPromise = page.waitForEvent("filechooser");
+    await page.locator("#selectedAssetPreview [data-relink-asset-id]").click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles({
+      name: "replacement.svg",
+      mimeType: "image/svg+xml",
+      buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="18"><rect width="32" height="18" fill="#ffcc66"/></svg>')
+    });
+
+    await expect(page.locator("#assetRecoveryNotice")).toBeHidden();
+    await expect(page.locator("#selectedAssetPreview img")).toBeVisible();
+    await page.locator("#projectTitle").click();
+    await page.locator("#saveProjectBtn").click();
+
+    const savedRecovery = await page.evaluate(({ projectId: id, assetId: expectedAssetId }) => {
+      const project = window.ProjektikStore.loadProject(id);
+      const asset = project.assets.find((item) => item.id === expectedAssetId);
+      const surface = project.surfaces.find((item) => item.key === "surface-missing-smoke");
+      return {
+        assetId: asset?.id || null,
+        hasEmbeddedMedia: Boolean(asset?.embeddedDataUrl),
+        surfaceAssetId: surface?.assetId || null,
+        appearanceAssetId: surface?.appearanceLayers?.[0]?.assetId || null
+      };
+    }, { projectId, assetId });
+    expect(savedRecovery).toEqual({
+      assetId,
+      hasEmbeddedMedia: true,
+      surfaceAssetId: assetId,
+      appearanceAssetId: assetId
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("bulk media recovery matches exact filenames and reports unmatched files", async ({ page }) => {
+    const errors = collectConsoleErrors(page);
+    const projectId = "project-bulk-recovery-smoke";
+
+    await page.goto(appUrl("index.html"));
+    await page.evaluate((id) => {
+      localStorage.clear();
+      window.ProjektikStore.saveProject({
+        schemaVersion: 1,
+        project: { id, name: "Bulk Recovery Smoke" },
+        assets: [
+          { id: "asset-one", name: "One", kind: "Image", fileName: "one.svg", mimeType: "image/svg+xml", sourceUrl: "blob:expired-one" },
+          { id: "asset-two", name: "Two", kind: "Image", fileName: "two.svg", mimeType: "image/svg+xml", sourceUrl: "blob:expired-two" }
+        ],
+        layers: [],
+        surfaces: []
+      });
+    }, projectId);
+
+    await page.goto(appUrl("editor.html", `?project=${projectId}`));
+    await page.locator("#assetsTabBtn").click();
+    await expect(page.locator("#assetRecoveryNotice")).toContainText("2 missing media files");
+
+    let fileChooserPromise = page.waitForEvent("filechooser");
+    await page.locator("[data-relink-missing-files]").click();
+    let fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles([
+      {
+        name: "one.svg",
+        mimeType: "image/svg+xml",
+        buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10" fill="#55ccaa"/></svg>')
+      },
+      {
+        name: "unmatched.svg",
+        mimeType: "image/svg+xml",
+        buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10" fill="#cc5577"/></svg>')
+      }
+    ]);
+
+    await expect(page.locator("#assetRecoveryNotice")).toContainText("Recovered 1 file. 1 still needs relinking. 1 selected file did not match.");
+    await expect(page.locator("#assetsList .pk-item-tag").filter({ hasText: "Missing" })).toHaveCount(1);
+
+    fileChooserPromise = page.waitForEvent("filechooser");
+    await page.locator("[data-relink-missing-files]").click();
+    fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles({
+      name: "two.svg",
+      mimeType: "image/svg+xml",
+      buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10" fill="#5577cc"/></svg>')
+    });
+
+    await expect(page.locator("#assetRecoveryNotice")).toBeHidden();
+    await expect(page.locator("#assetsList .pk-item-tag").filter({ hasText: "Missing" })).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 
