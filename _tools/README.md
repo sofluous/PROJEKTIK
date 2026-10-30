@@ -1,6 +1,6 @@
 # PROJEKTIK Tools
 
-Small local development utilities for restart stabilization.
+Required repository-owned development checks for restart stabilization. These remain inside the application repository because package commands depend on them.
 
 ## Smoke Checks
 
@@ -17,7 +17,7 @@ The smoke harness checks:
 - dashboard and projection view script references against their pages
 - project-store save, load, duplicate, import, export, and delete behavior
 
-It does not replace browser testing. Use it before running the manual browser checklist in `_docs/data/SMOKE_CHECKLIST_2026-09-30.md`.
+It does not replace browser testing. Optional local manual checks are in [the outer workspace checklist](../../_docs/data/SMOKE_CHECKLIST_2026-09-30.md); that document may be absent in a clone and is not a test input.
 
 ## Browser Smoke Tests
 
